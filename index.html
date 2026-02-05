@@ -1,58 +1,187 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Steven Bleifer</title>
+    <title>StevenBleifer.com - My World Wide Web Directory</title>
     <style>
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            background-color: #FFFFFF;
+            font-family: "Times New Roman", Times, serif;
+            color: #000000;
+            margin: 10px;
         }
+        
+        /* 90s Link Styling */
+        a { text-decoration: underline; color: #0000FF; }
+        a:visited { color: #800080; }
+        a:hover { color: #FF0000; }
 
+        /* Layout Container */
         .container {
+            width: 800px;
+            margin: 0 auto;
             text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            max-width: 400px; /* Limits width so the cow doesn't stretch */
         }
 
+        /* Header Logo Section */
+        .header {
+            margin-bottom: 15px;
+        }
         h1 {
-            margin-top: 0;
-            font-size: 2rem;
-            color: #2c3e50;
+            font-size: 48px;
+            color: #FF0000;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+        .subtitle {
+            font-size: 14px;
+            font-weight: bold;
         }
 
-        p {
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 25px; /* Adds space between text and cow */
+        /* Search Bar Box */
+        .search-box {
+            background-color: #DDDDDD;
+            padding: 10px;
+            border: 2px solid #888888;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        input[type="text"] { size: 40; }
+
+        /* GIF Center Styling */
+        .gif-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        /* The "Directory" Grid */
+        .directory-table {
+            width: 100%;
+            text-align: left;
+            border-spacing: 10px;
+        }
+        
+        .category-header {
+            font-weight: bold;
+            font-size: 16px;
+            background-color: #EEEEEE;
+            padding: 3px;
+            margin-bottom: 5px;
         }
 
-        /* Styles for the cow gif */
-        .cow-gif {
-            width: 150px;  /* Keeps the cow small and cute */
-            height: auto;
-            border-radius: 8px;
+        .category-links {
+            font-size: 13px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            border-top: 1px solid #000000;
+            padding-top: 10px;
+        }
+        
+        .new-icon {
+            color: red;
+            font-weight: bold;
+            font-size: 10px;
+            vertical-align: super;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Steven Bleifer</h1>
-        <p>Website coming soon.</p>
-        
-        <img src="cow.gif" class="cow-gif" alt="Spinning Cow">
+<div class="container">
+
+    <div class="header">
+        <h1>StevenBleifer<span style="color:#0000AA">.com</span></h1>
+        <div class="subtitle">A Guide to My Personal World Wide Web</div>
     </div>
+
+    <div class="search-box">
+        <form action="https://www.google.com/search" method="GET" target="_blank">
+            <b>Search Steven's Favorites:</b> 
+            <input type="text" name="q"> 
+            <input type="submit" value="Search">
+            <br>
+            <small><a href="#">Options</a> | <a href="#">Advanced</a> | <a href="#">Help</a></small>
+        </form>
+    </div>
+
+    <div class="gif-container">
+        <img src="https://placehold.co/400x50/ffff00/000000?text=UNDER+CONSTRUCTION+GIF+HERE" border="0" alt="Site Under Construction">
+    </div>
+
+
+    <table class="directory-table">
+        <tr>
+            <td width="50%" valign="top">
+                <div class="category-header">my_projects /</div>
+                <div class="category-links">
+                    <a href="surprise/index.html"><b>The Surprise Project</b></a> <span class="new-icon">NEW!</span><br>
+                    <small>The valentine's site I am hosting</small><br>
+                    <a href="#">Old HTML Experiments</a><br>
+                    <a href="#">Client Work</a>
+                </div>
+
+                <div class="category-header">important_tools /</div>
+                <div class="category-links">
+                    <a href="https://github.com"><b>GitHub</b></a> - <i>Code hosting</i><br>
+                    <a href="https://stackoverflow.com">Stack Overflow</a><br>
+                    <a href="https://google.com">Google Search</a><br>
+                    <a href="#">Web Hosting Control Panel</a>
+                </div>
+
+                <div class="category-header">entertainment /</div>
+                <div class="category-links">
+                    <a href="#">Music Playlists</a><br>
+                    <a href="#">Movies to Watch</a><br>
+                    <a href="#">Video Games</a>
+                </div>
+            </td>
+
+            <td width="50%" valign="top">
+                <div class="category-header">file_downloads /</div>
+                <div class="category-links">
+                    <a href="#"><b>Resumé.pdf</b></a> <span class="new-icon">UPDATED</span><br>
+                    <a href="#">Portfolio_Assets.zip</a><br>
+                    <a href="#">Public_Key.txt</a>
+                </div>
+
+                <div class="category-header">daily_reads /</div>
+                <div class="category-links">
+                    <a href="https://news.ycombinator.com">Hacker News</a><br>
+                    <a href="https://reddit.com">Reddit</a><br>
+                    <a href="#">Tech Blogs</a><br>
+                    <a href="#">Financial News</a>
+                </div>
+
+                <div class="category-header">contact_me /</div>
+                <div class="category-links">
+                    <a href="mailto:email@example.com">Email Steven</a><br>
+                    <a href="#">Guestbook</a><br>
+                    <a href="#">Webmaster Info</a>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="gif-container">
+        <p>Welcome to my page!</p>
+        <img src="https://placehold.co/100x100/ffffff/000000?text=COW.GIF+HERE" border="0" alt="Moo">
+    </div>
+
+
+    <div class="footer">
+        <p>
+            Copyright &copy; 1996-2026 Steven Bleifer. All rights reserved.<br>
+            This page is best viewed with Netscape Navigator 4.0 or Internet Explorer 4.0.<br>
+            <a href="#">Company Info</a> - <a href="#">Privacy Policy</a> - <a href="#">Terms of Service</a>
+        </p>
+    </div>
+
+</div>
 
 </body>
 </html>
