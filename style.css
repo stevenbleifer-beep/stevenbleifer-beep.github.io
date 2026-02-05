@@ -1,10 +1,11 @@
+/* --- PAGE SETUP --- */
 body {
     font-family: 'Arial', sans-serif;
     background-color: #ffdde1; /* Light pink background */
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     text-align: center;
 }
@@ -14,41 +15,82 @@ body {
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    max-width: 400px;
+    max-width: 500px; /* Width of the white card */
     width: 90%;
 }
 
 h1 {
-    color: #d63384;
+    color: #d63384; /* Hot pink text */
+    margin-bottom: 20px;
 }
 
-.main-photo {
+p {
+    color: #555;
+    line-height: 1.5;
+}
+
+/* --- IMAGES ON PAGES --- */
+/* Style for the Main Image, Yes Image, and No Image */
+.main-photo, .yes-photo, .no-photo {
     width: 100%;
     max-width: 300px;
     border-radius: 10px;
     margin: 20px 0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+/* --- CAPTION UNDER MAIN PHOTO --- */
+.caption {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 25px;
+    margin-top: -10px;
+}
+
+/* --- BUTTONS SECTION --- */
 .buttons {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 20px; /* Space between the two buttons */
 }
 
+/* Base style for all buttons */
 .btn {
     text-decoration: none;
-    padding: 10px 30px;
-    border-radius: 5px;
-    font-weight: bold;
+    display: flex;
+    flex-direction: column; /* Stacks image on top of text */
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 10px;
     color: white;
-    background-color: #333;
+    background-color: #333; /* Default dark grey (for Go Back button) */
     transition: transform 0.2s;
+    min-width: 120px; /* Ensures buttons aren't too skinny */
 }
 
+/* Hover effect */
 .btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.05); /* Slight pop out effect */
 }
 
+/* The small images INSIDE the Yes/No buttons */
+.btn-img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover; /* Prevents image squishing */
+    border-radius: 5px;
+    margin-bottom: 10px;
+    border: 2px solid rgba(255,255,255,0.5);
+}
+
+/* The text inside the buttons */
+.btn span {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+/* Specific colors */
 .yes-btn {
     background-color: #28a745; /* Green */
 }
