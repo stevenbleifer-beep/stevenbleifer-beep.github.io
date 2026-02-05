@@ -5,14 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yay!</title>
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="container">
         <h1>Congratulations, you win! ❤️</h1>
-
-        <img src="yay.jpeg" alt="Happy Valentine" class="yes-photo">
         
-        <p>Text me your choice! (There is only one).</p>
+        <img src="yay.jpg" alt="Happy Valentine" class="yes-photo">
+        
+        <p>Text me your answer!</p>
     </div>
+
+    <script>
+        function launchConfetti() {
+            var duration = 3 * 1000;
+            var animationEnd = Date.now() + duration;
+            
+            // SETTINGS: Hearts only, Red/Pink/White colors
+            var defaults = { 
+                startVelocity: 30, 
+                spread: 360, 
+                ticks: 60, 
+                zIndex: 0,
+                shapes: ['heart'],
+                colors: ['#FFC0CB', '#FF69B4', '#FF0000', '#800080'] // Pink, Hot Pink, Red, Purple
+            };
+
+            var random = function(min, max) {
+              return Math.random() * (max - min) + min;
+            };
+
+            var interval = setInterval(function() {
+              var timeLeft = animationEnd - Date.now();
+
+              if (timeLeft <= 0) {
+                return clearInterval(interval);
+              }
+
+              var particleCount = 50 * (timeLeft / duration);
+              
+              // Shoot from left and right
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.1, 0.3), y: Math.random() - 0.2 } }));
+              confetti(Object.assign({}, defaults, { particleCount, origin: { x: random(0.7, 0.9), y: Math.random() - 0.2 } }));
+            }, 250);
+        }
+
+        launchConfetti();
+    </script>
 </body>
 </html>
