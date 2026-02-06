@@ -3,96 +3,41 @@
 <head>
     <title>StevenBleifer.com - My World Wide Web Directory</title>
     <style>
-        body {
-            background-color: #FFFFFF;
-            font-family: "Times New Roman", Times, serif;
-            color: #000000;
-            margin: 10px;
-        }
-        
-        /* 90s Link Styling */
+        body { background-color: #FFFFFF; font-family: "Times New Roman", Times, serif; color: #000000; margin: 10px; }
         a { text-decoration: underline; color: #0000FF; }
         a:visited { color: #800080; }
         a:hover { color: #FF0000; }
+        .container { width: 800px; margin: 0 auto; text-align: center; }
+        .header { margin-bottom: 15px; }
+        h1 { font-size: 48px; color: #FF0000; margin: 0; letter-spacing: 2px; }
+        .subtitle { font-size: 14px; font-weight: bold; }
+        .search-box { background-color: #DDDDDD; padding: 10px; border: 2px solid #888888; margin-bottom: 20px; font-size: 14px; }
+        .gif-container { text-align: center; margin: 20px 0; }
+        .gif-container img { width: 50%; height: auto; }
+        .directory-table { width: 100%; text-align: left; border-spacing: 10px; }
+        .category-header { font-weight: bold; font-size: 16px; background-color: #EEEEEE; padding: 3px; margin-bottom: 5px; }
+        .category-links { font-size: 13px; line-height: 1.5; margin-bottom: 20px; }
+        .footer { margin-top: 30px; font-size: 12px; border-top: 1px solid #000000; padding-top: 10px; }
+        .new-icon { color: red; font-weight: bold; font-size: 10px; vertical-align: super; }
 
-        /* Layout Container */
-        .container {
-            width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        /* Header Logo Section */
-        .header {
-            margin-bottom: 15px;
-        }
-        h1 {
-            font-size: 48px;
-            color: #FF0000;
-            margin: 0;
-            letter-spacing: 2px;
-        }
-        .subtitle {
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        /* Search Bar Box */
-        .search-box {
-            background-color: #DDDDDD;
-            padding: 10px;
-            border: 2px solid #888888;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-        input[type="text"] { size: 40; }
-
-        /* GIF Center Styling */
-        .gif-container {
-            text-align: center;
-            margin: 20px 0;
-        }
-        
-        /* Control GIF size */
-        .gif-container img {
-            width: 50%; 
-            height: auto; 
-        }
-        
-        /* The "Directory" Grid */
-        .directory-table {
-            width: 100%;
-            text-align: left;
-            border-spacing: 10px;
-        }
-        
-        .category-header {
-            font-weight: bold;
-            font-size: 16px;
-            background-color: #EEEEEE;
-            padding: 3px;
-            margin-bottom: 5px;
-        }
-
-        .category-links {
-            font-size: 13px;
-            line-height: 1.5;
+        /* WINAMP STYLE PLAYER BOX */
+        .player-box {
+            background-color: #C0C0C0;
+            border-top: 2px solid #FFFFFF;
+            border-left: 2px solid #FFFFFF;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            padding: 2px;
             margin-bottom: 20px;
         }
-
-        /* Footer */
-        .footer {
-            margin-top: 30px;
+        .player-title {
+            background-color: #000080;
+            color: #FFFFFF;
+            font-weight: bold;
             font-size: 12px;
-            border-top: 1px solid #000000;
-            padding-top: 10px;
-        }
-        
-        .new-icon {
-            color: red;
-            font-weight: bold;
-            font-size: 10px;
-            vertical-align: super;
+            padding: 2px 5px;
+            margin-bottom: 5px;
+            font-family: Arial, sans-serif;
         }
     </style>
 </head>
@@ -111,23 +56,19 @@
             <input type="text" name="q"> 
             <input type="submit" value="Search">
             <br>
-            <small><a href="#">Options</a> | <a href="#">Advanced</a> | <a href="#">Help</a></small>
+            <small><a href="options.html">Options</a> | <a href="advanced.html">Advanced</a> | <a href="help.html">Help</a></small>
         </form>
-    </div>
-
-    <div class="gif-container">
-        <img src="underconstruction.gif" border="0" alt="Site Under Construction">
     </div>
 
     <table class="directory-table">
         <tr>
             <td width="50%" valign="top">
-                <div class="category-header">musicians_corner /</div>
+                <div class="category-header">news_stand /</div>
                 <div class="category-links">
-                    <a href="https://www.justinguitar.com"><b>JustinGuitar.com</b></a><br>
-                    <a href="https://www.bassbuzz.com">BassBuzz.com</a><br>
-                    <a href="https://www.ultimate-guitar.com">ULTIMATE GUITAR TABS</a><br>
-                    <a href="https://www.discogs.com">Discogs</a> - <i>Vinyl Database</i>
+                    <a href="https://www.nytimes.com"><b>The New York Times</b></a><br>
+                    <a href="https://www.wsj.com">Wall Street Journal</a><br>
+                    <a href="https://www.ft.com">Financial Times</a><br>
+                    <a href="https://www.economist.com">The Economist</a>
                 </div>
 
                 <div class="category-header">business_&_finance /</div>
@@ -136,33 +77,49 @@
                     <a href="https://www.fidelity.com">Fidelity Investments</a><br>
                     <a href="https://nasba.org">NASBA</a> - <i>CPA Exam & Licensure</i>
                 </div>
-                
-                <div class="category-header">my_projects /</div>
+
+                <div class="category-header">musicians_corner /</div>
                 <div class="category-links">
-                    <a href="surprise/index.html"><b>The Surprise Project</b></a> <span class="new-icon">NEW!</span><br>
-                    <small>Valentine's Day Site</small>
+                    <a href="https://www.justinguitar.com"><b>JustinGuitar.com</b></a><br>
+                    <a href="https://www.bassbuzz.com">BassBuzz.com</a><br>
+                    <a href="https://www.ultimate-guitar.com">ULTIMATE GUITAR TABS</a><br>
+                    <a href="https://www.discogs.com">Discogs</a>
                 </div>
+
+                <div class="category-header">multimedia_player /</div>
+                <div class="player-box">
+                    <div class="player-title">WinAmp_Player.exe</div>
+                    <iframe style="border-radius:12px" src="https://open.spotify.com/embed/playlist/37i9dQZF1EpqFXS0HlqfQo?utm_source=generator" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+                </div>
+
             </td>
 
             <td width="50%" valign="top">
+                <div class="category-header">search_&_ai /</div>
+                <div class="category-links">
+                    <a href="https://gemini.google.com"><b>Google Gemini</b></a><br>
+                    <a href="https://claude.ai">Claude AI</a><br>
+                    <a href="https://github.com">GitHub</a>
+                </div>
+
                 <div class="category-header">shopping_mall /</div>
                 <div class="category-links">
                     <a href="https://www.amazon.com"><b>Amazon</b></a><br>
                     <a href="https://www.ebay.com">eBay</a><br>
-                    <a href="https://thedarkroom.com">The Darkroom</a> - <i>Film Dev</i>
+                    <a href="https://thedarkroom.com">The Darkroom</a>
                 </div>
 
                 <div class="category-header">daily_surf /</div>
                 <div class="category-links">
+                    <a href="https://www.youtube.com"><b>YouTube</b></a><br>
+                    <a href="https://mail.google.com">Gmail</a><br>
                     <a href="https://www.reddit.com">Reddit</a><br>
-                    <a href="https://www.nytimes.com/crosswords">NYT Games</a><br>
-                    <a href="https://github.com">GitHub</a>
+                    <a href="https://www.nytimes.com/crosswords">NYT Games</a>
                 </div>
 
-                <div class="category-header">contact_me /</div>
+                <div class="category-header">my_projects /</div>
                 <div class="category-links">
-                    <a href="mailto:email@example.com">Email Steven</a><br>
-                    <a href="#">Sign Guestbook</a>
+                    <a href="surprise/index.html"><b>The Surprise Project</b></a> <span class="new-icon">NEW!</span>
                 </div>
             </td>
         </tr>
@@ -177,4 +134,11 @@
         <p>
             Copyright &copy; 1996-2026 Steven Bleifer. All rights reserved.<br>
             This page is best viewed with Netscape Navigator 4.0 or Internet Explorer 4.0.<br>
-            <a href="#">Company Info</a> - <a href="#">Privacy Policy</a> - <a href="#">
+            <a href="company.html">Company Info</a> - <a href="privacy.html">Privacy Policy</a> - <a href="terms.html">Terms of Service</a>
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>
