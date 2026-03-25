@@ -352,10 +352,30 @@
         c.innerHTML = html;
     }
 
+    // ============================================================
+    // DISPLAY-SIDE FILTERING
+    // Malicious users can write directly to the DB, bypassing
+    // client-side validation. So we filter on READ, not just WRITE.
+    // ============================================================
+    function isCleanEntry(e) {
+        if (!e || typeof e.name !== 'string' || typeof e.message !== 'string' || typeof e.date !== 'string') return false;
+        if (e.name.length > 30 || e.message.length > 200) return false;
+        if (hasBadWords(e.name) || hasBadWords(e.message)) return false;
+        // Block entries with HTML tags or script injection
+        if (/<[^>]*>/i.test(e.name) || /<[^>]*>/i.test(e.message)) return false;
+        if (/javascript:|onerror|onload|onclick/i.test(e.name) || /javascript:|onerror|onload|onclick/i.test(e.message)) return false;
+        // Must have at least one visible character
+        if (!/[a-zA-Z0-9]/.test(e.name) || !/[a-zA-Z0-9]/.test(e.message)) return false;
+        return true;
+    }
+
     db.ref('guestbook').orderByChild('timestamp').limitToLast(50).on('value', function(snapshot) {
         var entries = [];
         snapshot.forEach(function(child) {
-            entries.push(child.val());
+            var e = child.val();
+            if (isCleanEntry(e)) {
+                entries.push(e);
+            }
         });
         renderEntries(entries);
     });
