@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>~* What I'm Into *~ Steven Bleifer's Homepage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main-container">
+
+    <div class="navbar">
+        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="" style="vertical-align: middle; margin-right: 6px;">
+        <a href="index.html">Home</a> <span class="sep">|</span>
+        <a href="resume.html">Resume</a> <span class="sep">|</span>
+        <a href="projects.html">Projects</a> <span class="sep">|</span>
+        <a href="links.html">Links</a> <span class="sep">|</span>
+        <a href="blog.html">Blog</a> <span class="sep">|</span>
+        <a href="contact.html">Contact</a> <span class="sep">|</span>
+        <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
+        <a href="awards.html">Awards</a>
+        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="" style="vertical-align: middle; margin-left: 6px;">
+    </div>
+
+    <div class="content-panel" style="text-align: center;">
+        <h1>
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 30px; vertical-align: middle;">
+            What I'm Into
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 30px; vertical-align: middle;">
+        </h1>
+        <p>My recent watches and reads, pulled fresh from the web!</p>
+        <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
+    </div>
+
+    <div style="text-align: center; line-height: 0;">
+        <img src="https://blob.gifcities.org/gifcities/22NLFTLILOQTRM7EEJOWYA5O7G4CJF6W.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
+    </div>
+
+    <!-- LETTERBOXD SECTION -->
+    <div class="content-panel">
+        <h2>
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
+            Recent Movies
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
+        </h2>
+        <p style="color: #808080; font-size: 0.85em;">From my <a href="https://letterboxd.com/stevenfred/" target="_blank" style="color: #00e054;">Letterboxd</a> diary</p>
+        <div id="letterboxd-feed" style="margin-top: 10px;">
+            <p style="color: #ffff00;" class="blink">Loading movies...</p>
+        </div>
+    </div>
+
+    <!-- GOODREADS SECTION -->
+    <div class="content-panel">
+        <h2>
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
+            Recent Books
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
+        </h2>
+        <p style="color: #808080; font-size: 0.85em;">From my <a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" style="color: #7b4f24;">Goodreads</a> shelf</p>
+        <div id="goodreads-feed" style="margin-top: 10px;">
+            <p style="color: #ffff00;" class="blink">Loading books...</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; line-height: 0;">
+        <img src="https://blob.gifcities.org/gifcities/22NLFTLILOQTRM7EEJOWYA5O7G4CJF6W.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
+    </div>
+
+    <div class="badges" style="margin: 15px 0;">
+        <img src="https://cyber.dabamos.de/88x31/netscape_now.gif" alt="Netscape Now!" style="margin: 3px;">
+        <img src="https://cyber.dabamos.de/88x31/anybestviewed.gif" alt="Best Viewed With Any Browser" style="margin: 3px;">
+        <img src="https://cyber.dabamos.de/88x31/best800x600.gif" alt="Best at 800x600" style="margin: 3px;">
+    </div>
+
+    <div class="footer">
+        <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;">
+        <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
+        <p>&copy; 2026 Steven Bleifer</p>
+        <p><a href="changelog.html">View Site Changelog</a></p>
+        <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;">
+    </div>
+
+</div>
+
+<!-- RSS FEED FETCHER -->
+<script>
+(function() {
+    var CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+
+    function starRating(num) {
+        var full = Math.floor(num);
+        var half = (num % 1 >= 0.5) ? 1 : 0;
+        var empty = 5 - full - half;
+        var s = '';
+        for (var i = 0; i < full; i++) s += '\u2605';
+        if (half) s += '\u00BD';
+        for (var i = 0; i < empty; i++) s += '\u2606';
+        return s;
+    }
+
+    function parseXML(text) {
+        return new DOMParser().parseFromString(text, 'text/xml');
+    }
+
+    // LETTERBOXD
+    fetch(CORS_PROXY + encodeURIComponent('https://letterboxd.com/stevenfred/rss/'))
+        .then(function(r) { return r.text(); })
+        .then(function(text) {
+            var doc = parseXML(text);
+            var items = doc.querySelectorAll('item');
+            var container = document.getElementById('letterboxd-feed');
+            if (!items.length) {
+                container.innerHTML = '<p style="color: #ff0000;">No movies found. Check back later!</p>';
+                return;
+            }
+            var html = '<table style="width: 100%; border-collapse: collapse;">';
+            var count = Math.min(items.length, 10);
+            for (var i = 0; i < count; i++) {
+                var item = items[i];
+                var title = item.querySelector('title') ? item.querySelector('title').textContent : 'Unknown';
+                var link = item.querySelector('link') ? item.querySelector('link').textContent : '#';
+                var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
+                // Extract rating from description
+                var ratingMatch = desc.match(/Rating: ([\d.]+)/);
+                var rating = ratingMatch ? parseFloat(ratingMatch[1]) : 0;
+                // Extract poster image
+                var imgMatch = desc.match(/<img\s+src="([^"]+)"/);
+                var poster = imgMatch ? imgMatch[1] : '';
+                // Extract watched date
+                var dateEl = item.querySelector('pubDate');
+                var dateStr = '';
+                if (dateEl) {
+                    var d = new Date(dateEl.textContent);
+                    dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                }
+
+                html += '<tr style="border-bottom: 1px solid #333;">';
+                if (poster) {
+                    html += '<td style="padding: 6px; width: 45px;"><img src="' + poster + '" alt="" style="height: 55px; border: 1px solid #444;"></td>';
+                }
+                html += '<td style="padding: 6px;">';
+                html += '<a href="' + link + '" target="_blank" style="color: #00ffff; font-weight: bold;">' + title + '</a><br>';
+                if (rating) html += '<span style="color: #00e054;">' + starRating(rating) + '</span> ';
+                if (dateStr) html += '<span style="color: #808080; font-size: 0.85em;">' + dateStr + '</span>';
+                html += '</td></tr>';
+            }
+            html += '</table>';
+            html += '<p style="margin-top: 10px; text-align: center;"><a href="https://letterboxd.com/stevenfred/" target="_blank" style="color: #00e054;">View all on Letterboxd &raquo;</a></p>';
+            container.innerHTML = html;
+        })
+        .catch(function() {
+            document.getElementById('letterboxd-feed').innerHTML = '<p style="color: #ff8800;">Could not load Letterboxd feed. <a href="https://letterboxd.com/stevenfred/" target="_blank" style="color: #00e054;">Visit my profile directly &raquo;</a></p>';
+        });
+
+    // GOODREADS
+    fetch(CORS_PROXY + encodeURIComponent('https://www.goodreads.com/review/list_rss/168719369?shelf=read'))
+        .then(function(r) { return r.text(); })
+        .then(function(text) {
+            var doc = parseXML(text);
+            var items = doc.querySelectorAll('item');
+            var container = document.getElementById('goodreads-feed');
+            if (!items.length) {
+                container.innerHTML = '<p style="color: #ff0000;">No books found. Check back later!</p>';
+                return;
+            }
+            var html = '<table style="width: 100%; border-collapse: collapse;">';
+            var count = Math.min(items.length, 10);
+            for (var i = 0; i < count; i++) {
+                var item = items[i];
+                var title = item.querySelector('title') ? item.querySelector('title').textContent.trim() : 'Unknown';
+                var link = item.querySelector('link') ? item.querySelector('link').textContent.trim() : '#';
+                var author = item.querySelector('author_name') ? item.querySelector('author_name').textContent.trim() : '';
+                var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
+                // Extract rating
+                var ratingMatch = desc.match(/rating:\s*(\d)/i);
+                var rating = ratingMatch ? parseInt(ratingMatch[1]) : 0;
+                // Extract book cover
+                var imgMatch = desc.match(/<img[^>]+src="([^"]+)"/);
+                var cover = imgMatch ? imgMatch[1] : '';
+
+                html += '<tr style="border-bottom: 1px solid #333;">';
+                if (cover) {
+                    html += '<td style="padding: 6px; width: 45px;"><img src="' + cover + '" alt="" style="height: 55px; border: 1px solid #444;"></td>';
+                }
+                html += '<td style="padding: 6px;">';
+                html += '<a href="' + link + '" target="_blank" style="color: #00ffff; font-weight: bold;">' + title + '</a><br>';
+                if (author) html += '<span style="color: #ff00ff; font-size: 0.9em;">by ' + author + '</span><br>';
+                if (rating) html += '<span style="color: #ffff00;">' + starRating(rating) + '</span>';
+                html += '</td></tr>';
+            }
+            html += '</table>';
+            html += '<p style="margin-top: 10px; text-align: center;"><a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" style="color: #7b4f24;">View all on Goodreads &raquo;</a></p>';
+            container.innerHTML = html;
+        })
+        .catch(function() {
+            document.getElementById('goodreads-feed').innerHTML = '<p style="color: #ff8800;">Could not load Goodreads feed. <a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" style="color: #7b4f24;">Visit my profile directly &raquo;</a></p>';
+        });
+})();
+</script>
+
+<!-- CURSOR SPARKLE TRAIL -->
+<script>
+(function() {
+    var sparkles = ['*', '+', '.', '*'];
+    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
+    document.addEventListener('mousemove', function(e) {
+        var s = document.createElement('div');
+        s.className = 'cursor-sparkle';
+        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
+        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
+        s.style.color = colors[Math.floor(Math.random() * colors.length)];
+        s.style.fontSize = (10 + Math.random() * 14) + 'px';
+        document.body.appendChild(s);
+        setTimeout(function() { s.remove(); }, 600);
+    });
+})();
+</script>
+
+</body>
+</html>

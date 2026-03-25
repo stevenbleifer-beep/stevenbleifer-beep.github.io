@@ -65,6 +65,7 @@ page = f'''<!DOCTYPE html>
         <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;">
         <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
         <p>&copy; 2026 Steven Bleifer</p>
+        <p><a href="activity.html">What I'm Into (Movies &amp; Books)</a></p>
         <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;">
     </div>
 
