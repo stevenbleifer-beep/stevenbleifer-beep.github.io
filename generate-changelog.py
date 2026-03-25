@@ -32,13 +32,13 @@ page = f'''<!DOCTYPE html>
     <div class="navbar">
         <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="" style="vertical-align: middle; margin-right: 6px;">
         <a href="index.html">Home</a> <span class="sep">|</span>
+        <a href="activity.html">What I'm Into</a> <span class="sep">|</span>
         <a href="resume.html">Resume</a> <span class="sep">|</span>
         <a href="links.html">Links</a> <span class="sep">|</span>
         <a href="blog.html">Blog</a> <span class="sep">|</span>
         <a href="contact.html">Contact</a> <span class="sep">|</span>
         <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
-        <a href="awards.html">Awards</a> <span class="sep">|</span>
-        <a href="activity.html">What I'm Into</a>
+        <a href="awards.html">Awards</a>
         <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="" style="vertical-align: middle; margin-left: 6px;">
     </div>
 
@@ -65,7 +65,6 @@ page = f'''<!DOCTYPE html>
         <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;">
         <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
         <p>&copy; 2026 Steven Bleifer</p>
-        <p><a href="activity.html">What I'm Into (Movies &amp; Books)</a></p>
         <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;">
     </div>
 
