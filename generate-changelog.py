@@ -30,7 +30,7 @@ page = f'''<!DOCTYPE html>
 <div class="main-container">
 
     <div class="navbar">
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="" style="vertical-align: middle; margin-right: 6px;">
+        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
         <a href="index.html">Home</a> <span class="sep">|</span>
         <a href="activity.html">What I'm Into</a> <span class="sep">|</span>
         <a href="resume.html">Resume</a> <span class="sep">|</span>
@@ -39,7 +39,7 @@ page = f'''<!DOCTYPE html>
         <a href="contact.html">Contact</a> <span class="sep">|</span>
         <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
         <a href="awards.html">Awards</a>
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="" style="vertical-align: middle; margin-left: 6px;">
+        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
     </div>
 
     <div class="content-panel" style="text-align: center;">

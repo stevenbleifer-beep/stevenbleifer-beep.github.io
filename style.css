@@ -71,6 +71,18 @@ body {
   text-align: center;
   margin-bottom: 15px;
   font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0;
+}
+
+.navbar img {
+  height: 20px;
+  width: auto;
+  vertical-align: middle;
+  margin: 0 6px;
 }
 
 .navbar a {
