@@ -86,7 +86,11 @@
 <!-- RSS FEED FETCHER -->
 <script>
 (function() {
-    var CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+    var CORS_PROXIES = [
+        'https://corsproxy.io/?url=',
+        'https://api.allorigins.win/raw?url=',
+        'https://api.codetabs.com/v1/proxy?quest='
+    ];
 
     function starRating(num) {
         var full = Math.floor(num);
@@ -103,9 +107,28 @@
         return new DOMParser().parseFromString(text, 'text/xml');
     }
 
+    function fetchWithFallback(url, proxyIndex) {
+        proxyIndex = proxyIndex || 0;
+        if (proxyIndex >= CORS_PROXIES.length) {
+            return Promise.reject(new Error('All proxies failed'));
+        }
+        var proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(url);
+        return fetch(proxyUrl).then(function(r) {
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.text();
+        }).then(function(text) {
+            var doc = parseXML(text);
+            if (doc.querySelector('parsererror') || !doc.querySelector('item')) {
+                throw new Error('Invalid XML or no items');
+            }
+            return text;
+        }).catch(function() {
+            return fetchWithFallback(url, proxyIndex + 1);
+        });
+    }
+
     // LETTERBOXD
-    fetch(CORS_PROXY + encodeURIComponent('https://letterboxd.com/stevenfred/rss/'))
-        .then(function(r) { return r.text(); })
+    fetchWithFallback('https://letterboxd.com/stevenfred/rss/')
         .then(function(text) {
             var doc = parseXML(text);
             var items = doc.querySelectorAll('item');
@@ -121,13 +144,10 @@
                 var title = item.querySelector('title') ? item.querySelector('title').textContent : 'Unknown';
                 var link = item.querySelector('link') ? item.querySelector('link').textContent : '#';
                 var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
-                // Extract rating from description
                 var ratingMatch = desc.match(/Rating: ([\d.]+)/);
                 var rating = ratingMatch ? parseFloat(ratingMatch[1]) : 0;
-                // Extract poster image
                 var imgMatch = desc.match(/<img\s+src="([^"]+)"/);
                 var poster = imgMatch ? imgMatch[1] : '';
-                // Extract watched date
                 var dateEl = item.querySelector('pubDate');
                 var dateStr = '';
                 if (dateEl) {
@@ -154,8 +174,7 @@
         });
 
     // GOODREADS
-    fetch(CORS_PROXY + encodeURIComponent('https://www.goodreads.com/review/list_rss/168719369?shelf=read'))
-        .then(function(r) { return r.text(); })
+    fetchWithFallback('https://www.goodreads.com/review/list_rss/168719369?shelf=read')
         .then(function(text) {
             var doc = parseXML(text);
             var items = doc.querySelectorAll('item');
@@ -170,14 +189,18 @@
                 var item = items[i];
                 var title = item.querySelector('title') ? item.querySelector('title').textContent.trim() : 'Unknown';
                 var link = item.querySelector('link') ? item.querySelector('link').textContent.trim() : '#';
+                // Use direct Goodreads XML tags
                 var author = item.querySelector('author_name') ? item.querySelector('author_name').textContent.trim() : '';
-                var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
-                // Extract rating
-                var ratingMatch = desc.match(/rating:\s*(\d)/i);
-                var rating = ratingMatch ? parseInt(ratingMatch[1]) : 0;
-                // Extract book cover
-                var imgMatch = desc.match(/<img[^>]+src="([^"]+)"/);
-                var cover = imgMatch ? imgMatch[1] : '';
+                var ratingEl = item.querySelector('user_rating');
+                var rating = ratingEl ? parseInt(ratingEl.textContent.trim()) : 0;
+                var coverEl = item.querySelector('book_large_image_url') || item.querySelector('book_medium_image_url') || item.querySelector('book_image_url') || item.querySelector('book_small_image_url');
+                var cover = coverEl ? coverEl.textContent.trim() : '';
+                // Fallback: try to extract cover from description HTML
+                if (!cover) {
+                    var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
+                    var imgMatch = desc.match(/<img[^>]+src="([^"]+)"/);
+                    if (imgMatch) cover = imgMatch[1];
+                }
 
                 html += '<tr style="border-bottom: 1px solid #333;">';
                 if (cover) {
