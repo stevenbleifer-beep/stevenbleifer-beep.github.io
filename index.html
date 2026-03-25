@@ -337,12 +337,12 @@
             counterRef.transaction(function(current) {
                 return (current || 8241) + 1;
             }).then(function(result) {
-                document.getElementById('visitor-count').textContent = String(result.snapshot.val()).padStart(6, '0');
+                document.getElementById('visitor-count').textContent = String(result.snapshot.val() - 8241).padStart(6, '0');
                 sessionStorage.setItem('sb_counted', 'true');
             });
         } else {
             counterRef.once('value').then(function(snapshot) {
-                document.getElementById('visitor-count').textContent = String(snapshot.val() || 8241).padStart(6, '0');
+                document.getElementById('visitor-count').textContent = String((snapshot.val() || 8241) - 8241).padStart(6, '0');
             });
         }
     })();
