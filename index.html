@@ -29,16 +29,43 @@
         <img src="https://blob.gifcities.org/gifcities/2LM4WUBHN37V2UIXHNHGQQ32NZ3ED7G5.gif" alt="Welcome!" style="max-width: 400px;">
     </div>
 
-    <!-- MARQUEE -->
+    <!-- MARQUEE NEWS TICKER -->
     <div class="marquee-bar">
-        <marquee scrollamount="4">
+        <marquee scrollamount="4" id="news-ticker">
             <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 16px; vertical-align: middle;">
-            ~*~ Welcome to Steven Bleifer's AWESOME Homepage! ~*~ NYU Stern MS Accounting '26 ~*~ Pitt Summa Cum Laude '25 ~*~ Incoming KPMG Audit Associate ~*~
-            <img src="https://blob.gifcities.org/gifcities/KZJVAJVK4TMMWH2ZBPLJVC7PDLE2YBWH.gif" alt="Yankees" style="height: 20px; vertical-align: middle;">
-            ~*~ Go Knicks! Go Steelers! Go Yankees! Go Devils! ~*~
+            <span id="ticker-text"></span>
             <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 16px; vertical-align: middle;">
         </marquee>
     </div>
+    <script>
+    (function() {
+        var facts = [
+            "Welcome to Steven Bleifer's AWESOME Homepage! Thanks for visiting!",
+            "FACT: Steven graduated Summa Cum Laude from the University of Pittsburgh in 2025!",
+            "BREAKING: Steven is finishing his MS in Accounting at NYU Stern, Class of 2026!",
+            "NEWS FLASH: Steven will be joining KPMG as a Commercial Audit Associate this fall!",
+            "FUN FACT: Steven was a Starbucks barista for 4+ years before going Big 4!",
+            "DID YOU KNOW? Steven ran his own sneaker reselling business!",
+            "SPORTS UPDATE: Go Knicks! Go Steelers! Go Yankees! Go Devils!",
+            "MUSIC NOTE: Steven plays guitar, bass, AND trombone!",
+            "ACHIEVEMENT: Steven was 1st chair trombone in regional symphony orchestra!",
+            "BREAKING: Steven is a Graduate Student Ambassador at NYU Stern!",
+            "HOT TIP: Steven does the NYT crossword every single day!",
+            "FACT: Steven interned at BOTH KPMG and EY before graduating!",
+            "ALERT: This site has won MULTIPLE prestigious web awards! Check the Awards page!",
+            "FUN FACT: Steven was a section leader in his high school marching band!",
+            "NEWS: Steven received the NYU Stern MS in Accounting Merit Scholarship!"
+        ];
+        var idx = 0;
+        var tickerEl = document.getElementById('ticker-text');
+        function updateTicker() {
+            tickerEl.textContent = '~*~ ' + facts[idx] + ' ~*~';
+            idx = (idx + 1) % facts.length;
+        }
+        updateTicker();
+        setInterval(updateTicker, 8000);
+    })();
+    </script>
 
     <!-- TITLE -->
     <div class="content-panel" style="text-align: center;">
