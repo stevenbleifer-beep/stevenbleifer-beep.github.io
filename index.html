@@ -202,11 +202,9 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
     <script>
     (function() {
-        // ============================================================
-        // FIREBASE CONFIG - Replace with your own Firebase project config
-        // ============================================================
         var firebaseConfig = {
             apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
             authDomain: "stevenbleifer-site.firebaseapp.com",
@@ -217,6 +215,11 @@
             appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
         };
         firebase.initializeApp(firebaseConfig);
+
+        // App Check - verifies requests come from your actual website
+        var appCheck = firebase.appCheck();
+        appCheck.activate('6Lf27JYsAAAAAEyCo8IuD5cIQ5qOE6zWJ72my6kQ', true);
+
         var db = firebase.database();
 
         // Only increment once per session
