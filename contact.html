@@ -46,7 +46,6 @@
                     <p style="font-size: 1.1em; color: #333;">Incoming Commercial Audit Associate @ KPMG</p>
                     <p style="color: #555;">Graduate Student Ambassador | MS Accounting, NYU Stern '26</p>
                     <p style="color: #555;">BS Business Admin, Pitt '25 | Summa Cum Laude</p>
-                    <!-- SCHOOL LOGOS -->
                     <div style="margin: 12px 0;">
                         <img src="images/nyu-stern.png" alt="NYU Stern" style="height: 40px; margin: 0 6px; vertical-align: middle;">
                         <img src="images/pitt.png" alt="Pitt" style="height: 50px; background: white; padding: 4px; border: 2px outset #808080; vertical-align: middle;">
@@ -67,14 +66,13 @@
                         <a href="https://github.com/stevenbleifer-beep/stevenbleifer-beep.github.io" class="retro-btn">GitHub</a>
                         <a href="https://www.instagram.com/steven_bleifer/" class="retro-btn">Instagram</a>
                     </p>
-                    <!-- SPORTS TEAMS -->
                     <hr style="border-color: #000080;">
                     <p style="color: #333; font-size: 0.9em;">Fan of:</p>
                     <div style="margin: 8px 0; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px;">
                         <img src="images/knicks.svg" alt="Knicks" style="height: 35px;">
                         <img src="images/steelers.svg" alt="Steelers" style="height: 35px;">
-                        <img src="images/yankees.gif" alt="Yankees" style="height: 70px; background: white; padding: 4px; border: 2px outset #808080;">
-                        <img src="images/devils.svg" alt="Devils" style="height: 35px; background: white; padding: 4px; border: 2px outset #808080;">
+                        <img src="images/yankees.gif" alt="Yankees" style="height: 40px; background: white; padding: 2px; border: 2px outset #808080;">
+                        <img src="images/devils.svg" alt="Devils" style="height: 35px; background: white; padding: 2px; border: 2px outset #808080;">
                     </div>
                 </td>
             </tr>
@@ -107,7 +105,7 @@
             Guestbook
         </h2>
         <p>Sign my guestbook! Let me know you stopped by.</p>
-        <p style="color: #808080; font-size: 0.9em;">(This is a static site, so this guestbook is purely decorative. But it looks cool, right?)</p>
+        <p style="color: #808080; font-size: 0.9em;">(Entries are saved in your browser's local storage.)</p>
 
         <hr>
 
@@ -115,18 +113,20 @@
             <tr>
                 <td>
                     <p><b>Your Name:</b></p>
-                    <input type="text" class="retro-input" placeholder="CoolSurfer99" style="width: 80%;">
+                    <input type="text" id="gb-name" class="retro-input" placeholder="CoolSurfer99" maxlength="30" style="width: 80%;">
                 </td>
             </tr>
             <tr>
                 <td>
                     <p><b>Your Message:</b></p>
-                    <textarea class="retro-textarea" placeholder="Cool site dude! Keep up the good work!"></textarea>
+                    <textarea id="gb-message" class="retro-textarea" placeholder="Cool site dude! Keep up the good work!" maxlength="200"></textarea>
                 </td>
             </tr>
             <tr>
                 <td style="text-align: center; padding-top: 10px;">
-                    <button class="retro-btn" onclick="alert('Thanks for signing my guestbook! (This is just for show, but I appreciate the thought!)')">
+                    <span id="gb-error" style="color: #ff0000; display: none; font-size: 0.9em;"></span>
+                    <br>
+                    <button class="retro-btn" onclick="submitGuestbook()">
                         &#9997; Sign Guestbook!
                     </button>
                 </td>
@@ -136,26 +136,8 @@
         <hr>
 
         <h3 style="color: #00ffff;">Recent Entries:</h3>
-
-        <div style="border: 1px dashed #333; padding: 10px; margin: 8px 0;">
-            <p><b style="color: #ffff00;">AuditNerd42</b> <span style="color: #808080;">- Mar 20, 2026</span></p>
-            <p>Summa Cum Laude AND a killer website? This guy's going places! <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;"></p>
-        </div>
-
-        <div style="border: 1px dashed #333; padding: 10px; margin: 8px 0;">
-            <p><b style="color: #ffff00;">KnicksFan4Life</b> <span style="color: #808080;">- Mar 18, 2026</span></p>
-            <p>Let's go Knicks! <img src="https://blob.gifcities.org/gifcities/EQXWAVCVR4DSVNP5O4QCWNL26LKJUNWJ.gif" alt="Knicks" style="height: 20px; vertical-align: middle;"> Great site, love the 90's vibes!</p>
-        </div>
-
-        <div style="border: 1px dashed #333; padding: 10px; margin: 8px 0;">
-            <p><b style="color: #ffff00;">WebMaster2000</b> <span style="color: #808080;">- Mar 15, 2026</span></p>
-            <p>Love the retro vibes. Reminds me of the good old days of the internet! <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 14px; vertical-align: middle;"></p>
-        </div>
-
-        <div style="border: 1px dashed #333; padding: 10px; margin: 8px 0;">
-            <p><b style="color: #ffff00;">H2PforLife</b> <span style="color: #808080;">- Mar 10, 2026</span></p>
-            <p>Hail to Pitt! <img src="https://blob.gifcities.org/gifcities/BGF4MJUOUQLIHMWMRTLOHPOQ35MPK4TQ.gif" alt="Steelers" style="height: 20px; vertical-align: middle;"> Great to see a fellow panther on the web!</p>
-        </div>
+        <div id="gb-entries"></div>
+        <p id="gb-empty" style="color: #808080; text-align: center; display: none;">No entries yet. Be the first to sign!</p>
     </div>
 
     <div class="badges" style="margin: 15px 0;">
@@ -171,6 +153,84 @@
     </div>
 
 </div>
+
+<script>
+var BLOCKED = ['fuck','shit','ass','damn','bitch','bastard','dick','cock','pussy','cunt','nigger','nigga','faggot','fag','retard','retarded','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','asshole','dumbass','jackass','motherfucker','bullshit','goddamn','dildo','porn','rape','nazi','hitler','kkk'];
+
+function hasBadWords(text) {
+    var t = text.toLowerCase();
+    // Check each blocked word with word boundary simulation
+    for (var i = 0; i < BLOCKED.length; i++) {
+        var w = BLOCKED[i];
+        // Check as whole word
+        var re = new RegExp('\\b' + w + '\\b', 'i');
+        if (re.test(t)) return true;
+        // Check embedded in text (for attempts to hide words)
+        if (w.length >= 4 && t.replace(/[^a-z]/g, '').indexOf(w) !== -1) return true;
+    }
+    return false;
+}
+
+function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+}
+
+function getEntries() {
+    try { return JSON.parse(localStorage.getItem('sb_guestbook') || '[]'); }
+    catch(e) { return []; }
+}
+
+function renderEntries() {
+    var entries = getEntries();
+    var c = document.getElementById('gb-entries');
+    var empty = document.getElementById('gb-empty');
+    if (!entries.length) { c.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    var html = '';
+    var show = entries.slice(-20).reverse();
+    for (var i = 0; i < show.length; i++) {
+        var e = show[i];
+        html += '<div style="border:1px dashed #333;padding:10px;margin:8px 0;">';
+        html += '<p><b style="color:#ffff00;">' + esc(e.name) + '</b> ';
+        html += '<span style="color:#808080;">- ' + esc(e.date) + '</span></p>';
+        html += '<p>' + esc(e.message) + '</p></div>';
+    }
+    c.innerHTML = html;
+}
+
+function submitGuestbook() {
+    var n = document.getElementById('gb-name');
+    var m = document.getElementById('gb-message');
+    var err = document.getElementById('gb-error');
+    var name = n.value.trim(), msg = m.value.trim();
+    err.style.display = 'none';
+
+    if (!name || !msg) {
+        err.textContent = 'Please fill in both your name and message!';
+        err.style.display = 'inline'; return;
+    }
+    if (name.length > 30 || msg.length > 200) {
+        err.textContent = 'Name max 30 chars, message max 200 chars!';
+        err.style.display = 'inline'; return;
+    }
+    if (hasBadWords(name) || hasBadWords(msg)) {
+        err.textContent = 'Keep it clean! No inappropriate language allowed.';
+        err.style.display = 'inline'; return;
+    }
+
+    var entries = getEntries();
+    var d = new Date();
+    entries.push({name: name, message: msg, date: d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
+    localStorage.setItem('sb_guestbook', JSON.stringify(entries));
+    n.value = ''; m.value = '';
+    renderEntries();
+    alert('Thanks for signing my guestbook!');
+}
+
+renderEntries();
+</script>
 
 </body>
 </html>

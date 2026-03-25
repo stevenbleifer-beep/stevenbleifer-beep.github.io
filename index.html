@@ -190,8 +190,21 @@
 
     <!-- HIT COUNTER -->
     <div class="hit-counter">
-        You are visitor number: <span class="counter-display">008241</span>
+        You are visitor number: <span class="counter-display" id="visitor-count">000000</span>
     </div>
+    <script>
+    (function() {
+        var count = parseInt(localStorage.getItem('stevenbleifer_visitor_count') || '8241');
+        var lastVisit = localStorage.getItem('stevenbleifer_last_visit');
+        var now = new Date().toDateString();
+        if (lastVisit !== now) {
+            count++;
+            localStorage.setItem('stevenbleifer_visitor_count', count);
+            localStorage.setItem('stevenbleifer_last_visit', now);
+        }
+        document.getElementById('visitor-count').textContent = String(count).padStart(6, '0');
+    })();
+    </script>
 
     <!-- 88x31 BADGES -->
     <div class="badges" style="margin: 20px 0;">
