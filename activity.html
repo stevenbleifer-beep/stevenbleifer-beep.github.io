@@ -173,42 +173,27 @@
             document.getElementById('letterboxd-feed').innerHTML = '<p style="color: #ff8800;">Could not load Letterboxd feed. <a href="https://letterboxd.com/stevenfred/" target="_blank" style="color: #00e054;">Visit my profile directly &raquo;</a></p>';
         });
 
-    // GOODREADS
-    fetchWithFallback('https://www.goodreads.com/review/list_rss/168719369?shelf=read')
-        .then(function(text) {
-            var doc = parseXML(text);
-            var items = doc.querySelectorAll('item');
+    // GOODREADS (loaded from static JSON built by GitHub Action)
+    fetch('goodreads-feed.json?v=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
             var container = document.getElementById('goodreads-feed');
-            if (!items.length) {
+            if (!data.ok || !data.books || !data.books.length) {
                 container.innerHTML = '<p style="color: #ff0000;">No books found. Check back later!</p>';
                 return;
             }
             var html = '<table style="width: 100%; border-collapse: collapse;">';
-            var count = Math.min(items.length, 10);
-            for (var i = 0; i < count; i++) {
-                var item = items[i];
-                var title = item.querySelector('title') ? item.querySelector('title').textContent.trim() : 'Unknown';
-                var link = item.querySelector('link') ? item.querySelector('link').textContent.trim() : '#';
-                // Use direct Goodreads XML tags
-                var author = item.querySelector('author_name') ? item.querySelector('author_name').textContent.trim() : '';
-                var ratingEl = item.querySelector('user_rating');
-                var rating = ratingEl ? parseInt(ratingEl.textContent.trim()) : 0;
-                var coverEl = item.querySelector('book_large_image_url') || item.querySelector('book_medium_image_url') || item.querySelector('book_image_url') || item.querySelector('book_small_image_url');
-                var cover = coverEl ? coverEl.textContent.trim() : '';
-                // Fallback: try to extract cover from description HTML
-                if (!cover) {
-                    var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
-                    var imgMatch = desc.match(/<img[^>]+src="([^"]+)"/);
-                    if (imgMatch) cover = imgMatch[1];
-                }
-
+            var books = data.books;
+            for (var i = 0; i < books.length; i++) {
+                var b = books[i];
+                var rating = parseInt(b.rating) || 0;
                 html += '<tr style="border-bottom: 1px solid #333;">';
-                if (cover) {
-                    html += '<td style="padding: 6px; width: 45px;"><img src="' + cover + '" alt="" style="height: 55px; border: 1px solid #444;"></td>';
+                if (b.cover) {
+                    html += '<td style="padding: 6px; width: 45px;"><img src="' + b.cover + '" alt="" style="height: 55px; border: 1px solid #444;"></td>';
                 }
                 html += '<td style="padding: 6px;">';
-                html += '<a href="' + link + '" target="_blank" style="color: #00ffff; font-weight: bold;">' + title + '</a><br>';
-                if (author) html += '<span style="color: #ff00ff; font-size: 0.9em;">by ' + author + '</span><br>';
+                html += '<a href="' + b.link + '" target="_blank" style="color: #00ffff; font-weight: bold;">' + b.title + '</a><br>';
+                if (b.author) html += '<span style="color: #ff00ff; font-size: 0.9em;">by ' + b.author + '</span><br>';
                 if (rating) html += '<span style="color: #ffff00;">' + starRating(rating) + '</span>';
                 html += '</td></tr>';
             }

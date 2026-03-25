@@ -1,14 +1,16 @@
-name: Update Changelog
+name: Update Changelog and Feeds
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '17 */6 * * *'  # Every 6 hours to keep feeds fresh
 
 permissions:
   contents: write
 
 jobs:
-  update-changelog:
+  update-site:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -18,11 +20,46 @@ jobs:
       - name: Generate changelog
         run: python3 generate-changelog.py
 
+      - name: Fetch Goodreads feed
+        run: |
+          python3 -c "
+          import urllib.request, json, xml.etree.ElementTree as ET
+
+          url = 'https://www.goodreads.com/review/list_rss/168719369?shelf=read'
+          req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+          try:
+              resp = urllib.request.urlopen(req, timeout=30)
+              xml_text = resp.read().decode('utf-8')
+              root = ET.fromstring(xml_text)
+              books = []
+              for item in root.findall('.//item')[:10]:
+                  def gt(tag):
+                      el = item.find(tag)
+                      return el.text.strip() if el is not None and el.text else ''
+                  books.append({
+                      'title': gt('title'),
+                      'link': gt('link'),
+                      'author': gt('author_name'),
+                      'rating': gt('user_rating'),
+                      'cover': gt('book_large_image_url') or gt('book_medium_image_url') or gt('book_image_url') or gt('book_small_image_url'),
+                  })
+              with open('goodreads-feed.json', 'w') as f:
+                  json.dump({'books': books, 'ok': True}, f)
+              print(f'Fetched {len(books)} books')
+          except Exception as e:
+              print(f'Failed to fetch Goodreads: {e}')
+              # Write empty fallback so we don't break existing file
+              import os
+              if not os.path.exists('goodreads-feed.json'):
+                  with open('goodreads-feed.json', 'w') as f:
+                      json.dump({'books': [], 'ok': False}, f)
+          "
+
       - name: Commit and push if changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet changelog.html && exit 0
-          git add changelog.html
-          git commit -m "Update changelog [skip ci]"
+          git add changelog.html goodreads-feed.json
+          git diff --cached --quiet && exit 0
+          git commit -m "Update changelog and feeds [skip ci]"
           git push
