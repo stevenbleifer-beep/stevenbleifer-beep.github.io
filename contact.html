@@ -482,5 +482,24 @@
 })();
 </script>
 
+<!-- CURSOR SPARKLE TRAIL -->
+<script>
+(function() {
+    var sparkles = ['*', '+', '.', '*'];
+    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
+    document.addEventListener('mousemove', function(e) {
+        var s = document.createElement('div');
+        s.className = 'cursor-sparkle';
+        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
+        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
+        s.style.color = colors[Math.floor(Math.random() * colors.length)];
+        s.style.fontSize = (10 + Math.random() * 14) + 'px';
+        document.body.appendChild(s);
+        setTimeout(function() { s.remove(); }, 600);
+    });
+})();
+</script>
+
 </body>
 </html>
