@@ -1,0 +1,26 @@
+{
+  "rules": {
+    "guestbook": {
+      ".read": true,
+      ".indexOn": ["timestamp"],
+      "$entryId": {
+        ".write": "!data.exists()",
+        ".validate": "newData.hasChildren(['name', 'message', 'date', 'timestamp']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 30 && newData.child('name').val().matches(/\\S/) && newData.child('message').isString() && newData.child('message').val().length >= 1 && newData.child('message').val().length <= 200 && newData.child('message').val().matches(/\\S/) && newData.child('date').isString() && newData.child('date').val().length <= 30 && newData.child('timestamp').isNumber() && newData.child('timestamp').val() <= now && newData.child('timestamp').val() > now - 60000",
+        "name": { ".validate": true },
+        "message": { ".validate": true },
+        "date": { ".validate": true },
+        "timestamp": { ".validate": true },
+        "$other": { ".validate": false }
+      }
+    },
+    "visitorCount": {
+      ".read": true,
+      ".write": true,
+      ".validate": "newData.isNumber() && newData.val() === data.val() + 1"
+    },
+    "$other": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}

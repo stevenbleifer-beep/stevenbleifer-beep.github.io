@@ -160,201 +160,297 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
 
 <script>
-// ============================================================
-// FIREBASE CONFIG + APP CHECK
-// ============================================================
-var firebaseConfig = {
-    apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
-    authDomain: "stevenbleifer-site.firebaseapp.com",
-    databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
-    projectId: "stevenbleifer-site",
-    storageBucket: "stevenbleifer-site.firebasestorage.app",
-    messagingSenderId: "905082036677",
-    appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
-};
-firebase.initializeApp(firebaseConfig);
-
-// App Check - verifies requests come from your actual website
-var appCheck = firebase.appCheck();
-appCheck.activate('6Lf27JYsAAAAAEyCo8IuD5cIQ5qOE6zWJ72my6kQ', true);
-
-var db = firebase.database();
-
-// ============================================================
-// BAD WORDS FILTER (expanded)
-// ============================================================
-var BLOCKED = ['fuck','shit','ass','damn','bitch','bastard','dick','cock','pussy','cunt','nigger','nigga','faggot','fag','retard','retarded','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','asshole','dumbass','jackass','motherfucker','bullshit','goddamn','dildo','porn','rape','nazi','hitler','kkk','stfu','gtfo','lmfao','wtf','smh'];
-
-function hasBadWords(text) {
-    var t = text.toLowerCase();
-    // Strip common obfuscation: spaces, dots, underscores, dashes between letters
-    var stripped = t.replace(/[\s._\-*!@#$%^&()0-9]/g, '');
-    for (var i = 0; i < BLOCKED.length; i++) {
-        var w = BLOCKED[i];
-        var re = new RegExp('\\b' + w + '\\b', 'i');
-        if (re.test(t)) return true;
-        // Check stripped version for obfuscation attempts like "f u c k"
-        if (w.length >= 4 && stripped.indexOf(w) !== -1) return true;
-    }
-    // Block URLs/links (anti-spam)
-    if (/https?:\/\/|www\.|\.com|\.net|\.org|\.io|\.xyz|\.ru/i.test(t)) return true;
-    // Block email addresses
-    if (/\S+@\S+\.\S+/.test(t)) return true;
-    return false;
-}
-
-function esc(s) {
-    var d = document.createElement('div');
-    d.textContent = s;
-    return d.innerHTML;
-}
-
-// Strip HTML tags and script content
-function sanitize(s) {
-    return s.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, function(c) {
-        return {'<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;', '&':'&amp;'}[c];
-    });
-}
-
-// ============================================================
-// RATE LIMITING - max 3 entries per 10 minutes per browser
-// ============================================================
-var RATE_LIMIT = 3;
-var RATE_WINDOW = 10 * 60 * 1000; // 10 minutes
-
-function checkRateLimit() {
-    try {
-        var submissions = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
-        var now = Date.now();
-        // Remove entries older than the window
-        submissions = submissions.filter(function(t) { return now - t < RATE_WINDOW; });
-        sessionStorage.setItem('gb_submissions', JSON.stringify(submissions));
-        return submissions.length < RATE_LIMIT;
-    } catch(e) { return true; }
-}
-
-function recordSubmission() {
-    try {
-        var submissions = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
-        submissions.push(Date.now());
-        sessionStorage.setItem('gb_submissions', JSON.stringify(submissions));
-    } catch(e) {}
-}
-
-// ============================================================
-// HONEYPOT - hidden field that bots will fill out
-// ============================================================
-// Dynamically add honeypot so it's not in the static HTML
+// Everything wrapped in an IIFE to prevent console access to internals
 (function() {
-    var form = document.querySelector('#gb-name').closest('table');
-    var row = document.createElement('tr');
-    row.innerHTML = '<td style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;"><label>Website: <input type="text" id="gb-website" tabindex="-1" autocomplete="off"></label></td>';
-    form.appendChild(row);
-})();
+    'use strict';
 
-// ============================================================
-// GUESTBOOK - Firebase Realtime Database
-// ============================================================
-function renderEntries(entries) {
-    var c = document.getElementById('gb-entries');
-    var empty = document.getElementById('gb-empty');
-    if (!entries || !entries.length) {
-        c.innerHTML = '';
-        empty.style.display = 'block';
-        return;
-    }
-    empty.style.display = 'none';
-    var html = '';
-    var show = entries.slice(-20).reverse();
-    for (var i = 0; i < show.length; i++) {
-        var e = show[i];
-        html += '<div style="border:1px dashed #333;padding:10px;margin:8px 0;">';
-        html += '<p><b style="color:#ffff00;">' + esc(e.name) + '</b> ';
-        html += '<span style="color:#808080;">- ' + esc(e.date) + '</span></p>';
-        html += '<p>' + esc(e.message) + '</p></div>';
-    }
-    c.innerHTML = html;
-}
+    // ============================================================
+    // FIREBASE CONFIG + APP CHECK
+    // ============================================================
+    var firebaseConfig = {
+        apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
+        authDomain: "stevenbleifer-site.firebaseapp.com",
+        databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
+        projectId: "stevenbleifer-site",
+        storageBucket: "stevenbleifer-site.firebasestorage.app",
+        messagingSenderId: "905082036677",
+        appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
+    };
+    firebase.initializeApp(firebaseConfig);
 
-// Listen for real-time updates (limit to last 50 to prevent abuse)
-db.ref('guestbook').orderByChild('timestamp').limitToLast(50).on('value', function(snapshot) {
-    var entries = [];
-    snapshot.forEach(function(child) {
-        entries.push(child.val());
-    });
-    renderEntries(entries);
-});
+    var appCheck = firebase.appCheck();
+    appCheck.activate('6Lf27JYsAAAAAEyCo8IuD5cIQ5qOE6zWJ72my6kQ', true);
 
-function submitGuestbook() {
-    var n = document.getElementById('gb-name');
-    var m = document.getElementById('gb-message');
-    var err = document.getElementById('gb-error');
-    var btn = document.getElementById('gb-submit');
-    var honeypot = document.getElementById('gb-website');
-    var name = n.value.trim(), msg = m.value.trim();
-    err.style.display = 'none';
+    var db = firebase.database();
 
-    // Honeypot check - bots will fill this hidden field
-    if (honeypot && honeypot.value) {
-        // Silently pretend it worked to confuse bots
-        n.value = ''; m.value = '';
-        alert('Thanks for signing my guestbook!');
-        return;
+    // ============================================================
+    // ZERO-WIDTH & INVISIBLE CHARACTER STRIPPING
+    // ============================================================
+    var INVISIBLE_RE = /[\u200B\u200C\u200D\u200E\u200F\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u034F\u061C\u180E\u2028\u2029\u202A-\u202E\u2066-\u2069\uFFF9-\uFFFB]/g;
+
+    function stripInvisible(s) {
+        return s.replace(INVISIBLE_RE, '');
     }
 
-    // Rate limit check
-    if (!checkRateLimit()) {
-        err.textContent = 'Slow down! You can only sign 3 times per 10 minutes.';
-        err.style.display = 'inline'; return;
-    }
-
-    if (!name || !msg) {
-        err.textContent = 'Please fill in both your name and message!';
-        err.style.display = 'inline'; return;
-    }
-    if (name.length > 30 || msg.length > 200) {
-        err.textContent = 'Name max 30 chars, message max 200 chars!';
-        err.style.display = 'inline'; return;
-    }
-    if (hasBadWords(name) || hasBadWords(msg)) {
-        err.textContent = 'Keep it clean! No inappropriate language or links allowed.';
-        err.style.display = 'inline'; return;
-    }
-    // Block if name or message is just repeated characters (spam pattern)
-    if (/^(.)\1{4,}$/.test(name.replace(/\s/g,'')) || /^(.)\1{9,}$/.test(msg.replace(/\s/g,''))) {
-        err.textContent = 'Please write a real message!';
-        err.style.display = 'inline'; return;
-    }
-
-    btn.disabled = true;
-    btn.textContent = 'Signing...';
-
-    // Sanitize inputs
-    var cleanName = sanitize(name).substring(0, 30);
-    var cleanMsg = sanitize(msg).substring(0, 200);
-
-    var d = new Date();
-    var entry = {
-        name: cleanName,
-        message: cleanMsg,
-        date: d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}),
-        timestamp: d.getTime()
+    // ============================================================
+    // LEET SPEAK / UNICODE NORMALIZATION
+    // ============================================================
+    var LEET_MAP = {
+        '@': 'a', '4': 'a', '^': 'a', '\u00e0': 'a', '\u00e1': 'a', '\u00e2': 'a', '\u00e3': 'a', '\u00e4': 'a',
+        '8': 'b',
+        '(': 'c', '\u00e7': 'c',
+        '\u00f0': 'd',
+        '3': 'e', '\u00e8': 'e', '\u00e9': 'e', '\u00ea': 'e', '\u00eb': 'e',
+        '6': 'g',
+        '#': 'h',
+        '1': 'i', '!': 'i', '|': 'i', '\u00ec': 'i', '\u00ed': 'i', '\u00ee': 'i', '\u00ef': 'i',
+        '0': 'o', '\u00f2': 'o', '\u00f3': 'o', '\u00f4': 'o', '\u00f5': 'o', '\u00f6': 'o',
+        '5': 's', '$': 's',
+        '7': 't', '+': 't',
+        '\u00f9': 'u', '\u00fa': 'u', '\u00fb': 'u', '\u00fc': 'u',
+        '2': 'z'
     };
 
-    db.ref('guestbook').push(entry).then(function() {
-        n.value = '';
-        m.value = '';
-        btn.disabled = false;
-        btn.innerHTML = '&#9997; Sign Guestbook!';
-        recordSubmission();
-        alert('Thanks for signing my guestbook!');
-    }).catch(function(error) {
-        err.textContent = 'Error saving entry. Please try again!';
-        err.style.display = 'inline';
-        btn.disabled = false;
-        btn.innerHTML = '&#9997; Sign Guestbook!';
+    function normalizeLeet(text) {
+        var result = '';
+        for (var i = 0; i < text.length; i++) {
+            var ch = text[i].toLowerCase();
+            result += LEET_MAP[ch] || ch;
+        }
+        return result;
+    }
+
+    // Collapse repeated characters: "fuuuuck" -> "fuck"
+    function collapseRepeats(text) {
+        return text.replace(/(.)\1{1,}/g, '$1');
+    }
+
+    // ============================================================
+    // BAD WORDS FILTER (comprehensive)
+    // ============================================================
+    var BLOCKED = ['fuck','shit','ass','damn','bitch','bastard','dick','cock','pussy','cunt','nigger','nigga','faggot','fag','retard','retarded','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','asshole','dumbass','jackass','motherfucker','bullshit','goddamn','dildo','porn','rape','nazi','hitler','kkk','stfu','gtfo','lmfao','piss','twat','wanker','tosser','bellend','bollocks','arse','arsehole','shag','bugger','sodoff','prick','tit','tits','boob','boobs','penis','vagina','scrotum','nutsack','cumshot','cum','jizz','fellatio','blowjob','handjob','rimjob','anal','anus','orgy','hentai','milf','gilf','bdsm','bondage','fetish','orgasm','erection','ejaculate','masturbat','pedophil','paedophil','molest','incest','bestiality','necrophil','genocide','terrorist','jihad','supremacist','antisemit'];
+
+    // Root stems to catch variations like "fucking", "fucked", "fucker", etc.
+    var BLOCKED_STEMS = ['fuck','shit','bitch','cunt','nigger','nigga','faggot','retard','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','wank','piss','twat','cock','dick','bastard','damn','prick','bollock','arsehole','asshole','dumbass','jackass','bullshit','goddamn','motherfuck','pedophil','paedophil','molest','masturb','ejaculat','terrorist'];
+
+    function hasBadWords(text) {
+        var t = text.toLowerCase();
+
+        // Step 1: Strip all non-letter characters for obfuscation bypass
+        var lettersOnly = t.replace(/[^a-z]/g, '');
+
+        // Step 2: Normalize leet speak and unicode
+        var leetNorm = normalizeLeet(t);
+        var leetLetters = leetNorm.replace(/[^a-z]/g, '');
+
+        // Step 3: Collapse repeated chars
+        var collapsed = collapseRepeats(lettersOnly);
+        var collapsedLeet = collapseRepeats(leetLetters);
+
+        // Check all variations
+        var variants = [t, lettersOnly, leetLetters, collapsed, collapsedLeet];
+
+        for (var i = 0; i < BLOCKED.length; i++) {
+            var w = BLOCKED[i];
+            // Exact word boundary match on original text
+            var re = new RegExp('\\b' + w + '\\b', 'i');
+            if (re.test(t) || re.test(leetNorm)) return true;
+            // Substring match on stripped variants
+            for (var j = 0; j < variants.length; j++) {
+                if (variants[j].indexOf(w) !== -1) return true;
+            }
+        }
+
+        // Stem matching to catch "fucking", "shitting", "bitches", etc.
+        for (var i = 0; i < BLOCKED_STEMS.length; i++) {
+            var stem = BLOCKED_STEMS[i];
+            for (var j = 0; j < variants.length; j++) {
+                if (variants[j].indexOf(stem) !== -1) return true;
+            }
+        }
+
+        // Block URLs/links (anti-spam)
+        if (/https?:\/\/|www\.|\.com|\.net|\.org|\.io|\.xyz|\.ru|\.tk|\.ml|\.ga|\.cf|\.gq|bit\.ly|tinyurl|t\.co/i.test(t)) return true;
+        // Block email addresses
+        if (/\S+@\S+\.\S+/.test(t)) return true;
+        // Block HTML/script injection attempts
+        if (/<\s*script|<\s*img|<\s*iframe|<\s*object|<\s*embed|javascript:|onerror|onload|onclick/i.test(t)) return true;
+
+        return false;
+    }
+
+    // ============================================================
+    // HTML ESCAPING & SANITIZATION
+    // ============================================================
+    function esc(s) {
+        var d = document.createElement('div');
+        d.textContent = s;
+        return d.innerHTML;
+    }
+
+    function sanitize(s) {
+        return s.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, function(c) {
+            return {'<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;', '&':'&amp;'}[c];
+        });
+    }
+
+    // ============================================================
+    // RATE LIMITING - max 3 entries per 10 minutes per browser
+    // ============================================================
+    var RATE_LIMIT = 3;
+    var RATE_WINDOW = 10 * 60 * 1000;
+
+    function checkRateLimit() {
+        try {
+            var submissions = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
+            var now = Date.now();
+            submissions = submissions.filter(function(t) { return now - t < RATE_WINDOW; });
+            sessionStorage.setItem('gb_submissions', JSON.stringify(submissions));
+            return submissions.length < RATE_LIMIT;
+        } catch(e) { return true; }
+    }
+
+    function recordSubmission() {
+        try {
+            var submissions = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
+            submissions.push(Date.now());
+            sessionStorage.setItem('gb_submissions', JSON.stringify(submissions));
+        } catch(e) {}
+    }
+
+    // ============================================================
+    // HONEYPOT - hidden field that bots will fill out
+    // ============================================================
+    (function() {
+        var form = document.querySelector('#gb-name').closest('table');
+        var row = document.createElement('tr');
+        row.innerHTML = '<td style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;"><label>Website: <input type="text" id="gb-website" tabindex="-1" autocomplete="off"></label></td>';
+        form.appendChild(row);
+    })();
+
+    // ============================================================
+    // GUESTBOOK DISPLAY
+    // ============================================================
+    function renderEntries(entries) {
+        var c = document.getElementById('gb-entries');
+        var empty = document.getElementById('gb-empty');
+        if (!entries || !entries.length) {
+            c.innerHTML = '';
+            empty.style.display = 'block';
+            return;
+        }
+        empty.style.display = 'none';
+        var html = '';
+        var show = entries.slice(-20).reverse();
+        for (var i = 0; i < show.length; i++) {
+            var e = show[i];
+            html += '<div style="border:1px dashed #333;padding:10px;margin:8px 0;">';
+            html += '<p><b style="color:#ffff00;">' + esc(e.name) + '</b> ';
+            html += '<span style="color:#808080;">- ' + esc(e.date) + '</span></p>';
+            html += '<p>' + esc(e.message) + '</p></div>';
+        }
+        c.innerHTML = html;
+    }
+
+    db.ref('guestbook').orderByChild('timestamp').limitToLast(50).on('value', function(snapshot) {
+        var entries = [];
+        snapshot.forEach(function(child) {
+            entries.push(child.val());
+        });
+        renderEntries(entries);
     });
-}
+
+    // ============================================================
+    // SUBMISSION HANDLER (protected inside IIFE)
+    // ============================================================
+    function doSubmit() {
+        var n = document.getElementById('gb-name');
+        var m = document.getElementById('gb-message');
+        var err = document.getElementById('gb-error');
+        var btn = document.getElementById('gb-submit');
+        var honeypot = document.getElementById('gb-website');
+
+        // Strip invisible characters and trim
+        var name = stripInvisible(n.value).trim();
+        var msg = stripInvisible(m.value).trim();
+        err.style.display = 'none';
+
+        // Honeypot check
+        if (honeypot && honeypot.value) {
+            n.value = ''; m.value = '';
+            alert('Thanks for signing my guestbook!');
+            return;
+        }
+
+        // Rate limit check
+        if (!checkRateLimit()) {
+            err.textContent = 'Slow down! You can only sign 3 times per 10 minutes.';
+            err.style.display = 'inline'; return;
+        }
+
+        // Blank/whitespace-only check (catches invisible-char-only submissions)
+        if (!name || !msg || !/\S/.test(name) || !/\S/.test(msg)) {
+            err.textContent = 'Please fill in both your name and message!';
+            err.style.display = 'inline'; return;
+        }
+
+        // Must contain at least one visible letter or number
+        if (!/[a-zA-Z0-9]/.test(name) || !/[a-zA-Z0-9]/.test(msg)) {
+            err.textContent = 'Name and message must contain at least one letter or number!';
+            err.style.display = 'inline'; return;
+        }
+
+        if (name.length > 30 || msg.length > 200) {
+            err.textContent = 'Name max 30 chars, message max 200 chars!';
+            err.style.display = 'inline'; return;
+        }
+        if (hasBadWords(name) || hasBadWords(msg)) {
+            err.textContent = 'Keep it clean! No inappropriate language or links allowed.';
+            err.style.display = 'inline'; return;
+        }
+        // Block if name or message is just repeated characters
+        if (/^(.)\1{4,}$/.test(name.replace(/\s/g,'')) || /^(.)\1{9,}$/.test(msg.replace(/\s/g,''))) {
+            err.textContent = 'Please write a real message!';
+            err.style.display = 'inline'; return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Signing...';
+
+        var cleanName = sanitize(name).substring(0, 30);
+        var cleanMsg = sanitize(msg).substring(0, 200);
+
+        var d = new Date();
+        var entry = {
+            name: cleanName,
+            message: cleanMsg,
+            date: d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}),
+            timestamp: d.getTime()
+        };
+
+        db.ref('guestbook').push(entry).then(function() {
+            n.value = '';
+            m.value = '';
+            btn.disabled = false;
+            btn.innerHTML = '&#9997; Sign Guestbook!';
+            recordSubmission();
+            alert('Thanks for signing my guestbook!');
+        }).catch(function(error) {
+            err.textContent = 'Error saving entry. Please try again!';
+            err.style.display = 'inline';
+            btn.disabled = false;
+            btn.innerHTML = '&#9997; Sign Guestbook!';
+        });
+    }
+
+    // Expose submitGuestbook as a frozen, non-overridable function
+    Object.defineProperty(window, 'submitGuestbook', {
+        value: doSubmit,
+        writable: false,
+        configurable: false
+    });
+
+})();
 </script>
 
 </body>
