@@ -105,7 +105,7 @@
             Guestbook
         </h2>
         <p>Sign my guestbook! Let me know you stopped by.</p>
-        <p style="color: #808080; font-size: 0.9em;">(Entries are saved in your browser's local storage.)</p>
+        <p style="color: #00ff00; font-size: 0.9em;">&#127760; Entries are shared with ALL visitors via the cloud!</p>
 
         <hr>
 
@@ -126,7 +126,7 @@
                 <td style="text-align: center; padding-top: 10px;">
                     <span id="gb-error" style="color: #ff0000; display: none; font-size: 0.9em;"></span>
                     <br>
-                    <button class="retro-btn" onclick="submitGuestbook()">
+                    <button class="retro-btn" onclick="submitGuestbook()" id="gb-submit">
                         &#9997; Sign Guestbook!
                     </button>
                 </td>
@@ -136,7 +136,7 @@
         <hr>
 
         <h3 style="color: #00ffff;">Recent Entries:</h3>
-        <div id="gb-entries"></div>
+        <div id="gb-entries"><p style="color: #808080; text-align: center;">Loading entries from the cloud...</p></div>
         <p id="gb-empty" style="color: #808080; text-align: center; display: none;">No entries yet. Be the first to sign!</p>
     </div>
 
@@ -154,18 +154,37 @@
 
 </div>
 
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
 <script>
+// ============================================================
+// FIREBASE CONFIG - Replace with your own Firebase project config
+// ============================================================
+var firebaseConfig = {
+    apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
+    authDomain: "stevenbleifer-site.firebaseapp.com",
+    databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
+    projectId: "stevenbleifer-site",
+    storageBucket: "stevenbleifer-site.firebasestorage.app",
+    messagingSenderId: "905082036677",
+    appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
+};
+firebase.initializeApp(firebaseConfig);
+var db = firebase.database();
+
+// ============================================================
+// BAD WORDS FILTER
+// ============================================================
 var BLOCKED = ['fuck','shit','ass','damn','bitch','bastard','dick','cock','pussy','cunt','nigger','nigga','faggot','fag','retard','retarded','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','asshole','dumbass','jackass','motherfucker','bullshit','goddamn','dildo','porn','rape','nazi','hitler','kkk'];
 
 function hasBadWords(text) {
     var t = text.toLowerCase();
-    // Check each blocked word with word boundary simulation
     for (var i = 0; i < BLOCKED.length; i++) {
         var w = BLOCKED[i];
-        // Check as whole word
         var re = new RegExp('\\b' + w + '\\b', 'i');
         if (re.test(t)) return true;
-        // Check embedded in text (for attempts to hide words)
         if (w.length >= 4 && t.replace(/[^a-z]/g, '').indexOf(w) !== -1) return true;
     }
     return false;
@@ -177,18 +196,20 @@ function esc(s) {
     return d.innerHTML;
 }
 
-function getEntries() {
-    try { return JSON.parse(localStorage.getItem('sb_guestbook') || '[]'); }
-    catch(e) { return []; }
-}
-
-function renderEntries() {
-    var entries = getEntries();
+// ============================================================
+// GUESTBOOK - Firebase Realtime Database
+// ============================================================
+function renderEntries(entries) {
     var c = document.getElementById('gb-entries');
     var empty = document.getElementById('gb-empty');
-    if (!entries.length) { c.innerHTML = ''; empty.style.display = 'block'; return; }
+    if (!entries || !entries.length) {
+        c.innerHTML = '';
+        empty.style.display = 'block';
+        return;
+    }
     empty.style.display = 'none';
     var html = '';
+    // Show last 20, newest first
     var show = entries.slice(-20).reverse();
     for (var i = 0; i < show.length; i++) {
         var e = show[i];
@@ -200,10 +221,20 @@ function renderEntries() {
     c.innerHTML = html;
 }
 
+// Listen for real-time updates
+db.ref('guestbook').on('value', function(snapshot) {
+    var entries = [];
+    snapshot.forEach(function(child) {
+        entries.push(child.val());
+    });
+    renderEntries(entries);
+});
+
 function submitGuestbook() {
     var n = document.getElementById('gb-name');
     var m = document.getElementById('gb-message');
     var err = document.getElementById('gb-error');
+    var btn = document.getElementById('gb-submit');
     var name = n.value.trim(), msg = m.value.trim();
     err.style.display = 'none';
 
@@ -220,16 +251,30 @@ function submitGuestbook() {
         err.style.display = 'inline'; return;
     }
 
-    var entries = getEntries();
-    var d = new Date();
-    entries.push({name: name, message: msg, date: d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})});
-    localStorage.setItem('sb_guestbook', JSON.stringify(entries));
-    n.value = ''; m.value = '';
-    renderEntries();
-    alert('Thanks for signing my guestbook!');
-}
+    btn.disabled = true;
+    btn.textContent = 'Signing...';
 
-renderEntries();
+    var d = new Date();
+    var entry = {
+        name: name,
+        message: msg,
+        date: d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}),
+        timestamp: d.getTime()
+    };
+
+    db.ref('guestbook').push(entry).then(function() {
+        n.value = '';
+        m.value = '';
+        btn.disabled = false;
+        btn.innerHTML = '&#9997; Sign Guestbook!';
+        alert('Thanks for signing my guestbook!');
+    }).catch(function(error) {
+        err.textContent = 'Error saving entry. Please try again!';
+        err.style.display = 'inline';
+        btn.disabled = false;
+        btn.innerHTML = '&#9997; Sign Guestbook!';
+    });
+}
 </script>
 
 </body>

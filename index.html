@@ -85,6 +85,7 @@
                     <p>Hey there, net surfer! My name is <b style="color: #ffff00;">Steven Bleifer</b> and this is my little corner of the internet.</p>
                     <p>I'm currently finishing up my <b style="color: #00ffff;">Master of Science in Accounting</b> at <b style="color: #ff00ff;">NYU Stern School of Business</b> (Class of 2026), where I also serve as a <b style="color: #ffff00;">Graduate Student Ambassador</b> for the MS in Accounting program. Before that, I graduated <b style="color: #ffff00;">Summa Cum Laude</b> from the <b style="color: #ff00ff;">University of Pittsburgh</b> with a BS in Business Administration.</p>
                     <p>This fall, I'll be joining <b style="color: #00ffff;">KPMG</b> as a Commercial Audit Associate. I've already interned at both KPMG and EY, and I love the world of audit and accounting.</p>
+                    <p>Before the Big 4 life, I was a barista at Starbucks for 4+ years and ran my own sneaker reselling business. I also played trombone in high school - was a section leader in marching band, 1st chair in regional symphony, and a finalist at NJ All State Jazz.</p>
                     <p>When I'm not crunching numbers, you'll find me playing guitar and bass, doing the NYT crossword, watching my teams, or surfing the web!</p>
                 </td>
             </tr>
@@ -179,6 +180,11 @@
         <img src="https://blob.gifcities.org/gifcities/22NLFTLILOQTRM7EEJOWYA5O7G4CJF6W.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
     </div>
 
+    <!-- DANCING COW -->
+    <div style="text-align: center; margin: 10px 0;">
+        <img src="cow.gif" alt="Dancing Cow" style="height: 120px;">
+    </div>
+
     <!-- UNDER CONSTRUCTION -->
     <div class="under-construction">
         <span>
@@ -190,19 +196,45 @@
 
     <!-- HIT COUNTER -->
     <div class="hit-counter">
-        You are visitor number: <span class="counter-display" id="visitor-count">000000</span>
+        You are visitor number: <span class="counter-display" id="visitor-count">loading...</span>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
     <script>
     (function() {
-        var count = parseInt(localStorage.getItem('stevenbleifer_visitor_count') || '8241');
-        var lastVisit = localStorage.getItem('stevenbleifer_last_visit');
-        var now = new Date().toDateString();
-        if (lastVisit !== now) {
-            count++;
-            localStorage.setItem('stevenbleifer_visitor_count', count);
-            localStorage.setItem('stevenbleifer_last_visit', now);
+        // ============================================================
+        // FIREBASE CONFIG - Replace with your own Firebase project config
+        // ============================================================
+        var firebaseConfig = {
+            apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
+            authDomain: "stevenbleifer-site.firebaseapp.com",
+            databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
+            projectId: "stevenbleifer-site",
+            storageBucket: "stevenbleifer-site.firebasestorage.app",
+            messagingSenderId: "905082036677",
+            appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
+        };
+        firebase.initializeApp(firebaseConfig);
+        var db = firebase.database();
+
+        // Only increment once per session
+        var alreadyCounted = sessionStorage.getItem('sb_counted');
+        var counterRef = db.ref('visitorCount');
+
+        if (!alreadyCounted) {
+            counterRef.transaction(function(current) {
+                return (current || 8241) + 1;
+            }).then(function(result) {
+                document.getElementById('visitor-count').textContent = String(result.snapshot.val()).padStart(6, '0');
+                sessionStorage.setItem('sb_counted', 'true');
+            });
+        } else {
+            counterRef.once('value').then(function(snapshot) {
+                document.getElementById('visitor-count').textContent = String(snapshot.val() || 8241).padStart(6, '0');
+            });
         }
-        document.getElementById('visitor-count').textContent = String(count).padStart(6, '0');
     })();
     </script>
 
