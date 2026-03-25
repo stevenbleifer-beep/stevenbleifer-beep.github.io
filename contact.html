@@ -186,7 +186,7 @@
     // ============================================================
     // ZERO-WIDTH & INVISIBLE CHARACTER STRIPPING
     // ============================================================
-    var INVISIBLE_RE = /[\u200B\u200C\u200D\u200E\u200F\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u034F\u061C\u180E\u2028\u2029\u202A-\u202E\u2066-\u2069\uFFF9-\uFFFB]/g;
+    var INVISIBLE_RE = /[\u0300-\u036F\u200B\u200C\u200D\u200E\u200F\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u034F\u061C\u180E\u2028\u2029\u202A-\u202E\u2066-\u2069\uFFF9-\uFFFB]/g;
 
     function stripInvisible(s) {
         return s.replace(INVISIBLE_RE, '');
@@ -208,7 +208,15 @@
         '5': 's', '$': 's',
         '7': 't', '+': 't',
         '\u00f9': 'u', '\u00fa': 'u', '\u00fb': 'u', '\u00fc': 'u',
-        '2': 'z'
+        '2': 'z',
+        // Cyrillic homoglyphs (look-alike Latin letters)
+        '\u0430': 'a', '\u0435': 'e', '\u0456': 'i', '\u043e': 'o', '\u0440': 'p',
+        '\u0441': 'c', '\u0443': 'y', '\u0445': 'x', '\u042c': 'b', '\u044a': 'b',
+        '\u0412': 'b', '\u041d': 'h', '\u041c': 'm', '\u0422': 't', '\u043d': 'h',
+        '\u043c': 'm', '\u0442': 't', '\u0432': 'b', '\u043a': 'k', '\u041a': 'k',
+        // Greek homoglyphs
+        '\u03b1': 'a', '\u03b5': 'e', '\u03b9': 'i', '\u03bf': 'o', '\u03c1': 'p',
+        '\u03ba': 'k', '\u03bd': 'v', '\u03c4': 't', '\u03c5': 'u', '\u03c9': 'w'
     };
 
     function normalizeLeet(text) {
