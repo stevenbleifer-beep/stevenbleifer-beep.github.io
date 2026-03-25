@@ -19,7 +19,8 @@
         <a href="links.html">Links</a> <span class="sep">|</span>
         <a href="blog.html">Blog</a> <span class="sep">|</span>
         <a href="contact.html">Contact</a> <span class="sep">|</span>
-        <a href="bookmarks.html">Bookmarks</a>
+        <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
+        <a href="awards.html">Awards</a>
         <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="" style="vertical-align: middle; margin-left: 6px;">
     </div>
 
@@ -54,22 +55,70 @@
         <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
     </div>
 
-    <!-- RETRO GOOGLE SEARCH -->
+    <!-- SITE SEARCH -->
     <div class="retro-search">
         <div class="search-title">
-            <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+            <span style="color: #ff0000;">S</span><span style="color: #ff8800;">i</span><span style="color: #ffff00;">t</span><span style="color: #00ff00;">e</span> <span style="color: #0088ff;">S</span><span style="color: #8800ff;">e</span><span style="color: #ff0000;">a</span><span style="color: #ff8800;">r</span><span style="color: #ffff00;">c</span><span style="color: #00ff00;">h</span>
         </div>
-        <form action="https://www.google.com/search" method="GET" target="_blank">
-            <input type="text" name="q" placeholder="Search the World Wide Web...">
-            <br style="margin-bottom: 8px;">
-            <button type="submit" style="margin-top: 8px;">&#128270; Google Search</button>
-            <button type="button" onclick="window.open('https://www.google.com/search?q=' + encodeURIComponent(this.form.q.value) + '&btnI=1', '_blank')" style="margin-top: 8px;">I'm Feeling Lucky</button>
-        </form>
+        <input type="text" id="site-search-input" placeholder="Search this website..." onkeydown="if(event.key==='Enter')siteSearch()">
+        <br style="margin-bottom: 8px;">
+        <button type="button" style="margin-top: 8px;" onclick="siteSearch()">&#128270; Search My Site</button>
+        <button type="button" style="margin-top: 8px;" onclick="siteLucky()">I'm Feeling Lucky</button>
+        <div id="site-search-results" style="text-align: left; margin-top: 10px; display: none;"></div>
         <p style="font-size: 11px; color: #666; margin-top: 8px; font-family: 'Times New Roman', serif;">
             <img src="https://blob.gifcities.org/gifcities/22DJHIIVV2RORICV5LKPOYQ75XB4PILO.gif" alt="globe" style="height: 14px; vertical-align: middle;">
-            Searching 8,168,684,336 web pages
+            Searching 8 web pages on StevenBleifer.com
         </p>
     </div>
+    <script>
+    (function() {
+        var pages = [
+            { url: 'index.html', title: 'Home', keywords: 'home welcome about me steven bleifer nyu stern pitt kpmg accounting audit knicks steelers yankees devils sports teams guitar bass trombone starbucks sneaker' },
+            { url: 'resume.html', title: 'Resume', keywords: 'resume education work experience skills awards kpmg ey ernst young nyu stern pitt accounting audit intern scholarship' },
+            { url: 'projects.html', title: 'Experience', keywords: 'projects experience career timeline kpmg ey audit intern commercial associate' },
+            { url: 'blog.html', title: 'Blog', keywords: 'blog web diary posts journal geocities retro website' },
+            { url: 'contact.html', title: 'Contact / Guestbook', keywords: 'contact email guestbook sign message business card linkedin instagram' },
+            { url: 'bookmarks.html', title: 'Cool Bookmarks', keywords: 'bookmarks links news music ai games shopping photography cool sites' },
+            { url: 'links.html', title: 'Links', keywords: 'links linkedin instagram email social media' },
+            { url: 'awards.html', title: 'Awards', keywords: 'awards honors cool site webby top 5 percent trophies' }
+        ];
+
+        window.siteSearch = function() {
+            var query = document.getElementById('site-search-input').value.trim().toLowerCase();
+            var resultsDiv = document.getElementById('site-search-results');
+            if (!query) { resultsDiv.style.display = 'none'; return; }
+            var results = [];
+            for (var i = 0; i < pages.length; i++) {
+                var p = pages[i];
+                if (p.title.toLowerCase().indexOf(query) !== -1 || p.keywords.indexOf(query) !== -1) {
+                    results.push(p);
+                }
+            }
+            if (results.length === 0) {
+                resultsDiv.innerHTML = '<p style="color: #cc0000; font-size: 13px;">No results found for "' + query + '". Try another search!</p>';
+            } else {
+                var html = '<p style="color: #333; font-size: 12px; margin-bottom: 6px;"><b>' + results.length + ' result(s) found:</b></p>';
+                for (var j = 0; j < results.length; j++) {
+                    html += '<p style="margin: 4px 0; font-size: 13px;"><a href="' + results[j].url + '" style="color: #0000ff; font-weight: bold;">' + results[j].title + '</a> <span style="color: #006600; font-size: 11px;">- stevenbleifer.com/' + results[j].url + '</span></p>';
+                }
+                resultsDiv.innerHTML = html;
+            }
+            resultsDiv.style.display = 'block';
+        };
+
+        window.siteLucky = function() {
+            var query = document.getElementById('site-search-input').value.trim().toLowerCase();
+            if (!query) return;
+            for (var i = 0; i < pages.length; i++) {
+                if (pages[i].title.toLowerCase().indexOf(query) !== -1 || pages[i].keywords.indexOf(query) !== -1) {
+                    window.location.href = pages[i].url;
+                    return;
+                }
+            }
+            alert('No pages found! Try a different search.');
+        };
+    })();
+    </script>
 
     <!-- FIRE DIVIDER -->
     <div style="text-align: center; line-height: 0;">
@@ -153,7 +202,8 @@
                     <b>Personal</b><br>
                     &#128221; <a href="blog.html" style="color: #0000ff;">Blog</a><br>
                     &#128231; <a href="contact.html" style="color: #0000ff;">Contact / Guestbook</a><br>
-                    &#11088; <a href="bookmarks.html" style="color: #0000ff;">Cool Bookmarks</a>
+                    &#11088; <a href="bookmarks.html" style="color: #0000ff;">Cool Bookmarks</a><br>
+                    &#127942; <a href="awards.html" style="color: #0000ff;">Awards</a>
                 </td>
             </tr>
         </table>
@@ -173,6 +223,36 @@
         <p style="color: #808080; font-size: 0.8em; margin-top: 8px;">
             &#127925; <a href="https://open.spotify.com/user/stevenbleifer" target="_blank" style="color: #1DB954;">Follow me on Spotify</a>
         </p>
+    </div>
+
+    <!-- MIDI JUKEBOX -->
+    <div class="content-panel">
+        <h2>
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
+            MIDI Jukebox
+            <img src="https://blob.gifcities.org/gifcities/2H37QMBGNUDUGZXO4CWDT3EF3RR3OOAG.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
+        </h2>
+        <div class="midi-player">
+            <div class="title-bar">
+                <span>MidiPlayer.exe</span>
+                <div class="controls">
+                    <span>_</span><span>&#9633;</span><span>X</span>
+                </div>
+            </div>
+            <div class="player-body">
+                <div class="display" id="midi-display">&#9834; Select a tune and press Play!</div>
+                <select id="midi-select">
+                    <option value="happy">Happy Days.mid</option>
+                    <option value="adventure">Adventure.mid</option>
+                    <option value="chill">Chill_Vibes.mid</option>
+                    <option value="funky">Funky_Town.mid</option>
+                </select>
+                <br>
+                <button class="player-btn" id="midi-play" onclick="midiPlay()">&#9654; Play</button>
+                <button class="player-btn" id="midi-stop" onclick="midiStop()">&#9632; Stop</button>
+            </div>
+        </div>
+        <p style="color: #808080; font-size: 0.8em;">&#127925; Best experienced with your speakers ON!</p>
     </div>
 
     <!-- FIRE DIVIDER -->
@@ -248,6 +328,21 @@
         <img src="https://cyber.dabamos.de/88x31/best800x600.gif" alt="Best at 800x600" style="margin: 3px;">
     </div>
 
+    <!-- WEB RING -->
+    <div class="webring">
+        <img src="https://blob.gifcities.org/gifcities/22DJHIIVV2RORICV5LKPOYQ75XB4PILO.gif" alt="globe" style="height: 16px;">
+        <b style="color: #ffff00;">~ The Retro Web Ring ~</b>
+        <img src="https://blob.gifcities.org/gifcities/22DJHIIVV2RORICV5LKPOYQ75XB4PILO.gif" alt="globe" style="height: 16px;">
+        <br>
+        <span style="color: #808080; font-size: 11px;">This site is a proud member of the Retro Web Ring!</span>
+        <br><br>
+        <a href="https://cameronsworld.net" target="_blank" class="retro-btn" style="font-size: 11px; padding: 4px 10px;">&laquo; Previous</a>
+        <a href="https://therestartpage.com" target="_blank" class="retro-btn" style="font-size: 11px; padding: 4px 10px;">Random</a>
+        <a href="https://poolside.fm" target="_blank" class="retro-btn" style="font-size: 11px; padding: 4px 10px;">Next &raquo;</a>
+        <br><br>
+        <span style="color: #00ff00; font-size: 11px;">Want to join? <a href="contact.html" style="color: #00ffff;">Email the Ringmaster!</a></span>
+    </div>
+
     <!-- FOOTER -->
     <div class="footer">
         <img src="https://blob.gifcities.org/gifcities/26PT63P5EBJ3ZFFOUMX7NMFKPIT74KN7.gif" alt="*" style="height: 14px; vertical-align: middle;">
@@ -258,6 +353,126 @@
     </div>
 
 </div>
+
+<!-- CURSOR SPARKLE TRAIL -->
+<script>
+(function() {
+    var sparkles = ['*', '+', '.', '*'];
+    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
+    document.addEventListener('mousemove', function(e) {
+        var s = document.createElement('div');
+        s.className = 'cursor-sparkle';
+        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
+        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
+        s.style.color = colors[Math.floor(Math.random() * colors.length)];
+        s.style.fontSize = (10 + Math.random() * 14) + 'px';
+        document.body.appendChild(s);
+        setTimeout(function() { s.remove(); }, 600);
+    });
+})();
+</script>
+
+<!-- MIDI JUKEBOX -->
+<script>
+(function() {
+    var audioCtx = null;
+    var currentTimeout = [];
+    var isPlaying = false;
+
+    var songs = {
+        happy: {
+            tempo: 200,
+            notes: [
+                [523,200],[523,200],[587,200],[659,200],[523,200],[659,200],[587,400],
+                [523,200],[523,200],[587,200],[659,200],[523,400],[494,400],
+                [523,200],[523,200],[587,200],[659,200],[698,200],[659,200],[587,200],[523,200],
+                [494,200],[440,200],[494,200],[523,400],[523,400]
+            ]
+        },
+        adventure: {
+            tempo: 180,
+            notes: [
+                [330,300],[330,150],[330,300],[262,150],[330,300],[392,600],
+                [196,600],[262,300],[196,300],[165,300],
+                [220,300],[247,300],[233,150],[220,300],
+                [196,200],[330,200],[392,200],[440,300],[349,150],[392,300],
+                [330,300],[262,150],[294,150],[247,300]
+            ]
+        },
+        chill: {
+            tempo: 300,
+            notes: [
+                [262,400],[330,400],[392,400],[523,800],
+                [494,400],[392,400],[330,400],[262,800],
+                [294,400],[349,400],[440,400],[523,800],
+                [494,400],[440,400],[392,400],[330,800]
+            ]
+        },
+        funky: {
+            tempo: 150,
+            notes: [
+                [196,150],[196,150],[220,150],[196,300],[262,300],[247,600],
+                [196,150],[196,150],[220,150],[196,300],[294,300],[262,600],
+                [196,150],[196,150],[392,150],[330,300],[262,300],[247,300],[220,300],
+                [349,150],[349,150],[330,300],[262,300],[294,300],[262,600]
+            ]
+        }
+    };
+
+    function playNote(freq, duration, startTime) {
+        var osc = audioCtx.createOscillator();
+        var gain = audioCtx.createGain();
+        osc.type = 'square';
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0.08, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, startTime + duration / 1000);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start(startTime);
+        osc.stop(startTime + duration / 1000);
+    }
+
+    window.midiPlay = function() {
+        midiStop();
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        var songKey = document.getElementById('midi-select').value;
+        var song = songs[songKey];
+        var display = document.getElementById('midi-display');
+        var playBtn = document.getElementById('midi-play');
+        isPlaying = true;
+        playBtn.classList.add('playing');
+        display.textContent = '\u266B Now Playing: ' + document.getElementById('midi-select').selectedOptions[0].text;
+
+        var time = audioCtx.currentTime + 0.1;
+        for (var i = 0; i < song.notes.length; i++) {
+            playNote(song.notes[i][0], song.notes[i][1], time);
+            time += song.notes[i][1] / 1000;
+        }
+
+        var totalDuration = song.notes.reduce(function(a, n) { return a + n[1]; }, 0);
+        var t = setTimeout(function() {
+            if (isPlaying) {
+                display.textContent = '\u266B Finished! Select another tune.';
+                playBtn.classList.remove('playing');
+                isPlaying = false;
+            }
+        }, totalDuration + 200);
+        currentTimeout.push(t);
+    };
+
+    window.midiStop = function() {
+        isPlaying = false;
+        var playBtn = document.getElementById('midi-play');
+        var display = document.getElementById('midi-display');
+        playBtn.classList.remove('playing');
+        display.textContent = '\u2669 Stopped.';
+        for (var i = 0; i < currentTimeout.length; i++) clearTimeout(currentTimeout[i]);
+        currentTimeout = [];
+        if (audioCtx) { audioCtx.close(); audioCtx = null; }
+    };
+})();
+</script>
 
 </body>
 </html>

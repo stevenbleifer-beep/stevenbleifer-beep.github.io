@@ -483,6 +483,100 @@ hr {
   border: 2px inset #808080;
 }
 
+/* --- CURSOR SPARKLE TRAIL --- */
+@keyframes sparkle-fade {
+  0% { opacity: 1; transform: scale(1) rotate(0deg); }
+  100% { opacity: 0; transform: scale(0) rotate(180deg); }
+}
+
+.cursor-sparkle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  font-size: 16px;
+  animation: sparkle-fade 0.6s ease-out forwards;
+}
+
+/* --- MIDI JUKEBOX --- */
+.midi-player {
+  background: #c0c0c0;
+  border: 3px outset #fff;
+  margin-bottom: 15px;
+}
+
+.midi-player .title-bar {
+  background: #000080;
+  color: #fff;
+  font-weight: bold;
+  font-size: 12px;
+  padding: 2px 5px;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.midi-player .title-bar .controls span {
+  display: inline-block;
+  background: #c0c0c0;
+  border: 1px outset #fff;
+  width: 14px;
+  height: 14px;
+  text-align: center;
+  line-height: 14px;
+  font-size: 9px;
+  color: #000;
+  margin-left: 2px;
+  cursor: pointer;
+}
+
+.midi-player .player-body {
+  padding: 10px;
+  text-align: center;
+}
+
+.midi-player .display {
+  background: #000;
+  border: 2px inset #808080;
+  color: #00ff00;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  padding: 6px 10px;
+  margin-bottom: 8px;
+  text-align: left;
+  min-height: 20px;
+}
+
+.midi-player select {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  border: 2px inset #808080;
+  padding: 2px 4px;
+  background: #fff;
+  margin-bottom: 8px;
+  width: 70%;
+}
+
+.midi-player .player-btn {
+  background: #c0c0c0;
+  border: 2px outset #fff;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 4px 12px;
+  cursor: pointer;
+  margin: 2px;
+}
+
+.midi-player .player-btn:active {
+  border-style: inset;
+}
+
+.midi-player .player-btn.playing {
+  background: #a0a0a0;
+  border-style: inset;
+}
+
 /* --- RESPONSIVE (even the 90's would want this... maybe) --- */
 @media (max-width: 600px) {
   .main-container {
