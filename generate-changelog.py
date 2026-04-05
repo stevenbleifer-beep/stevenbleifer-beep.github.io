@@ -10,6 +10,9 @@ result = subprocess.run(
 rows = ""
 for line in result.stdout.strip().split('\n'):
     date, msg = line.split('|', 1)
+    # Skip automated daily commits (feed updates, etc.)
+    if '[skip ci]' in msg:
+        continue
     rows += (
         f'        <tr>'
         f'<td style="white-space: nowrap; padding: 4px 12px 4px 4px; color: #00ffff;">{html.escape(date)}</td>'
@@ -48,7 +51,7 @@ page = f'''<!DOCTYPE html>
             Site Changelog
             <img src="gifs/new.gif" alt="NEW!" style="height: 30px; vertical-align: middle;">
         </h1>
-        <p>Every update to this site, logged for posterity!</p>
+        <p>Big changes to this site, logged for posterity!</p>
         <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
     </div>
 
