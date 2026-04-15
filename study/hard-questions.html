@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Hard Questions — Bleifer Study</title>
+  <meta name="description" content="Difficult exam-style questions for AIS Chapters 7, 14, and 19 — 100 questions total" />
+  <meta name="theme-color" content="#fbf9f4" />
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React + ReactDOM + Babel standalone for in-browser JSX -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body { background: #fbf9f4; }
+    /* Hide un-hydrated content flash */
+    #root:empty::before {
+      content: "Loading…";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+    <div id="devtools-shield" style="display:none;position:fixed;inset:0;z-index:99999;background:#fbf9f4;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;color:#a8a29e;font-size:1.2rem;">
+    Please close developer tools to continue studying.
+  </div>
+
+  <!-- Anti-tampering -->
+  <script>
+  (function(){
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='F12') { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && (e.key==='u'||e.key==='s')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e){
+      var t = e.target;
+      if (t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+    var shield = document.getElementById('devtools-shield');
+    var root = document.getElementById('root');
+    function checkDevTools(){
+      var w = window.outerWidth - window.innerWidth > 160;
+      var h = window.outerHeight - window.innerHeight > 160;
+      var isOpen = w || h;
+      if(!isOpen){ var s=performance.now(); (function(){}).constructor('debugger')(); if(performance.now()-s>100) isOpen=true; }
+      if(isOpen){ shield.style.display='flex'; root.style.display='none'; }
+      else { shield.style.display='none'; root.style.display=''; }
+    }
+    setInterval(checkDevTools, 1000);
+    checkDevTools();
+    console.clear();
+    console.log('%cStop!','color:red;font-size:48px;font-weight:bold;');
+    console.log('%cThis is a study tool. Inspecting answers defeats the purpose of learning.','font-size:16px;');
+  })();
+  </script>
+
+  <script type="text/babel" data-type="module">
+const { useState, useMemo, useEffect } = React;
+
+
+// ===== QUESTION BANK =====
+// Each: { ch, lo, section, type, q, options[4], explain }
+const BANK = [
+  { ch: 7, lo: "7.HARD", section: "Emerging vs Disruptive", type: "memorization",
+    q: "According to the chapter, what specifically distinguishes an 'emerging' technology from a 'disruptive' technology?",
+    options: ["Emerging technologies are unproven in pilots, while disruptive technologies have been validated by regulators", "Emerging technologies are not yet regularly used by companies, while disruptive technologies are adopted by more companies and change how businesses function", "Emerging technologies are proprietary, while disruptive technologies are open-source and widely available", "Emerging technologies operate only in R&D settings, while disruptive technologies always replace an existing product line"],
+    explain: "The slides define emerging as 'not yet regularly used' and disruptive as the stage where adoption grows and forces operational change - adoption level is the distinguishing criterion, not the origin of the technology." },
+  { ch: 7, lo: "7.HARD", section: "Risk Oversight Teams", type: "application",
+    q: "A company wants a group whose PRIMARY objective is evaluating how emerging and disruptive technologies may fit into current operations. Which team best fits this specific mandate?",
+    options: ["Internal Audit", "Enterprise Risk Management (ERM)", "Emerging Technology Center of Excellence (COE)", "The IT Department"],
+    explain: "ERM focuses on risk assessment/management and works with IT to strategize approvals; Internal Audit oversees and tests controls. Only the Emerging Technology COE is specifically defined as a specialized team whose primary objective is evaluating fit of emerging/disruptive tech." },
+  { ch: 7, lo: "7.HARD", section: "Internal Audit Role", type: "application",
+    q: "An internal auditor reviewing an emerging technology implementation receives management's risk assessment. According to the chapter, what is the auditor's MOST appropriate stance?",
+    options: ["Accept management's risk assessment since management owns the risk", "Remain professionally skeptical about management's risk assessments", "Replace management's assessment with the auditor's own risk register", "Defer to the ERM team's risk assessment instead"],
+    explain: "The chapter specifically lists 'remain professionally skeptical about management's risk assessments' as an internal audit responsibility when auditing emerging technologies." },
+  { ch: 7, lo: "7.HARD", section: "IoT Business Opportunities", type: "application",
+    q: "A life insurance company collects heart rate, calorie burn, and sleep quality data from policyholders' smartwatches to estimate longevity and set premiums. Which IoT category does the chapter use to describe this use case?",
+    options: ["Business operations IoT wearables (health trackers)", "Consumer-facing IoT wearables leveraged via big data", "Autonomous Things wearables", "Extended reality wearables"],
+    explain: "The chapter places FitBit/Apple Watch examples under 'Consumer Facing IoT Wearables' where life insurance companies use big data collected from those wearables. Business operations wearables refer to items like smart safety glasses or air-quality trackers in mining." },
+  { ch: 7, lo: "7.HARD", section: "Extended Reality", type: "memorization",
+    q: "Which statement best describes the relationship between AR, MR, and VR in the extended reality (XR) spectrum?",
+    options: ["AR, MR, and VR are independent technologies with no ordered relationship", "XR progresses from reality to AR, then MR, then VR", "MR is simply a marketing term for VR used in business contexts", "AR and VR are the only two forms of XR; MR is a consumer variant of AR"],
+    explain: "Illustration 7.6 in the slides shows XR progressing from reality to AR, MR, then VR - a continuum with MR sitting between AR and VR." },
+  { ch: 7, lo: "7.HARD", section: "Gamification", type: "application",
+    q: "Which of the following would NOT qualify as gamification under the chapter's definition?",
+    options: ["Awarding LinkedIn-style badges to employees who complete wellness activities", "Using a VR environment that awards points for correctly responding to a simulated cyberattack", "Dressing an employee in a cow costume to promote a fast-food restaurant", "Creating a game that teaches students managerial accounting concepts"],
+    explain: "Gamification requires merging video game principles (points, badges, levels) with real-world simulation/learning. A costumed mascot is promotional marketing, not gamification." },
+  { ch: 7, lo: "7.HARD", section: "Cobots", type: "memorization",
+    q: "According to the chapter, what specifically are 'cobots'?",
+    options: ["Fully autonomous robots that replace human workers in warehouses", "Robots that collaborate with humans to complete tasks (a term PwC uses)", "Robotic process automation bots that collaborate with AI models", "Customer service chatbots deployed on company websites"],
+    explain: "The slides explicitly state PwC calls robots that 'collaborate with humans to complete tasks' cobots - this is a collaboration term, not full autonomy or software bots." },
+  { ch: 7, lo: "7.HARD", section: "RPA vs AI", type: "application",
+    q: "A manager wants software that can evolve its decisions over time as it encounters new scenarios and self-select appropriate responses without being reprogrammed. Which technology fits, and why is the alternative wrong?",
+    options: ["RPA - because it uses drag-and-drop interfaces that non-coders can reconfigure", "AI - because AI simulates human decision-making and evolves through self-learning, while RPA's initial tasks never change", "RPA - because RPA's conditional statements automatically adapt when triggers fail", "AI - because AI follows pre-programmed rules more reliably than RPA"],
+    explain: "Per Table 7.6, RPA's initially programmed tasks 'never change' while AI tasks 'evolve through self-learning.' The need for evolution and self-selection points to AI." },
+  { ch: 7, lo: "7.HARD", section: "RPA Logic", type: "application",
+    q: "An RPA developer needs the bot to take a default action when none of the specified trigger conditions are met. Which conditional element handles this scenario?",
+    options: ["AND - to chain conditions together", "OR - to capture multiple alternatives", "ELSE - to capture what to do when no specified scenarios occur", "ELSE IF - to add another matching scenario"],
+    explain: "Per the slides, 'ELSE captures what the automation should do in the event that none of the specified scenarios occur.' ELSE IF adds another matching scenario; ELSE handles the fall-through." },
+  { ch: 7, lo: "7.HARD", section: "RPA Feasibility", type: "application",
+    q: "Which proposed project is LEAST suitable for RPA under the chapter's criteria?",
+    options: ["Monthly reconciliation of a digital bank feed to the general ledger", "Daily reformatting of a standardized vendor invoice file", "Investigating unusual, one-off fraud cases that require professional judgment", "Weekly extraction and aggregation of sales data from a digital dashboard"],
+    explain: "Ideal RPA projects are routine, consistent, digital, time-consuming, and performed frequently. One-off fraud investigations requiring judgment violate the 'routine/consistent/rules-based' requirements and also require human decision-making." },
+  { ch: 7, lo: "7.HARD", section: "Blockchain Principles", type: "memorization",
+    q: "According to the chapter, what is the causal/logical sequence among blockchain's three fundamental principles?",
+    options: ["Immutability leads to transparency, which leads to decentralization", "Transparency leads to immutability, which leads to decentralization", "Decentralization leads to transparency, which leads to immutability", "The three principles are independent with no causal ordering"],
+    explain: "The slides explicitly state: 'Decentralization of power leads to transparency, which in turn leads to immutability.'" },
+  { ch: 7, lo: "7.HARD", section: "Network Size & Risk", type: "application",
+    q: "Why does increasing the size of a blockchain network reduce the risk of malicious control?",
+    options: ["Larger networks have faster transaction validation, leaving no time for attacks", "Larger networks require more malicious parties to collude to gain consensus", "Larger networks automatically encrypt data more strongly", "Larger networks are centrally regulated, so attacks become illegal"],
+    explain: "Illustration 7.24 teaches that it is harder for malicious parties to gain consensus in larger networks because more malicious parties would need to be involved - the defense is consensus-based, not speed or regulation." },
+  { ch: 7, lo: "7.HARD", section: "Data Quality", type: "memorization",
+    q: "Under the blockchain vs traditional ledger comparison, which characteristic is driven specifically by the requirement that a MAJORITY of participants would have to collude for fraud to succeed?",
+    options: ["Data Integrity", "Data Retention", "Data Security", "Data Transparency"],
+    explain: "Table 7.9 attributes 'a majority of participants must generally collude for fraud to happen' to Data Security. Data Integrity is about immutability; Data Retention is about backup copies." },
+  { ch: 7, lo: "7.HARD", section: "Cryptology", type: "memorization",
+    q: "Which statement most precisely distinguishes encryption from decryption as defined in the chapter?",
+    options: ["Encryption protects data at rest by scrambling it; decryption protects data in transit by unscrambling it on the network", "Encryption converts plaintext to ciphertext via an algorithm; decryption reverses the process so the recipient can read the message", "Encryption uses a public key to lock all data; decryption always uses a private key to unlock it, regardless of the method", "Encryption is performed by network miners before transmission; decryption is performed exclusively by the intended end users"],
+    explain: "The slides define encryption as using an algorithm to convert readable plaintext into seemingly meaningless ciphertext, and decryption as the reverse process of converting it back to readable form." },
+  { ch: 14, lo: "14.HARD", section: "COSO vs COBIT", type: "application",
+    q: "A CPA who is not an IT auditor asks why COBIT 2019 exists if the company already uses COSO. Which response most accurately captures the scope distinction in the chapter?",
+    options: ["COBIT entirely replaces COSO for public companies subject to SOX; COSO is only applicable to private companies with no IT systems", "COBIT 2019 addresses IT governance and only IT-specific controls, while COSO frameworks address corporate governance and all internal controls", "COBIT covers enterprise risk management across all business units; COSO covers only financial reporting controls and nothing else", "They are essentially identical frameworks covering the same controls, just with different names adopted by different industries globally"],
+    explain: "Table 15.1 contrasts them on organizational focus (IT governance vs corporate governance) and control scope (only IT-specific controls vs all internal controls). They are complementary, not overlapping or redundant." },
+  { ch: 14, lo: "14.HARD", section: "COBIT Domains", type: "memorization",
+    q: "Which of the five COBIT 2019 domains is the ONLY one classified as an IT Governance objective (rather than a Management IT objective)?",
+    options: ["Align, Plan, and Organize (APO)", "Build, Acquire, and Implement (BAI)", "Evaluate, Direct, and Monitor (EDM)", "Monitor, Evaluate, and Assess (MEA)"],
+    explain: "EDM is the only governance-focused domain; APO, BAI, DSS, and MEA are all Management IT objectives concerned with turning strategy into action." },
+  { ch: 14, lo: "14.HARD", section: "COBIT Domains", type: "application",
+    q: "A company is in the phase of acquiring new ERP technology and implementing it. Which COBIT 2019 domain BEST describes this activity?",
+    options: ["EDM - Evaluate, Direct, and Monitor", "APO - Align, Plan, and Organize", "BAI - Build, Acquire, and Implement", "DSS - Deliver, Service, and Support"],
+    explain: "BAI is where 'management assesses IT requirements, acquires technology, and implements the technology.' APO is upstream alignment; DSS is post-implementation operations." },
+  { ch: 14, lo: "14.HARD", section: "RBAC", type: "memorization",
+    q: "Which statement about role-based access control (RBAC) is consistent with the chapter?",
+    options: ["A user can be assigned to multiple roles simultaneously to reflect cross-functional duties", "Each user is assigned to only one role at a time, and roles hold predefined permissions", "Permissions are granted to individual users directly, bypassing roles for efficiency", "The administrator role has no write permissions; it only assigns roles"],
+    explain: "The chapter explicitly says user access roles are groups with predefined permissions 'with each user assigned to only one role at a time.' Administrators have unlimited access AND assign roles." },
+  { ch: 14, lo: "14.HARD", section: "Authentication vs Authorization", type: "application",
+    q: "A user logs in with a password and a fingerprint scan. This process is an example of what, and why is the alternative wrong?",
+    options: ["Authorization, because the system is granting specific privileges and resource access rights based on the verified identity", "Authentication via multifactor authentication, because it combines identifiers (something you know + something you are)", "Role-based access control, because both the password and fingerprint factors together determine and define the user's assigned role", "User provisioning, because the system is processing the user's credentials in order to set up and grant them initial system access"],
+    explain: "Authentication associates the username with unique identifiers; MFA combines identifiers (knows/has/is). Authorization is granting permission, which is a separate step after authentication succeeds." },
+  { ch: 14, lo: "14.HARD", section: "De-provisioning", type: "application",
+    q: "An accountant with creator-level general ledger access transfers to the internal audit department. According to the chapter, what is the appropriate access change and why?",
+    options: ["Retain creator access to minimize disruption during the transition period", "Immediately revoke all access since access changes carry high risk", "Downgrade general ledger access from creator to read-only to preserve segregation of duties", "Require a second approval before any change since transfers are low risk"],
+    explain: "The chapter uses exactly this example: an accountant moving to internal audit should have their GL access reduced from creator to read-only because internal auditors should not be able to make changes in the GL - preserving segregation of duties." },
+  { ch: 14, lo: "14.HARD", section: "Termination vs Transfer", type: "memorization",
+    q: "Which statement correctly reflects the chapter's treatment of terminations vs transfers in access de-provisioning?",
+    options: ["Both terminations and transfers typically require the same multi-step further approval chains before any access changes take effect", "Terminations require immediate revocation and rarely require further approvals; transfers require analysis to assess continued appropriateness of access", "Transfers always require immediate full revocation of all existing access rights; terminations are the ones that require in-depth analysis", "Neither a termination nor a transfer event should trigger any automatic access review or revocation process within the organization"],
+    explain: "The chapter notes terminations are immediately revoked without further approval (since removing access doesn't create risk) while transfers require analysis because continued access might violate segregation of duties." },
+  { ch: 14, lo: "14.HARD", section: "Dormant Access", type: "memorization",
+    q: "Which most precisely defines 'dormant access' per the chapter?",
+    options: ["Access that has been formally revoked through a de-provisioning request but has not yet been physically removed from the system", "Access where a user has not accessed the system for a significant period but still has an active role granting access", "Access that is granted only during declared emergencies under a break-glass procedure and automatically expires after one use", "Access that has been formally delegated by an administrator to another user on their behalf but has not yet been accepted or activated"],
+    explain: "Dormant access is precisely an active role held by a user who has not used the system for a significant period - still granted, but unused. It is NOT revoked access." },
+  { ch: 14, lo: "14.HARD", section: "Data Center Location", type: "application",
+    q: "According to the chapter, where should a data center ideally be located within a building and geographically?",
+    options: ["On the top floor to minimize risk of flooding and give quick roof access for HVAC", "Near the bottom floors, in a building on higher ground to avoid flooding", "In a standalone structure below ground to maximize climate control", "On a mid-level floor to balance access and environmental risk"],
+    explain: "The slides recommend being near the bottom floors of the building, with the building itself on higher ground to avoid flooding - a somewhat counterintuitive combination." },
+  { ch: 14, lo: "14.HARD", section: "BCP vs DR", type: "memorization",
+    q: "Which statement about business continuity planning (BCP) and disaster recovery (DR) is MOST accurate?",
+    options: ["BCP and DR are synonyms used interchangeably in the field", "DR is a subset of BCP", "BCP is a subset of DR", "BCP addresses IT only; DR addresses all business functions"],
+    explain: "Illustration 14.9 explicitly shows DR as a subset of BCP - BCP is the broader set of procedures, while DR deals specifically with recovering IT systems/data." },
+  { ch: 14, lo: "14.HARD", section: "Backup Sites", type: "application",
+    q: "A company has extremely tight RTO requirements but also worries that a ransomware infection would be immediately mirrored to their backup. Which site type creates this specific tradeoff?",
+    options: ["Cold backup site - because minimal equipment means viruses can't spread", "Warm backup site - because end-of-day backup limits virus propagation", "Hot backup site - because continuous second-by-second replication means a virus is immediately backed up", "Offsite backup site - because offsite locations are inherently at higher risk of compromise"],
+    explain: "The unique risk of a hot site is explicitly called out: 'a virus entering the live systems is immediately backed up to the hot site' because of continuous real-time replication." },
+  { ch: 14, lo: "14.HARD", section: "Backup Sites", type: "memorization",
+    q: "Per Table 14.6, which row correctly matches a warm backup site?",
+    options: ["Cost: highest; Backup Speed: continuous; Recovery Speed: fastest", "Cost: medium; Backup Speed: depends on data backup cycle; Recovery Speed: medium", "Cost: lowest; Backup Speed: continuous; Recovery Speed: medium", "Cost: medium; Backup Speed: continuous; Recovery Speed: fastest"],
+    explain: "Warm sites are medium cost, backup speed depends on the data backup cycle (not continuous - that's hot), and recovery speed is medium." },
+  { ch: 14, lo: "14.HARD", section: "RTO vs RPO", type: "application",
+    q: "A CFO says 'We cannot afford to lose more than 4 hours of transaction data.' Which metric is she defining?",
+    options: ["Recovery Time Objective (RTO) - the time to resume operations", "Recovery Point Objective (RPO) - the acceptable data loss window", "Recovery Cost Objective (RCO)", "Disaster Recovery Point (DRP)"],
+    explain: "RPO measures acceptable data loss (the time since the last backup). RTO measures how long a system can be down before significant damage occurs. Data loss = RPO." },
+  { ch: 14, lo: "14.HARD", section: "Backup Strategies", type: "application",
+    q: "A company does a full backup Sunday, then on each subsequent day backs up only files changed since SUNDAY (not since the previous day's backup). Which strategy is this?",
+    options: ["Incremental backup", "Differential backup", "Full backup", "Grandfather-father-son cycle"],
+    explain: "Differential backups copy all data created since the most recent full backup - each day's backup includes everything since Sunday. Incremental copies only new data since the last backup of any type." },
+  { ch: 14, lo: "14.HARD", section: "Change Management", type: "application",
+    q: "An emergency security patch must be deployed before a ransomware exploit spreads. Per the chapter, how does this change flow through the environments differently from a normal change?",
+    options: ["It bypasses the test environment and goes directly from model to production", "It bypasses the model environment and moves directly to the production environment", "It follows all three stages but with compressed timelines in each", "It skips change management entirely; production control handles it ad hoc"],
+    explain: "Illustration 14.20 shows emergency changes bypass the model environment and move directly to production - test still happens, but model is skipped for speed." },
+  { ch: 14, lo: "14.HARD", section: "SOC Reports", type: "application",
+    q: "A company uses a cloud ERP provider for its financial reporting processes. The company's external auditor wants to assess whether the ERP provider's controls could introduce material misstatements. Which report should be requested, and why?",
+    options: [
+      "SOC 1, because it covers controls at a service organization that could affect user entities' financial reporting, which is precisely the external auditor's scope",
+      "SOC 2, because it evaluates all five Trust Service Criteria including processing integrity, which is the most relevant criterion for financial data accuracy",
+      "SOC 3, because it is the only publicly available SOC report and can be shared freely with the audit committee and the board of directors",
+      "A SOC 2 Type I, because design-only testing is sufficient when the service provider is a well-established public cloud company with a strong industry reputation"],
+    explain: "SOC 1 is explicitly designed for controls at service organizations that are relevant to user entities' internal control over financial reporting. An ERP system that feeds financial data directly into statements is exactly the SOC 1 use case." },
+  { ch: 14, lo: "14.HARD", section: "SOC Reports", type: "application",
+    q: "Management receives a SOC 2 Type I report from a key vendor. An auditor cautions that the Type I report provides less assurance than a Type II. Which statement BEST explains the auditor's concern?",
+    options: [
+      "A Type I report only confirms that controls are suitably designed at a point in time and cannot speak to whether they actually operated effectively over any period",
+      "A Type I report covers only the security trust service criterion, leaving availability, processing integrity, confidentiality, and privacy unexamined",
+      "A Type I report is issued by management rather than an independent CPA firm, making it equivalent to a management self-assessment with no external validation",
+      "A Type I report is restricted to internal use by the service organization and cannot legally be shared with the user entity's external auditors"],
+    explain: "SOC 2 Type I only tests design effectiveness — the controls exist and look right as of the report date. It says nothing about whether those controls actually worked over time. Type II fills that gap by testing operating effectiveness over a period of 6–12 months." },
+  { ch: 19, lo: "19.HARD", section: "Internal vs External", type: "application",
+    q: "A company is hiring an audit team whose PRIMARY purpose is to analyze and improve controls and business performance, with internal stakeholders as the primary audience. Which function is this?",
+    options: ["External audit, because it focuses on presenting an opinion on fair presentation of financial statements", "Internal audit, because its primary purpose is analyzing and improving controls and performance for internal stakeholders", "Forensic audit, because it focuses on internal fraud only", "External audit, because only external auditors work on behalf of company management"],
+    explain: "Per Table 19.2, internal audit's primary purpose is to analyze and improve controls/performance with internal stakeholders as audience. External audit expresses an opinion on financial statements for external stakeholders." },
+  { ch: 19, lo: "19.HARD", section: "Reporting Lines", type: "memorization",
+    q: "To whom does internal audit typically have a DIRECT reporting line, even when administratively reporting elsewhere (like the CFO or CCO)?",
+    options: ["The chief executive officer", "The external auditors", "The audit committee", "The shareholders"],
+    explain: "Per Table 19.2, internal audit has a direct reporting line to the audit committee while often reporting administratively to a second line function (CFO/CCO). External auditors are appointed by shareholders on audit committee recommendation." },
+  { ch: 19, lo: "19.HARD", section: "Certifications", type: "memorization",
+    q: "Which certification list corresponds PRIMARILY to external auditors per Table 19.2?",
+    options: ["CIA, CISA, CPA, CFE", "CPA, CISA", "CFE, CIA, CMA", "CPA only - external auditors rarely hold other certifications"],
+    explain: "The chapter lists CPA and CISA as the primary certifications for external auditors. CIA and CFE appear in the internal audit list alongside CPA and CISA." },
+  { ch: 19, lo: "19.HARD", section: "Aligned Assurance", type: "memorization",
+    q: "The IIA's updated three lines model emphasizes 'aligned assurance.' What specifically does aligned assurance focus on?",
+    options: ["Aligning the external audit function with relevant regulatory bodies and standards to reduce conflicts and streamline compliance reporting", "Ensuring that the second and third lines of defense work cohesively to provide appropriate coverage over a company's risks", "Aligning the first line of defense directly with customers and frontline operations to avoid any duplication of control activities", "Merging the internal and external audit teams into a single unified assurance function that reports to one combined oversight body"],
+    explain: "The chapter specifies aligned assurance focuses on ensuring the SECOND and THIRD lines of defense work cohesively. It is not about the first line or about merging audit functions." },
+  { ch: 19, lo: "19.HARD", section: "Agile Auditing", type: "application",
+    q: "A company adopts Agile auditing. Rather than a fixed 12-month audit plan, what audit plan structure would it most likely use?",
+    options: ["A rolling audit plan with a prioritized list of audit engagements", "A 3-year strategic plan approved only by the CEO", "An ad-hoc plan determined quarter by quarter with no prioritization", "A regulatory-mandated audit plan identical to the external auditor's"],
+    explain: "Agile auditing uses a rolling audit plan - a prioritized list of engagements - in place of the traditional static 12-month plan. It preserves prioritization but allows change." },
+  { ch: 19, lo: "19.HARD", section: "Audit Stages", type: "memorization",
+    q: "What are the FIVE sequential stages of an audit engagement per the chapter, in order?",
+    options: ["Planning, Fieldwork, Reporting, Wrap-up, Follow-up", "Planning, Wrap-up, Fieldwork, Reporting, Follow-up", "Planning, Fieldwork, Wrap-up, Reporting, Follow-up", "Fieldwork, Planning, Wrap-up, Follow-up, Reporting"],
+    explain: "The sequence is Planning, Fieldwork, Wrap-up, Reporting, Follow-up. Wrap-up precedes Reporting - workpapers must be finalized before the report is issued." },
+  { ch: 19, lo: "19.HARD", section: "Planning Deliverables", type: "memorization",
+    q: "Which two specific deliverables does the chapter say are created during the PLANNING stage of an audit?",
+    options: ["Audit report and management response", "Scoping document and audit canvas", "Document request and workpapers", "Risk matrix and remediation timeline"],
+    explain: "Planning produces two deliverables: a scoping document (risks, controls, likelihood/impact) and an audit canvas (Agile version of the planning memo). Workpapers come from fieldwork; the audit report comes from wrap-up/reporting." },
+  { ch: 19, lo: "19.HARD", section: "Audit Canvas", type: "memorization",
+    q: "What is an audit canvas, specifically?",
+    options: ["A visual dashboard of live audit metrics shown to the audit committee", "An Agile version of the audit planning memo", "A fieldwork tool used to document control testing results", "A standardized template mandated by the PCAOB for external audits"],
+    explain: "The slides define an audit canvas as an Agile version of the audit planning memo, capturing planning information stakeholders need to know." },
+  { ch: 19, lo: "19.HARD", section: "Design vs Operating Effectiveness", type: "application",
+    q: "An auditor independently re-creates a control using data analytics to test whether it actually works in practice. Which test is this, and to which effectiveness does it uniquely apply?",
+    options: ["Inquiry - applies to both design and operating effectiveness", "Observation - applies uniquely to operating effectiveness", "Reperformance - applies uniquely to operating effectiveness (not design effectiveness)", "Inspection - applies uniquely to design effectiveness"],
+    explain: "The chapter states 'Unlike design effectiveness, operating effectiveness is tested through reperformance.' Inquiry, observation, and inspection apply to both; reperformance is unique to operating effectiveness." },
+  { ch: 19, lo: "19.HARD", section: "Controls vs Substantive", type: "application",
+    q: "An internal auditor uses data analytics over the full vendor master population and discovers several duplicate vendors. This work is BEST characterized as what, and what does it suggest?",
+    options: ["A test of controls suggesting control design is ineffective", "A substantive procedure; errors found may indicate a control deficiency", "A process walkthrough suggesting operating ineffectiveness", "A scoping activity performed during planning"],
+    explain: "Substantive procedures look for material misstatements in underlying data; the chapter notes 'any errors identified may indicate the presence of a control deficiency.' Tests of controls test the control itself, not the underlying data." },
+  { ch: 19, lo: "19.HARD", section: "Process Walkthrough", type: "memorization",
+    q: "According to the chapter, a process walkthrough is:",
+    options: ["A reperformance test where auditors re-execute a control themselves", "An interview where auditees explain their daily job functions to the auditor", "A written questionnaire delivered to all department members", "A data-analytics scan of system logs to map actual process flow"],
+    explain: "A walkthrough is specifically an interview in which an auditee explains their daily job functions. It is not reperformance, not a questionnaire, and not a log scan." },
+  { ch: 19, lo: "19.HARD", section: "Wrap-up", type: "application",
+    q: "During which audit stage do auditors ensure that workpapers are complete, organized, and properly reviewed by audit managers, AND draft the audit report?",
+    options: ["Fieldwork", "Wrap-up", "Reporting", "Follow-up"],
+    explain: "Wrap-up is explicitly when workpapers are finalized and the draft audit report is prepared. Reporting is when the final report is distributed; Fieldwork is when testing occurs." },
+  { ch: 19, lo: "19.HARD", section: "Management Response", type: "memorization",
+    q: "At the exit meeting, management provides the audit team with what specific deliverable?",
+    options: ["Audit recommendations with root cause analysis", "Management's response - a plan for remediation including a timeline", "The final audit report for distribution to shareholders", "A scoping document for the next audit"],
+    explain: "Management provides management's response (a remediation plan with timeline) at the exit meeting. Audit recommendations come from the auditors, not management." },
+  { ch: 19, lo: "19.HARD", section: "Follow-up", type: "application",
+    q: "An audit is completed and the final report issued with NO findings. According to the chapter, what happens next?",
+    options: ["The audit team still performs follow-up to verify ongoing compliance", "The engagement ends at the reporting stage; no follow-up is required", "The auditee must still submit a remediation plan within 30 days", "The external auditor takes over to verify the findings"],
+    explain: "The chapter explicitly states: 'If an audit has no findings, the engagement ends at the reporting stage.' Follow-up only occurs when there are findings requiring remediation verification." },
+  { ch: 14, lo: "14.HARD", section: "COBIT Domains", type: "application",
+    q: "A company is rolling out a new cloud ERP system. Project managers are defining IT staffing structures, budgets, and vendor relationships needed to support implementation. Which COBIT domain BEST describes this activity?",
+    options: [
+      "APO (Align, Plan, and Organize), because it covers planning the IT function and organizing resources to support business strategy before a build begins",
+      "BAI (Build, Acquire, and Implement), because the company is in the process of acquiring and deploying new technology for operational use",
+      "DSS (Deliver, Service, and Support), because the planning work is part of ensuring service delivery will function correctly after go-live",
+      "EDM (Evaluate, Direct, and Monitor), because the board must evaluate whether the ERP investment aligns with overall corporate strategy"],
+    explain: "APO covers aligning IT with business direction, planning the IT function, and organizing resources — staffing, budgets, and vendor relationships are APO activities that happen before building or acquiring a system begins." },
+  { ch: 14, lo: "14.HARD", section: "COBIT Domains", type: "application",
+    q: "Six months after a major system upgrade, the IT department runs a formal review comparing actual system performance against the targets set during the planning phase. Which COBIT domain does this activity fall under?",
+    options: [
+      "MEA (Monitor, Evaluate, and Assess), because it involves measuring whether IT performance is meeting organizational objectives after implementation",
+      "DSS (Deliver, Service, and Support), because post-implementation reviews are part of ongoing service delivery and operational support activities",
+      "APO (Align, Plan, and Organize), because the review references the original planning-phase targets, making it an extension of the planning process",
+      "EDM (Evaluate, Direct, and Monitor), because the board of directors must evaluate all strategic IT investments before management can act on findings"],
+    explain: "MEA is specifically about monitoring and evaluating ongoing IT processes against objectives — a post-implementation performance review measuring actuals against targets is a textbook MEA activity." },
+  { ch: 14, lo: "14.HARD", section: "Segregation of Duties", type: "application",
+    q: "An internal auditor at a 400-person company finds that the same employee in AP creates new vendors AND approves payments. The auditor then reviews a 6-person startup and finds the same overlap. How should the auditor's response DIFFER between the two companies?",
+    options: [
+      "At the large company, the overlap is a reportable SoD control deficiency requiring remediation; at the startup, it is still a risk but compensating controls such as owner oversight are likely the realistic mitigation",
+      "At the large company, the finding should be escalated to the SEC; at the startup, no action is required because small businesses are exempt from internal control standards",
+      "At both companies, the response is identical — SoD deficiencies must be remediated by hiring additional staff regardless of company size or operational constraints",
+      "At the startup, the finding is more serious because smaller companies are targeted more frequently by fraudsters, requiring stricter controls than larger enterprises"],
+    explain: "At a 400-person company, there is no staffing excuse for combining vendor creation and payment approval — it must be remediated. At a 6-person startup, full SoD may be impractical; the auditor should flag it and identify compensating controls as a realistic alternative." },
+  { ch: 14, lo: "14.HARD", section: "Blockchain Audit", type: "application",
+    q: "An auditor is engaged to evaluate a client that records revenue transactions on a private blockchain. The auditor's supervisor says: 'Blockchain is immutable, so we don't need to test completeness and accuracy.' Which is the BEST response?",
+    options: [
+      "Disagree — immutability only means records cannot be changed after entry; it does not prevent incomplete or inaccurate data from being written to the chain in the first place, so completeness and accuracy controls must still be tested",
+      "Agree — because blockchain's consensus mechanism validates every transaction before it is added, any data on the chain has already passed accuracy and completeness verification by the network",
+      "Agree — the PCAOB has issued guidance stating that auditors may rely on blockchain immutability as a substitute for substantive testing of financial transactions",
+      "Disagree — blockchain should be tested using different criteria than traditional systems because its decentralized architecture makes standard audit procedures inapplicable"],
+    explain: "Immutability prevents tampering with records after they are entered, but it does nothing to prevent bad data from being entered initially. The auditor must still test whether transactions are complete (all entered) and accurate (entered correctly) — the same as any other system." },
+  { ch: 7, lo: "7.HARD", section: "Adoption Curve", type: "application",
+    q: "A privately held manufacturer has deployed a technology used by roughly half of its industry peers. Under the Rogers framework, which category BEST describes this company, and why?",
+    options: [
+      "Innovators, because any deployment places the company among the first 2.5% of adopters regardless of industry penetration rates",
+      "Early Majority, because adoption around the halfway mark of peers matches the 34% category sitting just above average adoption",
+      "Late Majority, because only the final holdouts remain — adoption well past the halfway mark signals a laggard-adjacent profile",
+      "Early Adopter, because adoption by around half of peers indicates the company is substantially ahead of the mainstream market"],
+    explain: "Innovators (2.5%) + Early Adopters (13.5%) = 16%, so the first ~16% are ahead of the Early Majority. By the time roughly 50% of peers have adopted, you're in the Early Majority (34%), which sits just past the mainstream tipping point." },
+  { ch: 7, lo: "7.HARD", section: "Internal Audit Duty", type: "memorization",
+    q: "Which of the following is NOT listed in the chapter as an internal audit responsibility when auditing emerging technologies?",
+    options: [
+      "Understanding which emerging/disruptive technologies are being used",
+      "Assessing how technologies will impact current controls",
+      "Approving management's technology implementation decisions",
+      "Identifying control gaps and recommending new controls"],
+    explain: "Internal audit provides recommendations but does NOT approve implementations — that is a management responsibility." },
+  { ch: 7, lo: "7.HARD", section: "ERM vs COE", type: "application",
+    q: "A new blockchain initiative needs a team whose primary focus is evaluating fit with current operations AND another team positioned for risk assessment working with IT. Which pair BEST matches these mandates?",
+    options: ["Internal Audit / External Audit", "ERM (fit) / Emerging Technology COE (risk)", "Emerging Technology COE (fit) / ERM (risk strategy with IT)", "IT Department / Finance"],
+    explain: "COE evaluates fit with current operations; ERM focuses on risk and works with IT to strategize and approve." },
+  { ch: 7, lo: "7.HARD", section: "5Vs of Big Data", type: "application",
+    q: "A streaming platform reports that 80% of its recommendation data consists of unverified user-generated comments. Which of the 5Vs of big data does this MOST directly implicate?",
+    options: ["Volume", "Velocity", "Veracity", "Value"],
+    explain: "Veracity addresses trustworthiness/accuracy of data — unverified content directly affects veracity." },
+  { ch: 7, lo: "7.HARD", section: "IoT Business vs Consumer", type: "application",
+    q: "A car-rental fleet installs sensors that monitor engine performance on every vehicle and report telematics data back to operations for predictive maintenance. Per the chapter's taxonomy, this is BEST classified as:",
+    options: [
+      "Consumer-facing IoT wearables leveraged via big data, because telematics personally affect the driver's experience",
+      "Business operations IoT — because sensors feed operational decision-making like maintenance scheduling",
+      "Autonomous Things, because vehicles with sensors are driven by algorithms",
+      "Extended Reality, because the data creates a virtual representation of each vehicle"],
+    explain: "Business operations IoT includes sensor/telematics for internal operations; consumer IoT is products customers interact with." },
+  { ch: 7, lo: "7.HARD", section: "XR Spectrum", type: "application",
+    q: "A surgeon uses goggles that anchor a 3-D organ model to her patient, allowing the model to respond to her physical hand gestures. Along the XR spectrum, this is BEST characterized as:",
+    options: [
+      "Pure Augmented Reality (AR), because the overlay does not interact with the physical world",
+      "Mixed Reality (MR), because digital objects anchor to and interact with the physical environment",
+      "Virtual Reality (VR), because goggles immerse the user in a simulated world",
+      "Gamification, because surgical practice resembles a video game"],
+    explain: "MR sits between AR and VR — it overlays digital objects that INTERACT with the physical world." },
+  { ch: 7, lo: "7.HARD", section: "Gamification Limit", type: "application",
+    q: "A company adopts a points/badges system for customer purchases but the customers view it as childish and abandon the program. Under the chapter's definition, this illustrates that gamification:",
+    options: [
+      "Must be designed with clear work/skill-learning relevance and appropriate audience to produce engagement",
+      "Cannot be used in consumer-facing settings",
+      "Is always successful regardless of audience",
+      "Is identical to marketing mascots"],
+    explain: "Gamification merges game principles with real-world simulations to teach/motivate — without meaningful context or fit, it can fail." },
+  { ch: 7, lo: "7.HARD", section: "RPA vs AI Trade-off", type: "application",
+    q: "A bank wants software to flag fraudulent transactions by evolving its recognition of new fraud patterns without re-coding. Which choice is correct and WHY?",
+    options: [
+      "RPA, because drag-and-drop is faster to implement and can self-adjust rules in production",
+      "AI, because AI evolves through self-learning while RPA's pre-programmed tasks cannot change without reprogramming",
+      "RPA, because RPA can identify unknown patterns through statistical inference without any rules",
+      "AI, because AI requires no governance and bypasses internal controls"],
+    explain: "Per Table 7.6, AI evolves through self-learning; RPA rules never change unless reprogrammed." },
+  { ch: 7, lo: "7.HARD", section: "Conditional Logic ELSE IF", type: "application",
+    q: "An AP RPA contains: IF invoice received AND amount < $5,000 THEN auto-approve; ELSE IF amount < $25,000 THEN route to manager; ELSE route to CFO. Which statement is TRUE?",
+    options: [
+      "The ELSE IF is a catch-all executed when neither IF nor the ELSE triggers",
+      "The ELSE IF specifies an additional scenario that runs when the primary IF is false AND its own condition is true",
+      "Only the IF branch can reference the amount field; ELSE IF must reference a different field",
+      "ELSE IF executes alongside IF to double-check"],
+    explain: "ELSE IF captures an additional scenario — runs when prior IFs are false and its own condition is true." },
+  { ch: 7, lo: "7.HARD", section: "RPA Feasibility Edge", type: "application",
+    q: "Which process is LEAST suitable for RPA under the chapter's criteria?",
+    options: [
+      "Automated bank reconciliation from a digital bank feed",
+      "Drafting qualitative narrative disclosures that require professional judgment about materiality",
+      "Extracting standardized vendor invoice data from structured PDFs",
+      "Daily aggregation of digital sales dashboards"],
+    explain: "Judgment-based narrative drafting violates the routine/rules-based requirement." },
+  { ch: 7, lo: "7.HARD", section: "Blockchain Nodes vs Miners", type: "memorization",
+    q: "Which statement correctly distinguishes 'nodes' from 'miners' in the blockchain architecture?",
+    options: [
+      "Nodes are the computers of network participants; miners are participants who use their nodes' computing power to solve the mathematical puzzles that secure transactions",
+      "Nodes are cryptocurrency tokens earned through mining; miners are the servers that store the blockchain",
+      "Nodes and miners are synonyms — both refer to the servers that solve puzzles",
+      "Nodes physically mine cryptocurrency; miners are passive storage computers"],
+    explain: "Nodes = hardware; miners = participants who run the puzzle-solving to secure transactions." },
+  { ch: 7, lo: "7.HARD", section: "Decentralized vs Distributed", type: "application",
+    q: "A consortium of six regional hospitals maintains hubs that each hold copies of the same patient-encounter ledger. Within the chapter's taxonomy, this architecture is BEST labeled:",
+    options: [
+      "Centralized — one organization ultimately owns the shared ledger",
+      "Distributed — every participant holds an identical electronic copy",
+      "Decentralized — groups of users access hubs that have copies of the same ledger",
+      "Permissioned — it uses access-control lists"],
+    explain: "Decentralized has groups of users with access to hubs holding ledger copies. Distributed = every participant has a copy; Centralized = one central ledger." },
+  { ch: 7, lo: "7.HARD", section: "Blockchain Types", type: "application",
+    q: "A group of competing banks create a shared blockchain they jointly govern for trade-finance settlements. This is BEST described as:",
+    options: ["Public blockchain", "Private blockchain", "Consortium blockchain", "Centralized ledger"],
+    explain: "Consortium = multiple organizations jointly governing a blockchain." },
+  { ch: 7, lo: "7.HARD", section: "Hash Strings in Audit", type: "application",
+    q: "An auditor verifies that a contract stored on blockchain is unchanged by comparing its current hash string to the recorded hash. If the hashes differ:",
+    options: [
+      "The contract is definitively fraudulent and should be reported to regulators",
+      "Something about the record has changed since the hash was recorded; further investigation is required",
+      "The blockchain has failed entirely and the client should switch platforms",
+      "The hash comparison is inconclusive and should be disregarded"],
+    explain: "A hash mismatch means the record has changed; investigation is required to understand why." },
+  { ch: 7, lo: "7.HARD", section: "External Auditor Caution", type: "application",
+    q: "An external auditor plans to rely on blockchain-stored transactions. Which reliance assumption is INCORRECT per the chapter?",
+    options: [
+      "Auditors should assess general and application IT controls over the blockchain system",
+      "Auditors can rely on the consensus protocol only after assessing its reliability",
+      "Auditors can skip testing completeness and accuracy because records are immutable after entry",
+      "Auditors should evaluate the automation features for lack of manual controls"],
+    explain: "Immutability only protects records after entry; completeness and accuracy of what goes in must still be tested." },
+  { ch: 7, lo: "7.HARD", section: "Data Transparency Trade-off", type: "application",
+    q: "A private company considers moving AR records to a public blockchain to improve transparency but realizes some customer data would also become viewable. Which BEST characterizes the trade-off?",
+    options: [
+      "Transparency and privacy/confidentiality can be in tension on public chains; consortium or private blockchains may be needed to balance them",
+      "Transparency is always advantageous without trade-offs",
+      "Public blockchains allow selective field-level privacy by default",
+      "Privacy laws do not apply to blockchain data"],
+    explain: "Public transparency can conflict with privacy/confidentiality needs — private or consortium chains can mitigate." },
+  { ch: 7, lo: "7.HARD", section: "Immutability Misconception", type: "application",
+    q: "A client claims 'our blockchain is immutable, so we cannot have misstatements.' Why is this reasoning flawed?",
+    options: [
+      "Immutability means no participant can change entries; it does not mean the entries were correct when first recorded — substantive testing is still required",
+      "Blockchain systems are not actually immutable in practice",
+      "Misstatements only occur in paper-based systems",
+      "All blockchain transactions are automatically audited by regulators"],
+    explain: "Garbage-in still happens even when records cannot be changed after the fact; substantive testing is still needed." },
+  { ch: 14, lo: "14.HARD", section: "COSO vs COBIT Scope", type: "application",
+    q: "A CIO claims 'We already use COSO for internal control over financial reporting, so we don't need COBIT.' Which statement is the BEST counterpoint?",
+    options: [
+      "COBIT replaces COSO and should be adopted instead for all controls",
+      "COSO covers corporate governance and all internal controls; COBIT 2019 addresses IT governance and IT-specific controls — they are complementary",
+      "COBIT is mandated by the SEC for public companies regardless of COSO adoption",
+      "COBIT only applies to non-US companies"],
+    explain: "COSO = broad internal control framework; COBIT = IT governance specifically. They are complementary, not substitutes." },
+  { ch: 14, lo: "14.HARD", section: "COBIT Domain Mapping", type: "application",
+    q: "A help-desk team manages incident tickets, service restorations, and user support. Which COBIT 2019 domain BEST describes this?",
+    options: ["EDM", "APO", "BAI", "DSS"],
+    explain: "DSS = Deliver, Service, and Support — operational IT including help desk/support." },
+  { ch: 14, lo: "14.HARD", section: "COBIT EDM vs MEA", type: "application",
+    q: "A board-level committee evaluates whether the enterprise's IT strategy is meeting organizational objectives and provides strategic direction. Which domain BEST applies?",
+    options: [
+      "EDM, because the BOARD's role of evaluating stakeholder needs and directing IT strategy is governance",
+      "MEA, because the committee evaluates whether existing IT projects meet objectives",
+      "APO, because the committee is aligning IT to organizational direction",
+      "BAI, because the committee is implementing strategy"],
+    explain: "EDM is board-level governance (evaluate, direct, monitor); MEA is management-level assessment of existing IT against objectives." },
+  { ch: 14, lo: "14.HARD", section: "RBAC vs Permissions", type: "memorization",
+    q: "Which of the following statements about RBAC is MOST precise?",
+    options: [
+      "Permissions are assigned to users individually; roles simply describe user job titles with no enforcement",
+      "Each user is assigned to only one role at a time; that role carries a bundle of predefined permissions",
+      "Users inherit permissions from both their direct manager and the administrator simultaneously",
+      "Roles can be created only for administrators; all other users receive ungrouped permissions"],
+    explain: "RBAC binds permissions to roles; users are assigned to one role at a time." },
+  { ch: 14, lo: "14.HARD", section: "Authentication Factor Distinction", type: "application",
+    q: "An employee's access setup requires: (a) a password, (b) an ID badge scan, (c) a fingerprint. How many DISTINCT authentication factor types are in use?",
+    options: ["One (all are identifiers for the same user)", "Two (the ID badge and fingerprint are the same factor type)", "Three (know / have / are)", "Four (know / have / are / do)"],
+    explain: "Password = know; ID badge = have; fingerprint = are → three distinct factor types." },
+  { ch: 14, lo: "14.HARD", section: "Provisioning vs Reviews", type: "application",
+    q: "Which activity BEST helps detect dormant accounts?",
+    options: ["User access provisioning", "User authentication", "User access reviews", "User access kickoff"],
+    explain: "Periodic user access reviews examine existing users/roles — the primary control for dormant access." },
+  { ch: 14, lo: "14.HARD", section: "Transfer Risk", type: "application",
+    q: "When an employee transfers between departments, per the chapter the PRIMARY reason transfers require analysis is:",
+    options: [
+      "Transfers require a new manager before any access change",
+      "Continued access from the prior role may violate segregation of duties or be unnecessary in the new role",
+      "Transfers always lead to password reuse",
+      "Transfers incur training costs"],
+    explain: "Transfers can leave inappropriate residual access — the SoD risk is the core concern." },
+  { ch: 14, lo: "14.HARD", section: "Data Center Location", type: "application",
+    q: "A company is selecting a data-center location. Which pair BEST reflects the chapter's guidance?",
+    options: [
+      "Top floor, low-lying neighborhood (to maximize view)",
+      "Bottom floors of a building on higher ground (to limit physical damage AND flooding risk)",
+      "Mid-level floor, close to a river (for cooling water)",
+      "Rooftop, lowest elevation (for easy access to utilities)"],
+    explain: "Lower floors + high ground — a counterintuitive but chapter-recommended combination." },
+  { ch: 14, lo: "14.HARD", section: "Three Key Environments", type: "memorization",
+    q: "Which item is NOT one of the chapter's three key data-center environments?",
+    options: ["Outside environment", "Inside environment", "Physical security", "Network configuration"],
+    explain: "The three key environments are outside, inside, and physical security — not network configuration." },
+  { ch: 14, lo: "14.HARD", section: "Hot vs Warm vs Cold", type: "application",
+    q: "A company has a 24-hour RTO and can tolerate up to 24 hours of data loss but has a very tight budget. Which site is MOST appropriate?",
+    options: ["Hot", "Warm", "Cold", "No backup site"],
+    explain: "Warm sites match moderate RTO/RPO with lower cost than hot." },
+  { ch: 14, lo: "14.HARD", section: "Hot Site Unique Risk", type: "application",
+    q: "Which risk is UNIQUE to a hot backup site compared to warm and cold sites?",
+    options: [
+      "Longest recovery time",
+      "No physical security controls",
+      "A virus entering the live system is immediately replicated to the backup",
+      "Highest downtime tolerance"],
+    explain: "Continuous replication means malware is replicated — a unique hot-site risk." },
+  { ch: 14, lo: "14.HARD", section: "RPO vs RTO Precision", type: "application",
+    q: "Identify the pair that correctly matches metric to definition.",
+    options: [
+      "RPO = how long a system can be down; RTO = how much data may be lost",
+      "RPO = how much data may be lost; RTO = how long a system can be down",
+      "RPO = total cost of recovery; RTO = data sensitivity rating",
+      "RPO = recovery price; RTO = recovery transit"],
+    explain: "RPO is data-loss tolerance; RTO is downtime tolerance." },
+  { ch: 14, lo: "14.HARD", section: "Full vs Differential vs Incremental", type: "application",
+    q: "A company runs a full backup every Sunday. On Wednesday, they want to restore to the latest state using the SMALLEST set of backups. If they use INCREMENTAL daily backups, they will need to restore:",
+    options: [
+      "Sunday's full only",
+      "Sunday's full plus Monday, Tuesday, and Wednesday incrementals",
+      "Just Wednesday's incremental",
+      "Sunday's full plus only Wednesday's incremental"],
+    explain: "Incremental requires the last full plus every incremental since — more restore steps than differential." },
+  { ch: 14, lo: "14.HARD", section: "Differential Restore", type: "application",
+    q: "Same scenario: if the company runs DIFFERENTIAL daily backups, restoring to Wednesday requires:",
+    options: ["Only Wednesday's differential", "Sunday's full plus Wednesday's differential", "Sunday's full plus every daily differential", "Nothing — differentials are self-contained"],
+    explain: "Differential restore = last full + latest differential (since each differential is cumulative from the last full)." },
+  { ch: 14, lo: "14.HARD", section: "Grandfather-Father-Son", type: "memorization",
+    q: "In the GFS backup scheme, which matches are correct?",
+    options: [
+      "Grandfather = monthly full; Father = weekly full; Son = daily incremental/differential",
+      "Grandfather = weekly full; Father = monthly incremental; Son = hourly differential",
+      "Grandfather = daily full; Father = weekly differential; Son = monthly incremental",
+      "Grandfather = annual full; Father = quarterly full; Son = monthly incremental"],
+    explain: "GFS: monthly (grandfather), weekly (father), daily (son — incremental/differential)." },
+  { ch: 14, lo: "14.HARD", section: "Change Environments", type: "application",
+    q: "A DBA proposes debugging a live performance issue by running ad-hoc SQL on the production database. Under the chapter's change management model, this violates which principle?",
+    options: [
+      "Backups must always run before any query",
+      "Changes must pass through isolated environments enforcing segregation of duties",
+      "Production must never accept user logins",
+      "RBAC forbids any DBA from accessing production"],
+    explain: "Isolated environments (test/model/production) enforce SoD; ad-hoc live debugging bypasses this control." },
+  { ch: 14, lo: "14.HARD", section: "Emergency Change Bypass", type: "application",
+    q: "Per the chapter, which statement is CORRECT about emergency changes?",
+    options: [
+      "Emergency changes bypass the test environment and go directly from model to production",
+      "Emergency changes bypass the model environment and move directly to production",
+      "Emergency changes require unanimous board approval before execution",
+      "Emergency changes skip change management entirely"],
+    explain: "Emergency changes bypass model and move to production directly (test still occurs)." },
+  { ch: 19, lo: "19.HARD", section: "Auditing Definition", type: "memorization",
+    q: "Which statement BEST captures the chapter's definition of auditing?",
+    options: [
+      "A systematic and independent review of data, records, and operations providing assurance of internal-control effectiveness and process efficiency",
+      "A management-led review that provides tax-compliance services",
+      "A sales process aimed at convincing stakeholders the company is growing",
+      "An external consulting engagement unrelated to internal controls"],
+    explain: "Auditing = systematic/independent review for assurance on controls and process efficiency." },
+  { ch: 19, lo: "19.HARD", section: "Audit Specialties Evolution", type: "memorization",
+    q: "Historically auditors were grouped as operational, financial, and IT specialists. Companies today are moving toward:",
+    options: [
+      "A single specialty — only operational audit",
+      "A unified audit approach in which employees from different audit specialties work together",
+      "Fully external audit outsourcing",
+      "Eliminating financial auditors entirely"],
+    explain: "Unified audit approach — cross-specialty collaboration on an engagement." },
+  { ch: 19, lo: "19.HARD", section: "External Auditor Focus", type: "application",
+    q: "Per Table 19.2, an EXTERNAL auditor's primary purpose is:",
+    options: [
+      "Analyzing and improving controls for internal stakeholders",
+      "Providing an opinion on the fair presentation of financial statements for external stakeholders",
+      "Replacing the internal audit function",
+      "Managing the client's daily operations"],
+    explain: "External audit: opinion on fair presentation for external stakeholders." },
+  { ch: 19, lo: "19.HARD", section: "Reporting Lines", type: "application",
+    q: "A CFO asks why internal audit's reporting line matters. Per the chapter:",
+    options: [
+      "Internal audit reports only to the CFO; independence is preserved through physical separation",
+      "Internal audit has a direct reporting line to the audit committee (even when administratively to the CFO/CCO) — preserving independence from operational management",
+      "Internal audit reports only to external auditors for independence",
+      "Internal audit has no reporting line; it operates unaccountably"],
+    explain: "Direct line to audit committee preserves independence; administrative line may be CFO/CCO." },
+  { ch: 19, lo: "19.HARD", section: "Big Four Misconception", type: "memorization",
+    q: "Which statement about the Big Four accounting firms is CORRECT?",
+    options: ["They only provide external audit services", "They provide external audit, tax, and advisory services", "They consist of PwC, Deloitte, EY, and Grant Thornton", "They are exclusively internal auditors"],
+    explain: "Big Four provide audit + tax + advisory; firms are PwC, Deloitte, EY, KPMG." },
+  { ch: 19, lo: "19.HARD", section: "Aligned Assurance", type: "memorization",
+    q: "Aligned assurance focuses on:",
+    options: [
+      "The first line of defense taking full ownership of controls",
+      "The second and third lines of defense working cohesively to cover a company's risks",
+      "Replacing the external audit entirely",
+      "Merging internal and external audit into one function"],
+    explain: "Aligned assurance = second + third lines working cohesively." },
+  { ch: 19, lo: "19.HARD", section: "Audit Plan vs Risk Assessment", type: "memorization",
+    q: "Which pair correctly distinguishes the audit plan from the audit risk assessment?",
+    options: [
+      "Audit plan is the marketing document; risk assessment is the legal document",
+      "Audit plan is the list of engagements; risk assessment identifies risky areas that drive audit prioritization",
+      "They are synonymous",
+      "Audit plan is prepared after fieldwork; risk assessment is prepared at the end"],
+    explain: "Risk assessment drives which engagements make it onto the audit plan." },
+  { ch: 19, lo: "19.HARD", section: "Agile Auditing", type: "application",
+    q: "A company adopts Agile auditing. Which change to the audit plan is MOST likely?",
+    options: [
+      "Moving from a fixed 12-month plan to a rolling, prioritized audit plan",
+      "Abandoning prioritization entirely",
+      "Outsourcing all audits to Big Four firms",
+      "Publishing the audit plan to regulators"],
+    explain: "Agile = rolling, prioritized audit plan that can adjust over time." },
+  { ch: 19, lo: "19.HARD", section: "Stages Order Trap", type: "memorization",
+    q: "Which ordering of audit stages is CORRECT?",
+    options: ["Planning → Fieldwork → Reporting → Wrap-up → Follow-up", "Planning → Fieldwork → Wrap-up → Reporting → Follow-up", "Fieldwork → Planning → Wrap-up → Reporting → Follow-up", "Planning → Wrap-up → Fieldwork → Reporting → Follow-up"],
+    explain: "Wrap-up precedes Reporting — the common trap." },
+  { ch: 19, lo: "19.HARD", section: "Planning Deliverables", type: "memorization",
+    q: "Which pair are the two PLANNING deliverables named in the chapter?",
+    options: ["Audit report + management response", "Scoping document + audit canvas", "Document request + workpapers", "Remediation plan + risk matrix"],
+    explain: "Planning yields the scoping document and audit canvas." },
+  { ch: 19, lo: "19.HARD", section: "Scoping Document", type: "memorization",
+    q: "A scoping document includes:",
+    options: [
+      "The auditor's personal calendar for the month",
+      "Identified risks, relevant controls to be tested, and the likelihood and impact of risks",
+      "Only the fieldwork results",
+      "The final audit opinion"],
+    explain: "Scoping captures risks, controls, and likelihood/impact." },
+  { ch: 19, lo: "19.HARD", section: "Kickoff Meeting Purpose", type: "application",
+    q: "A manager receives document requests for an audit but was never invited to a kickoff meeting. Per the chapter, the PRIMARY concern is:",
+    options: [
+      "Kickoff meetings are optional and the manager should simply comply",
+      "The auditee has not been presented with the plan and has no opportunity to provide immediate feedback or raise concerns before the audit begins",
+      "Document requests cannot be issued before a kickoff",
+      "The external auditor must approve the kickoff"],
+    explain: "Kickoff is where the auditee receives the plan and provides feedback — skipping it undermines the relationship and planning inputs." },
+  { ch: 19, lo: "19.HARD", section: "Design vs Operating", type: "application",
+    q: "An auditor asks the AP clerk: 'Do you always require a PO match before posting invoices?' The clerk says yes. Which effectiveness test is this, and what is its LIMITATION?",
+    options: [
+      "Reperformance testing for operating effectiveness — fully independent",
+      "Inquiry — contributes to BOTH design and operating effectiveness, but inquiry alone is generally not sufficient to conclude on operating effectiveness",
+      "Inspection — only relevant for design effectiveness and never for operating",
+      "Substantive procedure — confirms no misstatements exist"],
+    explain: "Inquiry is shared between design and operating but is the weakest test by itself — combine with observation/inspection/reperformance." },
+  { ch: 19, lo: "19.HARD", section: "Reperformance Unique", type: "memorization",
+    q: "Which testing technique is UNIQUE to operating effectiveness and not design effectiveness?",
+    options: ["Inquiry", "Observation", "Inspection", "Reperformance"],
+    explain: "Reperformance (often via data analytics) is unique to operating effectiveness." },
+  { ch: 19, lo: "19.HARD", section: "Controls vs Substantive", type: "application",
+    q: "An auditor scans the full population of AP invoices and finds 17 duplicate payments. What type of test is this, and what does it suggest?",
+    options: [
+      "Test of controls, confirming the control operates as designed",
+      "Substantive procedure; errors may indicate a control deficiency",
+      "Walkthrough, requiring additional design testing",
+      "Scoping activity, requiring the auditor to restart planning"],
+    explain: "Substantive procedure over underlying data; errors may indicate control deficiencies." },
+  { ch: 19, lo: "19.HARD", section: "Wrap-up Deliverable", type: "memorization",
+    q: "Which deliverable is PRIMARILY produced during wrap-up?",
+    options: ["The draft audit report and finalized workpapers", "The scoping document and audit canvas", "The kickoff agenda", "The vendor onboarding checklist"],
+    explain: "Wrap-up finalizes workpapers and drafts the audit report." },
+  { ch: 19, lo: "19.HARD", section: "Follow-up Evidence", type: "application",
+    q: "During follow-up, management claims findings are remediated but offers no documentation. The auditor should:",
+    options: [
+      "Accept the verbal assertion because management owns the risk",
+      "Reopen the entire original audit from the planning phase",
+      "Rely on both information from the auditee AND documentation of the implemented changes before closing findings",
+      "Refer the unresolved findings to external auditors"],
+    explain: "Follow-up relies on information from the auditee PLUS supporting evidence such as documentation." },
+];
+
+// ===== UI COMPONENT =====
+
+const CHAPTER_META = {
+  7: { title: "Emerging & Disruptive Technologies", accent: "#d97706" },
+  14: { title: "Information Systems and Controls", accent: "#0891b2" },
+  19: { title: "Audit Assurance", accent: "#7c3aed" },
+};
+
+const LO_META = {
+  "7.1": "Risks & Opportunities of New Tech",
+  "7.2": "Business Opportunities from Disruptive Tech",
+  "7.3": "Robotic Process Automation",
+  "7.4": "Blockchain Fundamentals",
+  "7.5": "Blockchain & Accounting",
+  "14.1": "COBIT Framework",
+  "14.2": "Logical User Access Controls",
+  "14.3": "Physical Access Controls",
+  "14.4": "Backup & Recovery",
+  "14.5": "Change Management",
+  "19.1": "Internal vs External Audit",
+  "19.2": "Stages of an Internal Audit",
+  "19.3": "Internal Audit Testing",
+  "19.4": "Outcome of Control Testing",
+};
+
+// Answer verification (encoded)
+const _E="2b292d2c2f2d3130303136343436393b383a3d3f3f3e41404042454447474848484a4d4d4c4e515353525554575758595a5a5e5f5c5e6161636265656465696b6a6b6d6e6e6e727373727774747679787a7a7d7d7f7e81808382848487868988898a8c8f";
+(function(){BANK.forEach((q,i)=>{const v=parseInt(_E.substr(i*2,2),16)^((i+42)&0xFF);Object.defineProperty(q,'_x',{value:v,enumerable:false,configurable:false,writable:false});Object.freeze(q.options);Object.freeze(q);});Object.freeze(BANK);})();
+
+const LOS_BY_CHAPTER = {
+  7: ["7.1", "7.2", "7.3", "7.4", "7.5"],
+  14: ["14.1", "14.2", "14.3", "14.4", "14.5"],
+  19: ["19.1", "19.2", "19.3", "19.4"],
+};
+
+function formatTime(s) {
+  s = Math.max(0, Math.floor(s));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const pad = n => String(n).padStart(2, "0");
+  return h > 0 ? h + ":" + pad(m) + ":" + pad(sec) : pad(m) + ":" + pad(sec);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRandom(pool, exceptIndex) {
+  if (pool.length === 0) return null;
+  if (pool.length === 1) return 0;
+  let i = Math.floor(Math.random() * pool.length);
+  while (i === exceptIndex) i = Math.floor(Math.random() * pool.length);
+  return i;
+}
+
+function AISQuiz() {
+  const [selectedChapter, setSelectedChapter] = useState("all"); // "all" | 7 | 14 | 19
+  const [selectedLO, setSelectedLO] = useState("all"); // "all" | "7.1" | "14.3" | etc.
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [current, setCurrent] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  // Streaks are live counters (persisted separately from the mastered map).
+  // correct/total/byChapter are DERIVED from `answered` so they stay in sync
+  // with the "Mastered this cycle" graphic.
+  const [streakState, setStreakState] = useState(() => {
+    try {
+      const s = JSON.parse(localStorage.getItem("bs_hard_streak_v1"));
+      if (s && typeof s === "object") {
+        return { streak: s.streak || 0, bestStreak: s.bestStreak || 0 };
+      }
+    } catch(e) {}
+    return { streak: 0, bestStreak: 0 };
+  });
+  const [answered, setAnswered] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("bs_hard_answered_v1")) || {}; }
+    catch(e) { return {}; }
+  });
+  const [cycleComplete, setCycleComplete] = useState(false);
+
+  // Per-question timer (resets to 0 each new question) + persisted total time on page.
+  const [timerElapsed, setTimerElapsed] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [totalElapsed, setTotalElapsed] = useState(() => {
+    try {
+      const v = parseInt(localStorage.getItem("bs_hard_total_v1"), 10);
+      return isFinite(v) && v >= 0 ? v : 0;
+    } catch(e) { return 0; }
+  });
+  const [totalRunning, setTotalRunning] = useState(() => {
+    try {
+      const raw = localStorage.getItem("bs_hard_total_running_v1");
+      if (raw === null) return true;
+      return raw === "true";
+    } catch(e) { return true; }
+  });
+
+  const stats = useMemo(() => {
+    let correct = 0, total = 0;
+    const byChapter = {};
+    for (const key of Object.keys(answered)) {
+      const q = BANK[key];
+      if (!q) continue;
+      const isCorrect = answered[key] === "correct";
+      total++;
+      if (isCorrect) correct++;
+      const ch = q.ch;
+      if (!byChapter[ch]) byChapter[ch] = { correct: 0, total: 0 };
+      byChapter[ch].total++;
+      if (isCorrect) byChapter[ch].correct++;
+    }
+    return { correct, total, byChapter, streak: streakState.streak, bestStreak: streakState.bestStreak };
+  }, [answered, streakState]);
+
+  const filteredPool = useMemo(() => {
+    return BANK.map((q, i) => { const o = { ...q, idx: i }; Object.defineProperty(o,'_x',{value:q._x,enumerable:false,configurable:false,writable:false}); return o; })
+      .filter(q => selectedChapter === "all" || q.ch === selectedChapter)
+      .filter(q => selectedLO === "all" || q.lo === selectedLO)
+      .filter(q => typeFilter === "all" || q.type === typeFilter);
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_hard_answered_v1", JSON.stringify(answered)); } catch(e) {}
+  }, [answered]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_hard_streak_v1", JSON.stringify(streakState)); } catch(e) {}
+  }, [streakState]);
+
+  // Timer: reset to 0 and auto-start on each new question; auto-stop on reveal.
+  // Also stop (and prevent running) when the cycle is complete.
+  useEffect(() => {
+    if (cycleComplete) {
+      setTimerRunning(false);
+      return;
+    }
+    if (current && !revealed) {
+      setTimerElapsed(0);
+      setTimerRunning(true);
+    } else if (revealed) {
+      setTimerRunning(false);
+    }
+  }, [current, revealed, cycleComplete]);
+
+  // Per-question timer tick.
+  useEffect(() => {
+    if (!timerRunning) return;
+    const iv = setInterval(() => {
+      setTimerElapsed(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [timerRunning]);
+
+  // Total (cumulative) timer tick — independent of per-question; paused when cycle is complete
+  // or the user presses the total play/pause button.
+  useEffect(() => {
+    if (!totalRunning || cycleComplete) return;
+    const iv = setInterval(() => {
+      setTotalElapsed(prev => {
+        const next = prev + 1;
+        try { localStorage.setItem("bs_hard_total_v1", String(next)); } catch(e) {}
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [totalRunning, cycleComplete]);
+
+  // Persist totalRunning preference.
+  useEffect(() => {
+    try { localStorage.setItem("bs_hard_total_running_v1", String(totalRunning)); } catch(e) {}
+  }, [totalRunning]);
+
+  const loadNext = () => {
+    if (filteredPool.length === 0) {
+      setCurrent(null);
+      setCycleComplete(false);
+      return;
+    }
+    // Only pick from questions not yet answered correctly — wrong answers stay in the shuffle
+    const unseen = filteredPool.filter(q => answered[q.idx] !== "correct");
+    if (unseen.length === 0) {
+      setCurrent(null);
+      setCycleComplete(true);
+      return;
+    }
+    const pick = unseen[Math.floor(Math.random() * unseen.length)];
+
+    // shuffle options but track where correct went
+    const indexed = pick.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === pick._x);
+
+    setCycleComplete(false);
+    setCurrent({
+      q: pick,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  const jumpToQuestion = (q) => {
+    // Show a specific question (click-through from tracker blocks)
+    const indexed = q.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === q._x);
+    setCycleComplete(false);
+    setCurrent({
+      q,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  useEffect(() => {
+    loadNext();
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    // When filters toggle, reset the active question
+    loadNext();
+    // eslint-disable-next-line
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    // Auto-load a question if pool is available and none is active and we're not in complete state
+    if (!current && !cycleComplete && filteredPool.length > 0) {
+      loadNext();
+    }
+    // eslint-disable-next-line
+  }, [answered, cycleComplete]);
+
+  // Keyboard shortcuts: 1-4 select option, Enter/Space advance
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!current) return;
+      // Don't hijack when user is typing in an input
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
+
+      if (!revealed && ["1","2","3","4"].includes(e.key)) {
+        const i = parseInt(e.key, 10) - 1;
+        if (i < current.shuffledOptions.length) {
+          e.preventDefault();
+          handleSelect(i);
+        }
+      } else if (revealed && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        loadNext();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+    // eslint-disable-next-line
+  }, [current, revealed]);
+
+  const handleSelect = (i) => {
+    if (revealed) return;
+    setSelected(i);
+    setRevealed(true);
+    const correct = i === current.correctShuffledIndex;
+    setAnswered(prev => ({ ...prev, [current.q.idx]: correct ? "correct" : "wrong" }));
+    setStreakState(prev => {
+      const newStreak = correct ? prev.streak + 1 : 0;
+      return {
+        streak: newStreak,
+        bestStreak: Math.max(prev.bestStreak, newStreak),
+      };
+    });
+  };
+
+  const selectChapter = (ch) => {
+    setSelectedChapter(ch);
+    setSelectedLO("all"); // reset LO filter when chapter changes
+  };
+
+  const resetStats = () => {
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setAnswered({});
+    setCycleComplete(false);
+    setTimerElapsed(0);
+    setTimerRunning(false);
+    setTotalElapsed(0);
+    setTotalRunning(true);
+    try { localStorage.removeItem("bs_hard_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_hard_streak_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_hard_total_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_hard_total_running_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_hard_stats_v1"); } catch(e) {} // legacy cleanup
+    try { localStorage.removeItem("bs_hard_timer_v1"); } catch(e) {} // legacy cleanup
+    loadNext();
+  };
+
+  const startNewCycle = () => {
+    setAnswered({});
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setCycleComplete(false);
+    try { localStorage.removeItem("bs_hard_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_hard_streak_v1"); } catch(e) {}
+  };
+
+  const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+
+  return (
+    <div className="min-h-screen w-full" style={{
+      background: "linear-gradient(180deg, #fbf9f4 0%, #f4f1ea 100%)",
+      fontFamily: "'Inter', -apple-system, sans-serif",
+      color: "#1c1917",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+        .font-serif-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+        .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+        .option-btn { transition: all 0.18s cubic-bezier(.4,0,.2,1); }
+        .option-btn:not(:disabled):hover { transform: translateX(4px); }
+        .fade-in { animation: fadeIn 0.35s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .dot-grid {
+          background-image: radial-gradient(circle, #d6d3d1 1px, transparent 1px);
+          background-size: 24px 24px;
+        }
+      `}</style>
+
+      <div className="max-w-4xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
+
+        {/* Back link */}
+        <a href="ais.html" className="inline-block font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 hover:text-stone-900 mb-6 no-underline">
+          ← AIS Study Tools
+        </a>
+
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-baseline justify-between flex-wrap gap-4">
+            <div>
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-stone-500 mb-2">
+                Savage · Brannock · Foksinska · 1st ed.
+              </div>
+              <h1 className="font-serif-display text-4xl sm:text-5xl font-bold leading-[1.05] text-stone-900">
+                AIS <span className="italic">Review</span>
+              </h1>
+              <p className="font-serif-display italic text-stone-600 text-lg mt-1">
+                Chapters 7 · 14 · 19
+              </p>
+            </div>
+            <div className="flex items-center gap-5 font-mono text-xs">
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Score</div>
+                <div className="text-2xl font-bold text-stone-900">{stats.correct}<span className="text-stone-400">/{stats.total}</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Acc</div>
+                <div className="text-2xl font-bold text-stone-900">{accuracy}<span className="text-stone-400 text-base">%</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Streak</div>
+                <div className="text-2xl font-bold" style={{ color: stats.streak >= 3 ? "#d97706" : "#1c1917" }}>
+                  {stats.streak}{stats.bestStreak > 0 && <span className="text-stone-400 text-sm font-normal"> / {stats.bestStreak}</span>}
+                </div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Time</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl font-bold text-stone-900 tabular-nums">{formatTime(totalElapsed)}</div>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTotalRunning(r => !r); }}
+                    aria-label={totalRunning ? "Pause total timer" : "Start total timer"}
+                    title={totalRunning ? "Pause total timer" : "Start total timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 22, height: 22, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {totalRunning && !cycleComplete ? (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Chapter filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Chapter:</span>
+          <button
+            onClick={() => selectChapter("all")}
+            className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+            style={{
+              background: selectedChapter === "all" ? "#1c1917" : "transparent",
+              color: selectedChapter === "all" ? "#fff" : "#78716c",
+              borderColor: selectedChapter === "all" ? "#1c1917" : "#d6d3d1",
+            }}
+          >
+            All chapters
+          </button>
+          {[7, 14, 19].map(ch => {
+            const active = selectedChapter === ch;
+            const meta = CHAPTER_META[ch];
+            const chStats = stats.byChapter[ch];
+            return (
+              <button
+                key={ch}
+                onClick={() => selectChapter(ch)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? meta.accent : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? meta.accent : "#d6d3d1",
+                }}
+              >
+                Ch {ch} · {meta.title}
+                {chStats && (
+                  <span className="ml-2 font-mono opacity-80">
+                    {chStats.correct}/{chStats.total}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+          <button
+            onClick={resetStats}
+            className="option-btn ml-auto px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-stone-500 hover:text-stone-900 border border-stone-300 rounded-full"
+          >
+            Reset
+          </button>
+        </div>
+
+        {/* LO sub-topic filter — only visible when a specific chapter is selected */}
+        {selectedChapter !== "all" && (
+          <div className="flex flex-wrap items-center gap-2 mb-3 fade-in">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Topic:</span>
+            <button
+              onClick={() => setSelectedLO("all")}
+              className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+              style={{
+                background: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "transparent",
+                color: selectedLO === "all" ? "#fff" : "#78716c",
+                borderColor: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+              }}
+            >
+              All topics
+            </button>
+            {LOS_BY_CHAPTER[selectedChapter].map(lo => {
+              const active = selectedLO === lo;
+              const count = BANK.filter(q => q.lo === lo).length;
+              return (
+                <button
+                  key={lo}
+                  onClick={() => setSelectedLO(lo)}
+                  className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                  style={{
+                    background: active ? CHAPTER_META[selectedChapter].accent : "transparent",
+                    color: active ? "#fff" : "#78716c",
+                    borderColor: active ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+                  }}
+                  title={LO_META[lo]}
+                >
+                  LO {lo} · {LO_META[lo]}
+                  <span className="ml-2 font-mono opacity-70">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Type filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 pb-6 border-b border-stone-300">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Type:</span>
+          {[
+            { key: "all", label: "All" },
+            { key: "application", label: "Application" },
+            { key: "memorization", label: "Memorization" },
+          ].map(({ key, label }) => {
+            const active = typeFilter === key;
+            const count = BANK.filter(q =>
+              (selectedChapter === "all" || q.ch === selectedChapter) &&
+              (selectedLO === "all" || q.lo === selectedLO) &&
+              (key === "all" || q.type === key)
+            ).length;
+            return (
+              <button
+                key={key}
+                onClick={() => setTypeFilter(key)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? "#1c1917" : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? "#1c1917" : "#d6d3d1",
+                }}
+              >
+                {label} <span className="font-mono opacity-70 ml-1">({count})</span>
+              </button>
+            );
+          })}
+          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 hidden sm:inline">
+            Keys: 1–4 · Enter
+          </span>
+        </div>
+
+        {/* Progress & status row */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex-1 min-w-[180px]">
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.15em] text-stone-500 mb-1.5">
+              <span>Mastered this cycle</span>
+              <span className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5">
+                  <span className="tabular-nums text-stone-700" style={{ fontSize: 11 }}>{formatTime(timerElapsed)}</span>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTimerRunning(r => !r); }}
+                    aria-label={timerRunning ? "Pause timer" : "Start timer"}
+                    title={timerRunning ? "Pause timer" : "Start timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 18, height: 18, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {timerRunning ? (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </span>
+                <span>
+                  {filteredPool.filter(q => answered[q.idx] === "correct").length} / {filteredPool.length}
+                </span>
+              </span>
+            </div>
+            <div className="flex gap-[2px] flex-wrap">
+              {filteredPool.map(q => {
+                const s = answered[q.idx];
+                const isCurrent = current && current.q && current.q.idx === q.idx;
+                const bg = s === "correct" ? "#16a34a" : s === "wrong" ? "#dc2626" : "#e7e5e4";
+                const label = s === "correct" ? "Correct" : s === "wrong" ? "Wrong" : "Unseen";
+                return (
+                  <button
+                    key={q.idx}
+                    type="button"
+                    onClick={() => jumpToQuestion(q)}
+                    title={label + " — click to revisit"}
+                    aria-label={"Jump to question: " + label}
+                    style={{
+                      width: 10, height: 10, borderRadius: 2, background: bg,
+                      padding: 0, border: 0, cursor: "pointer",
+                      outline: isCurrent ? "2px solid #1c1917" : "none",
+                      outlineOffset: isCurrent ? 1 : 0,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {cycleComplete && (
+          <div className="fade-in mb-6 rounded-2xl p-5 border" style={{ background: "#fff", borderColor: "#d6d3d1" }}>
+            <div className="font-serif-display text-xl font-bold text-stone-900 mb-1">All mastered</div>
+            <div className="text-sm text-stone-600 mb-3">
+              You've answered all {filteredPool.length} questions in this filter correctly. Start a new cycle to go through them again.
+            </div>
+            <button
+              onClick={startNewCycle}
+              className="option-btn px-4 py-2 text-sm font-medium rounded-full text-white"
+              style={{ background: "#1c1917" }}
+            >
+              Start new cycle
+            </button>
+          </div>
+        )}
+
+
+        {/* Question card */}
+        {current ? (
+          <div key={stats.total} className="fade-in">
+            {/* Source metadata */}
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <span
+                className="font-mono text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded"
+                style={{
+                  background: CHAPTER_META[current.q.ch].accent,
+                  color: "#fff",
+                }}
+              >
+                Ch {current.q.ch} · LO {current.q.lo}
+              </span>
+              <span className="font-mono text-xs text-stone-500">
+                § {current.q.section}
+              </span>
+              <span
+                className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] px-2 py-0.5 rounded border"
+                style={{
+                  borderColor: current.q.type === "application" ? "#d97706" : "#a8a29e",
+                  color: current.q.type === "application" ? "#b45309" : "#78716c",
+                  background: current.q.type === "application" ? "#fef3c7" : "transparent",
+                }}
+              >
+                {current.q.type}
+              </span>
+            </div>
+
+            {/* Question */}
+            <div className="relative mb-7">
+              <div className="absolute -left-3 top-0 bottom-0 w-0.5" style={{ background: CHAPTER_META[current.q.ch].accent, opacity: 0.3 }}/>
+              <h2 className="font-serif-display text-2xl sm:text-[28px] leading-[1.25] text-stone-900 font-semibold pl-3">
+                {current.q.q}
+              </h2>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-2.5 mb-6">
+              {current.shuffledOptions.map((opt, i) => {
+                const isCorrect = i === current.correctShuffledIndex;
+                const isSelected = i === selected;
+                let bg = "#fff";
+                let border = "#e7e5e4";
+                let textColor = "#1c1917";
+                let letterBg = "#f5f5f4";
+                let letterColor = "#78716c";
+
+                if (revealed) {
+                  if (isCorrect) {
+                    bg = "#f0fdf4";
+                    border = "#16a34a";
+                    letterBg = "#16a34a";
+                    letterColor = "#fff";
+                  } else if (isSelected) {
+                    bg = "#fef2f2";
+                    border = "#dc2626";
+                    letterBg = "#dc2626";
+                    letterColor = "#fff";
+                  } else {
+                    textColor = "#a8a29e";
+                  }
+                } else if (isSelected) {
+                  border = "#1c1917";
+                }
+
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(i)}
+                    disabled={revealed}
+                    className="option-btn w-full text-left px-4 py-3.5 rounded-lg border flex items-start gap-4 disabled:cursor-default"
+                    style={{ background: bg, borderColor: border, color: textColor }}
+                  >
+                    <span
+                      className="font-mono text-xs font-bold w-6 h-6 flex items-center justify-center rounded shrink-0 mt-0.5"
+                      style={{ background: letterBg, color: letterColor }}
+                    >
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    <span className="text-[15px] leading-snug flex-1">{opt}</span>
+                    {revealed && isCorrect && (
+                      <span className="text-green-600 font-bold text-lg">✓</span>
+                    )}
+                    {revealed && isSelected && !isCorrect && (
+                      <span className="text-red-600 font-bold text-lg">✕</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Explanation + next */}
+            {revealed && (
+              <div className="fade-in">
+                <div className="border-t-2 border-dashed border-stone-300 pt-5 mb-5">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mb-2">
+                    {selected === current.correctShuffledIndex ? "Correct" : "Answer"}
+                  </div>
+                  <p className="font-serif-display text-[17px] leading-relaxed text-stone-800 italic">
+                    {current.q.explain}
+                  </p>
+                </div>
+                <button
+                  onClick={loadNext}
+                  className="option-btn w-full sm:w-auto px-8 py-3 rounded-lg font-medium text-sm text-white"
+                  style={{ background: "#1c1917" }}
+                >
+                  Next question →
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-stone-500 font-serif-display italic">
+            No questions in the selected scope.
+          </div>
+        )}
+
+        {/* Footer */}
+        <footer className="mt-16 pt-6 border-t border-stone-200 font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 flex flex-wrap justify-between gap-2">
+          <span>{BANK.length} questions · {filteredPool.length} in scope</span>
+          <span>Continuous review mode</span>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AISQuiz />);
+  </script>
+</body>
+</html>

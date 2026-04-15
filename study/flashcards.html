@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Flashcards — Bleifer Study</title>
+  <meta name="description" content="Key-terms flashcards for Accounting Information Systems (Chapters 7, 14, 19)" />
+  <meta name="theme-color" content="#fbf9f4" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #fbf9f4; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1c1917;
+      min-height: 100vh;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 48px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .brand {
+      font-family: Georgia, serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      color: #1c1917;
+      letter-spacing: -0.01em;
+    }
+    .brand .sep { color: #d6d3d1; margin: 0 8px; font-weight: 400; }
+    .brand .mode { color: #78716c; font-weight: 400; font-style: italic; }
+    .back {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #78716c;
+      text-decoration: none;
+    }
+    .back:hover { color: #1c1917; }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #78716c;
+      margin-bottom: 32px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .chip {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid #e7e5e4;
+      background: #fff;
+      color: #78716c;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: #a8a29e; color: #1c1917; }
+    .chip.active {
+      background: #1c1917;
+      border-color: #1c1917;
+      color: #fbf9f4;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #a8a29e;
+    }
+
+    .card-stage {
+      perspective: 1400px;
+      margin-bottom: 24px;
+    }
+    .card {
+      position: relative;
+      width: 100%;
+      min-height: 340px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card.flipped { transform: rotateY(180deg); }
+    .face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 16px;
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .face.back { transform: rotateY(180deg); }
+    .face-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #a8a29e;
+      margin-bottom: 20px;
+    }
+    .face .term {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .face .def {
+      font-family: Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: #292524;
+    }
+    .ch-tag-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .ch-tag, .lo-tag, .section-tag {
+      display: inline-block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #f5f5f4;
+      color: #78716c;
+    }
+    .lo-tag {
+      background: #1c1917;
+      color: #fbf9f4;
+    }
+    .section-tag {
+      background: transparent;
+      color: #a8a29e;
+      border: 1px solid #e7e5e4;
+    }
+    .lo-filters {
+      margin-top: -12px;
+      margin-bottom: 24px;
+    }
+    .lo-filters .chip {
+      font-size: 10px;
+      padding: 6px 12px;
+    }
+    .flip-hint {
+      position: absolute;
+      bottom: 20px;
+      right: 24px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #d6d3d1;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    button {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.9rem;
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: 1px solid #e7e5e4;
+      background: #fff;
+      color: #1c1917;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover:not(:disabled) { border-color: #1c1917; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.primary {
+      background: #1c1917;
+      color: #fbf9f4;
+      border-color: #1c1917;
+    }
+    button.primary:hover:not(:disabled) { background: #292524; }
+
+    .empty {
+      padding: 80px 24px;
+      text-align: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+    }
+
+    .mc-section {
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid #e7e5e4;
+    }
+    .mc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .mc-title {
+      font-family: Georgia, serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .mc-score {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #78716c;
+    }
+    .mc-score .pct { color: #1c1917; font-weight: 700; }
+    .mc-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      color: #78716c;
+      font-variant-numeric: tabular-nums;
+    }
+    .mc-timer-value { color: #1c1917; letter-spacing: 0.02em; }
+    .mc-timer-sep {
+      color: #a8a29e;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-left: 4px;
+    }
+    .mc-timer-btn {
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: 1px solid #d6d3d1;
+      border-radius: 999px;
+      background: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #1c1917;
+    }
+    .mc-timer-btn:hover { border-color: #1c1917; }
+    .mc-card {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 16px;
+      padding: 28px 28px 24px;
+    }
+    .mc-prompt-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #a8a29e;
+      margin-bottom: 12px;
+    }
+    .mc-prompt {
+      font-family: Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .mc-prompt-sub {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #78716c;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    .mc-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .mc-option {
+      text-align: left;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #1c1917;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .mc-option:hover:not(:disabled) {
+      border-color: #1c1917;
+      background: #fafaf9;
+    }
+    .mc-option .letter {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #a8a29e;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .mc-option.correct {
+      border-color: #166534;
+      background: #f0fdf4;
+    }
+    .mc-option.correct .letter { color: #166534; }
+    .mc-option.incorrect {
+      border-color: #991b1b;
+      background: #fef2f2;
+    }
+    .mc-option.incorrect .letter { color: #991b1b; }
+    .mc-option.faded { opacity: 0.55; }
+    .mc-option:disabled { cursor: default; }
+
+    .mc-feedback {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 10px;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      display: none;
+    }
+    .mc-feedback.show { display: block; }
+    .mc-feedback.right {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #14532d;
+    }
+    .mc-feedback.wrong {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #7f1d1d;
+    }
+    .mc-feedback .label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .mc-feedback .term-name { font-weight: 700; }
+
+    .mc-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .mc-mode {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mc-mode .chip {
+      font-size: 10px;
+      padding: 6px 12px;
+    }
+
+    .learn-section {
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid #e7e5e4;
+    }
+    .learn-input {
+      width: 100%;
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      color: #1c1917;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      user-select: text;
+    }
+    .learn-input:focus { border-color: #1c1917; }
+    .learn-input:disabled { background: #fafaf9; cursor: default; }
+    .learn-input.correct { border-color: #166534; background: #f0fdf4; }
+    .learn-input.incorrect { border-color: #991b1b; background: #fef2f2; }
+    .learn-input.close { border-color: #b45309; background: #fffbeb; }
+    #devtools-shield {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #fbf9f4;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div id="devtools-shield">Please close developer tools to continue studying.</div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="index.html">Bleifer Study<span class="sep">/</span><span class="mode">Flashcards</span></a>
+      <a class="back" href="ais.html">← AIS</a>
+    </div>
+
+    <h1>Key Terms Flashcards</h1>
+    <div class="subtitle">Click a card to flip. Filter by chapter and learning objective.</div>
+
+    <div class="filters" id="filters">
+      <button class="chip active" data-ch="all">All Chapters</button>
+      <button class="chip" data-ch="7">Ch 7 · Emerging Tech</button>
+      <button class="chip" data-ch="14">Ch 14 · IT & Controls</button>
+      <button class="chip" data-ch="19">Ch 19 · Internal Audit</button>
+    </div>
+
+    <div class="filters lo-filters" id="lo-filters" style="display:none"></div>
+
+    <div class="progress">
+      <span id="counter">1 / 0</span>
+      <span id="section-label">Key Term</span>
+    </div>
+
+    <div class="card-stage">
+      <div class="card" id="card" onclick="flip()">
+        <div class="face front">
+          <div class="face-label">Term</div>
+          <div class="term" id="term">—</div>
+          <div class="ch-tag-row">
+            <span class="ch-tag" id="ch-tag-front">CH ·</span>
+            <span class="lo-tag" id="lo-tag-front"></span>
+            <span class="section-tag" id="section-tag-front"></span>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="face back">
+          <div class="face-label">Definition</div>
+          <div class="def" id="def">—</div>
+          <div class="ch-tag-row">
+            <span class="ch-tag" id="ch-tag-back">CH ·</span>
+            <span class="lo-tag" id="lo-tag-back"></span>
+            <span class="section-tag" id="section-tag-back"></span>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="prev" onclick="prev()">← Previous</button>
+      <button onclick="shuffleDeck()">Shuffle</button>
+      <button class="primary" id="next" onclick="next()">Next →</button>
+    </div>
+
+    <div class="mc-section">
+      <div class="mc-header">
+        <div class="mc-title">Practice Quiz</div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <span class="mc-timer">
+            <span class="mc-timer-value" id="mc-timer-value">00:00</span>
+            <button type="button" class="mc-timer-btn" id="mc-timer-btn" aria-label="Start timer" title="Start timer">
+              <svg id="mc-timer-icon" width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z"></path></svg>
+            </button>
+            <span class="mc-timer-sep">Total</span>
+            <span class="mc-timer-value" id="mc-timer-total">00:00</span>
+            <button type="button" class="mc-timer-btn" id="mc-total-btn" aria-label="Pause total timer" title="Pause total timer">
+              <svg id="mc-total-icon" width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect></svg>
+            </button>
+          </span>
+          <div class="mc-score">
+            <span id="mc-correct">0</span> / <span id="mc-total">0</span> ·
+            <span class="pct" id="mc-pct">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mc-controls" style="margin-top:0;margin-bottom:16px;">
+        <div class="mc-mode" id="mc-mode">
+          <button class="chip active" data-mode="term2def">Term → Definition</button>
+          <button class="chip" data-mode="def2term">Definition → Term</button>
+        </div>
+        <button id="mc-reset" onclick="resetMcScore()">Reset Score</button>
+      </div>
+
+      <div class="mc-card">
+        <div class="mc-prompt-label" id="mc-prompt-label">Which definition matches this term?</div>
+        <div class="mc-prompt" id="mc-prompt">—</div>
+        <div class="mc-prompt-sub" id="mc-prompt-sub"></div>
+        <div class="mc-options" id="mc-options"></div>
+        <div class="mc-feedback" id="mc-feedback"></div>
+        <div class="mc-controls">
+          <span class="mc-score" id="mc-filter-label">All chapters</span>
+          <button class="primary" id="mc-next" onclick="nextMcQuestion()">Next Question →</button>
+        </div>
+      </div>
+
+      <div class="learn-section">
+        <div class="mc-header">
+          <div class="mc-title">Learn — Write Mode</div>
+          <div class="mc-score">
+            <span id="learn-correct">0</span> / <span id="learn-total">0</span> ·
+            <span class="pct" id="learn-pct">—</span>
+          </div>
+        </div>
+
+        <div class="mc-controls" style="margin-top:0;margin-bottom:16px;">
+          <div class="mc-mode" id="learn-mode">
+            <button class="chip active" data-mode="def2term">Definition → Type Term</button>
+            <button class="chip" data-mode="term2def">Term → Type Definition</button>
+          </div>
+          <button id="learn-reset" onclick="resetLearnScore()">Reset Progress</button>
+        </div>
+
+        <div class="mc-card">
+          <div class="mc-prompt-label" id="learn-prompt-label">Type the term that matches this definition</div>
+          <div class="mc-prompt" id="learn-prompt">—</div>
+          <div class="mc-prompt-sub" id="learn-prompt-sub"></div>
+          <form id="learn-form" autocomplete="off">
+            <input type="text" class="learn-input" id="learn-input" placeholder="Type your answer…" autocomplete="off" autocapitalize="off" spellcheck="false" />
+          </form>
+          <div class="mc-feedback" id="learn-feedback"></div>
+          <div class="mc-controls">
+            <span class="mc-score" id="learn-filter-label">All chapters</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button id="learn-dontknow" onclick="revealLearn()">Don't know</button>
+              <button id="learn-override" onclick="overrideLearn()" style="display:none;">Override — I was right</button>
+              <button class="primary" id="learn-submit" onclick="submitLearn()">Check</button>
+              <button class="primary" id="learn-next" onclick="nextLearnQuestion()" style="display:none;">Next →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='F12') { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && (e.key==='u'||e.key==='s')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e){
+      var t = e.target;
+      if (t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+    function checkDevTools(){
+      var shield = document.getElementById('devtools-shield');
+      var w = window.outerWidth - window.innerWidth > 160;
+      var h = window.outerHeight - window.innerHeight > 160;
+      var isOpen = w || h;
+      if(!isOpen){ try { var s=performance.now(); (function(){}).constructor('debugger')(); if(performance.now()-s>100) isOpen=true; } catch(e){} }
+      if(isOpen){ shield.style.display='flex'; document.querySelector('.wrap').style.display='none'; }
+      else { shield.style.display='none'; document.querySelector('.wrap').style.display=''; }
+    }
+    setInterval(checkDevTools, 1000);
+    checkDevTools();
+    console.clear();
+    console.log('%cStop!','color:red;font-size:48px;font-weight:bold;');
+    console.log('%cThis is a study tool. Inspecting the source defeats the purpose of learning.','font-size:16px;');
+  })();
+  </script>
+
+  <script>
+    // === FLASHCARD DATA ===
+    const CARDS = [
+      {"ch": 7, "lo": "7.3", "section": "RPA vs AI", "term": "artificial intelligence (AI)", "definition": "Computer systems trained to perform tasks that typically require human intelligence, using complex algorithms to learn and solve problems without human intervention. Unlike RPA, AI simulates human decision-making and evolves through self-learning."},
+      {"ch": 7, "lo": "7.2", "section": "Autonomous Things", "term": "autonomous things (AuT)", "definition": "Physical devices controlled by computers using complex algorithms, such as drones and robots, that can operate with little or no human intervention to perform tasks like deliveries, inventory counts, or security checks."},
+      {"ch": 7, "lo": "7.4", "section": "Blockchain Use Case", "term": "bitcoin", "definition": "A digital cryptocurrency used as a medium of exchange in blockchain transactions, such as when a buyer pays a seller electronically on a peer-to-peer network. It is one of the best-known applications of blockchain technology."},
+      {"ch": 7, "lo": "7.4", "section": "What is blockchain", "term": "blockchain", "definition": "A system that records digital transactions packaged in blocks forming a sequential chain within a peer-to-peer network. It is a type of distributed ledger with unchangeable records that has disruptive potential for the accounting profession."},
+      {"ch": 7, "lo": "7.3", "section": "Business Process Automation", "term": "business process automation", "definition": "The process of managing information, data, costs, resources, and investments by increasing productivity through automating key business processes with computing technology such as RPA and AI."},
+      {"ch": 7, "lo": "7.4", "section": "Ledger Types", "term": "centralized ledger", "definition": "A blockchain ledger structure in which all participants have access to a single central ledger controlled by one authority, rather than multiple distributed copies."},
+      {"ch": 7, "lo": "7.1", "section": "Emerging Technology COE", "term": "center of excellence (COE)", "definition": "A specialized team within a company dedicated to providing unique support, usually technological, to the entire business."},
+      {"ch": 7, "lo": "7.3", "section": "RPA Logic", "term": "conditional statement", "definition": "The 'IF THIS THEN THAT' logic used by RPA to pre-program rules and decisions into software, pairing a trigger with an action. Its main limitation is that it cannot deviate from its pre-programmed orders."},
+      {"ch": 7, "lo": "7.4", "section": "Blockchain Types", "term": "consortium blockchain", "definition": "A type of blockchain operated jointly by a group of pre-selected organizations rather than being open to the public or controlled by a single entity, combining features of public and private blockchains."},
+      {"ch": 7, "lo": "7.4", "section": "Fundamental Principles", "term": "decentralization", "definition": "A fundamental principle of blockchain that eliminates the need for an intermediary or central authority to process, validate, or authenticate transactions. Decentralization of power leads to transparency and immutability."},
+      {"ch": 7, "lo": "7.4", "section": "Ledger Types", "term": "decentralized ledger", "definition": "A blockchain ledger structure in which groups of users have access to hubs that each hold copies of the same ledger, distributing control among multiple nodes rather than a single authority."},
+      {"ch": 7, "lo": "7.4", "section": "Cryptology", "term": "decryption", "definition": "The reverse process of encryption, converting an encrypted (ciphertext) message back to its original readable form so the recipient can read it."},
+      {"ch": 7, "lo": "7.1", "section": "Emerging vs Disruptive", "term": "disruptive technology", "definition": "A technology that, once widely adopted, changes the way businesses function and forces companies to adapt their operations to stay competitive."},
+      {"ch": 7, "lo": "7.4", "section": "Ledger Types", "term": "distributed ledger", "definition": "A blockchain ledger structure in which every participant in the network receives and maintains an electronic copy of the ledger, ensuring redundancy and transparency."},
+      {"ch": 7, "lo": "7.4", "section": "Cryptology", "term": "encryption", "definition": "The process of using an algorithm to encode a plaintext message (readable text) and convert it into seemingly meaningless ciphertext to secure data communication."},
+      {"ch": 7, "lo": "7.1", "section": "Emerging vs Disruptive", "term": "emerging technology", "definition": "A new technology that has entered the market but is not yet regularly used by companies. As adoption grows, it may transition into a disruptive technology."},
+      {"ch": 7, "lo": "7.1", "section": "Emerging Technology COE", "term": "emerging technology COE", "definition": "A specialized Center of Excellence whose primary objective is evaluating emerging and disruptive technologies to determine how they may fit into a company's current operations."},
+      {"ch": 7, "lo": "7.2", "section": "Extended Reality", "term": "extended reality (XR)", "definition": "An umbrella term for immersive technologies that blend real and virtual environments, encompassing augmented reality (AR), mixed reality (MR), and virtual reality (VR)."},
+      {"ch": 7, "lo": "7.2", "section": "Gamification", "term": "gamification", "definition": "The merger of video game principles and real-world simulations, allowing users to earn badges and points while learning new skills needed on the job."},
+      {"ch": 7, "lo": "7.5", "section": "Auditors and Hash Strings", "term": "hash string", "definition": "A unique cryptographic code generated for a block of data in a blockchain that enables auditors to identify whether a record has been modified, since any alteration produces a different hash."},
+      {"ch": 7, "lo": "7.4", "section": "Fundamental Principles", "term": "immutability", "definition": "A fundamental principle of blockchain meaning that once data is entered into the ledger, it cannot be changed or deleted. This ensures data integrity and protects against subsequent manipulation."},
+      {"ch": 7, "lo": "7.2", "section": "IoT", "term": "Internet of Things (IoT)", "definition": "The connection of electronic devices (the 'things') to the Internet through sensors, software, and other technologies. IoT has both consumer-facing and business-operations applications."},
+      {"ch": 7, "lo": "7.4", "section": "Miners", "term": "miner", "definition": "A participant in a blockchain network who creates ledgers of transactions in chained blocks by using computing power (nodes) to solve mathematical encryption puzzles that secure and verify transactions."},
+      {"ch": 7, "lo": "7.4", "section": "Nodes", "term": "node", "definition": "A computer, laptop, or server belonging to a participant in a blockchain network that stores blocks of data and supports mining and transaction verification."},
+      {"ch": 7, "lo": "7.4", "section": "Blockchain Types", "term": "private blockchain", "definition": "A blockchain restricted to a single organization where access and participation are controlled by a central authority, offering greater privacy but less decentralization than a public blockchain."},
+      {"ch": 7, "lo": "7.4", "section": "Blockchain Types", "term": "proof of work", "definition": "A consensus mechanism in which miners compete to solve complex mathematical encryption puzzles to validate transactions and add new blocks to the blockchain, providing security against fraud."},
+      {"ch": 7, "lo": "7.4", "section": "Blockchain Types", "term": "public blockchain", "definition": "An open blockchain network that anyone can join, view, and participate in as a node or miner, with larger networks making malicious consensus attacks more difficult."},
+      {"ch": 7, "lo": "7.3", "section": "RPA vs AI", "term": "robotic process automation (RPA)", "definition": "Software that can be programmed and managed easily, using a drag-and-drop interface that does not require coding knowledge, to automate repetitive, rules-based tasks."},
+      {"ch": 7, "lo": "7.1", "section": "Rogers' Adoption Curve", "term": "Rogers Adoption Curve", "definition": "A model that shows the percentage of businesses or individuals that fall into each category of technology adoption (Innovators 2.5%, Early Adopters 13.5%, Early Majority 34%, Late Majority 34%, Laggards 16%)."},
+      {"ch": 7, "lo": "7.4", "section": "Blockchain Basics", "term": "smart contract", "definition": "A self-executing agreement coded onto a blockchain that automatically enforces and performs the terms of a contract when predefined conditions are met, without the need for an intermediary."},
+      {"ch": 7, "lo": "7.4", "section": "Fundamental Principles", "term": "transparency", "definition": "A fundamental principle of blockchain meaning that the ledger is widely distributed and visible to all participants, which follows from decentralization and supports immutability."},
+      {"ch": 7, "lo": "7.4", "section": "Blockchain Use Case", "term": "wallet application", "definition": "A digital software application used to store cryptographic keys and enable users to send, receive, and manage cryptocurrency holdings such as bitcoin on a blockchain network."},
+      {"ch": 14, "lo": "14.3", "section": "Physical Security", "term": "access control vestibule", "definition": "A physical security mechanism (sometimes called a mantrap) consisting of a small space with two interlocking doors used to control access into a secure area such as a data center, preventing tailgating and piggybacking."},
+      {"ch": 14, "lo": "14.2", "section": "User Roles Hierarchy", "term": "administrator role", "definition": "The highest role in the user access hierarchy, with permissions for all objects. Administrators have unlimited access themselves and are responsible for assigning access roles to other users."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Cycles", "term": "backup cycle", "definition": "The frequency with which data is backed up, determining when data is stored during a data backup. Backup cycles are important for planning the recovery point objective (RPO)."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Sites", "term": "backup site", "definition": "A physical location that re-creates a data center, where company personnel will go to recover systems and data after a disaster. Backup sites can be hot, warm, or cold depending on readiness level."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Strategies", "term": "backup strategy", "definition": "A plan that determines which data is stored during a data backup. The three basic types are full, differential, and incremental backups."},
+      {"ch": 14, "lo": "14.4", "section": "BCP vs DR", "term": "business continuity planning (BCP)", "definition": "A set of procedures a business undertakes to protect employees, stakeholders, and assets in the event of a disruptive event, ensuring that the business and its processes continue running."},
+      {"ch": 14, "lo": "14.5", "section": "Change Management", "term": "change management", "definition": "A standardized process that decreases risk by controlling the identification and implementation of required changes to a system, ensuring updates are made quickly, reliably, and with appropriate review."},
+      {"ch": 14, "lo": "14.5", "section": "Change Management", "term": "change management process", "definition": "A formal three-stage process in which code changes pass through isolated environments (test, model, and production) to enforce segregation of duties and ensure accuracy before going live."},
+      {"ch": 14, "lo": "14.1", "section": "Introducing COBIT", "term": "COBIT 2019", "definition": "The most recent version of COBIT, the most widely used international IT governance framework, developed by ISACA to help companies meet regulatory compliance, manage IT risks, and align IT with corporate goals."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Sites", "term": "cold backup site", "definition": "An almost empty backup facility with physical space, power, climate control, and security but no servers or equipment installed. Recovery to a cold site often takes days or weeks and is the least expensive option."},
+      {"ch": 14, "lo": "14.4", "section": "Disaster Recovery Planning", "term": "data backup", "definition": "The process of copying system data to a secondary location so it can be restored after a disaster, data loss, or corruption event."},
+      {"ch": 14, "lo": "14.3", "section": "Data Center", "term": "data center", "definition": "An area in a building (or an entire building) dedicated to the physical storage of computer and telecommunication systems, also called a network operations center (NOC). It can be onsite or offsite."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Strategies", "term": "differential backup", "definition": "A backup strategy that copies all data created or changed since the most recent full backup. It requires moderate time and storage space, falling between full and incremental backups."},
+      {"ch": 14, "lo": "14.4", "section": "BCP vs DR", "term": "disaster recovery (DR)", "definition": "A subset of business continuity planning focused specifically on restoring IT systems, data, and infrastructure after a disruptive event."},
+      {"ch": 14, "lo": "14.2", "section": "Dormant Access", "term": "dormant access", "definition": "Access that exists when a user has not accessed the system for a significant period of time but still has an active role granting them access, creating an inappropriate-use risk."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Strategies", "term": "full backup", "definition": "A backup strategy that copies all existing data in its entirety every time the backup runs. It is the slowest strategy and requires the most storage space."},
+      {"ch": 14, "lo": "14.4", "section": "Grandfather-father-son", "term": "grandfather-father-son redundant backup", "definition": "A common backup cycle scheme based on three cycles: grandfather (full backup monthly), father (full backup weekly), and son (incremental or differential backup daily)."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Sites", "term": "hot backup site", "definition": "A backup site that is immediately operational after a disaster, running and backing up continuously on a second-by-second basis. It is the fastest and most expensive option, but viruses can be replicated to it in real time."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Strategies", "term": "incremental backup", "definition": "A backup strategy that copies only new or updated data since the most recent backup of any type. It is the fastest and cheapest strategy and uses the least storage space."},
+      {"ch": 14, "lo": "14.1", "section": "IT Governance", "term": "information technology (IT)", "definition": "The department and technologies involved in managing and processing information, including hardware, software, networks, and data used to support business operations."},
+      {"ch": 14, "lo": "14.1", "section": "IT Governance", "term": "IT governance", "definition": "The process that ensures effective and efficient use of IT so a company can achieve its goals and provide value, aligning IT strategy with business objectives."},
+      {"ch": 14, "lo": "14.1", "section": "IT Governance", "term": "IT governance framework", "definition": "A structured set of criteria a company can use to implement, manage, and monitor IT governance, including measurements for effectively leveraging IT resources (e.g., COBIT 2019)."},
+      {"ch": 14, "lo": "14.5", "section": "Model Environment", "term": "model environment", "definition": "A recent copy of the live system used in the change management process to test code in an environment that looks almost like production before changes are deployed."},
+      {"ch": 14, "lo": "14.2", "section": "User Authentication", "term": "multifactor authentication", "definition": "A user authentication method that requires a strong combination of identifiers (something the user knows, has, or is) when logging in, providing greater security than single-factor authentication."},
+      {"ch": 14, "lo": "14.2", "section": "RBAC", "term": "permission", "definition": "A listing of access rights, or privileges, that a user has once assigned to a role in a role-based access control system."},
+      {"ch": 14, "lo": "14.3", "section": "Physical Security", "term": "piggybacking", "definition": "A physical security breach in which an unauthorized person gains entry to a restricted area by following an authorized individual through a secured door with that person's knowledge or consent."},
+      {"ch": 14, "lo": "14.5", "section": "Production Environment", "term": "production environment", "definition": "The final stage of the change management process where the updated system goes live and is available for end users. Only Production Control employees can implement approved code here."},
+      {"ch": 14, "lo": "14.2", "section": "RBAC", "term": "role-based access control (RBAC)", "definition": "A type of authorization that restricts network access by assigning individuals specific roles with predefined criteria for what they can and cannot access, streamlining access management."},
+      {"ch": 14, "lo": "14.3", "section": "Physical Security", "term": "tailgating", "definition": "A physical security breach in which an unauthorized person follows an authorized individual into a restricted area without that person's knowledge, similar to piggybacking but without consent."},
+      {"ch": 14, "lo": "14.5", "section": "Test Environment", "term": "test environment", "definition": "The first stage of the change management process, often called a 'sandbox,' where developers write and modify code without impacting the actual live system."},
+      {"ch": 14, "lo": "14.5", "section": "Change Management", "term": "user acceptance testing", "definition": "A change management control in which users and IT independently verify that changes meet the defined test plan before the changes migrate to the live production environment."},
+      {"ch": 14, "lo": "14.2", "section": "Provisioning vs De-provisioning", "term": "user access de-provisioning", "definition": "The formal process of changing or removing a user's access, such as when an employee is terminated or transferred to a new role requiring different permissions."},
+      {"ch": 14, "lo": "14.2", "section": "Provisioning vs De-provisioning", "term": "user access provisioning", "definition": "The formal process of granting system access to a new user, which may vary from company to company but typically involves documented approval steps."},
+      {"ch": 14, "lo": "14.2", "section": "Dormant Access", "term": "user access review", "definition": "A periodic internal control review of all current users and their system roles to ensure access remains appropriate, reducing risks of inappropriate use."},
+      {"ch": 14, "lo": "14.2", "section": "RBAC", "term": "user access role", "definition": "A group with predefined permissions to which users are assigned under role-based access control, with each user assigned to only one role at a time."},
+      {"ch": 14, "lo": "14.2", "section": "User Authentication", "term": "user authentication", "definition": "The process of associating the username of each authorized user with a unique identifier (something they know, have, or are) to verify identity during login."},
+      {"ch": 14, "lo": "14.4", "section": "Backup Sites", "term": "warm backup site", "definition": "A backup site equipped with servers ready for systems to be installed, containing only some equipment needed to ramp up operations. Data is typically updated end-of-day rather than continuously, and recovery takes more than a few hours."},
+      {"ch": 19, "lo": "19.1", "section": "Auditing Definition", "term": "auditing", "definition": "The systematic and independent review of data, information, records, and operations of a business to provide assurance of the effectiveness of internal controls and the efficiency of processes."},
+      {"ch": 19, "lo": "19.1", "section": "Internal Audit role", "term": "internal audit", "definition": "An audit function performed by auditors employed by the company itself to analyze and improve controls and business performance, reporting administratively to management with a direct reporting line to the audit committee."},
+      {"ch": 19, "lo": "19.1", "section": "External Auditor role", "term": "external audit", "definition": "An audit performed by a public accounting firm to evaluate whether a client's financial statements are free from material misstatement and fairly presented in accordance with GAAP or other accounting standards."},
+      {"ch": 19, "lo": "19.1", "section": "Three Lines Model", "term": "Institute of Internal Auditors (IIA)", "definition": "The global professional association for internal auditors, which publishes guidance including the Three Lines Model (updated in 2020) for organizational governance and risk assurance."},
+      {"ch": 19, "lo": "19.1", "section": "Three Lines Model", "term": "three lines model", "definition": "The IIA's framework describing how organizations manage risk: operational management (first line), risk and compliance functions (second line), and internal audit (third line), with external auditors serving as external assurance providers."},
+      {"ch": 19, "lo": "19.1", "section": "Aligned Assurance", "term": "aligned assurance", "definition": "An industry-focused approach ensuring that the second and third lines of defense work cohesively to provide appropriate coverage over a company's risks, eliminating duplication and gaps."},
+      {"ch": 19, "lo": "19.2", "section": "Audit Plan", "term": "audit plan", "definition": "A complete list of all audit engagements the internal audit team will perform in the upcoming period, created based on an audit risk assessment that identifies risky areas in the company's operations."},
+      {"ch": 19, "lo": "19.2", "section": "Audit Plan", "term": "audit risk assessment", "definition": "The process in which internal audit leadership uses data points from the business and professional judgment to identify risky areas and determine which audits to include in the audit plan."},
+      {"ch": 19, "lo": "19.2", "section": "Agile Auditing", "term": "agile auditing", "definition": "A methodology that involves working in shorter sprints and making changes as needed, often using a rolling audit plan with a prioritized list of engagements rather than a fixed 12-month plan."},
+      {"ch": 19, "lo": "19.2", "section": "Agile Auditing", "term": "rolling audit plan", "definition": "An Agile-style audit plan containing a prioritized list of audit engagements that can be reprioritized over time as risks and business needs change."},
+      {"ch": 19, "lo": "19.2", "section": "Audit Deliverable", "term": "auditee", "definition": "The business function or department being audited, which engages with the internal audit team throughout the five stages of the audit engagement."},
+      {"ch": 19, "lo": "19.2", "section": "Audit Deliverable", "term": "audit deliverable", "definition": "A formal communication of information, such as results or plans, that internal audit provides to the auditee, management, or leaders in the internal audit department at each stage of the audit."},
+      {"ch": 19, "lo": "19.2", "section": "Scoping Document", "term": "scoping document", "definition": "A planning-stage deliverable describing the areas of the process subject to audit, listing identified risks, relevant controls to be tested, and the likelihood and impact of risks."},
+      {"ch": 19, "lo": "19.2", "section": "Planning Deliverables", "term": "audit planning memo", "definition": "A planning deliverable that includes key audit information such as the reason for the audit, audit team members, timelines, and scope details."},
+      {"ch": 19, "lo": "19.2", "section": "Audit Canvas", "term": "audit canvas", "definition": "An Agile version of the audit planning memo that summarizes audit information stakeholders need to know in a more concise, visual format."},
+      {"ch": 19, "lo": "19.2", "section": "Planning Deliverables", "term": "audit kickoff meeting", "definition": "A meeting where the internal audit team presents its plans, including the audit planning memo, to the auditee and captures immediate feedback or concerns before the audit begins."},
+      {"ch": 19, "lo": "19.3", "section": "Fieldwork", "term": "audit fieldwork", "definition": "The audit stage focused on assessing the adequacy of internal controls, compliance, and business processes by testing transactions, data, and performing other procedures to accomplish audit objectives."},
+      {"ch": 19, "lo": "19.3", "section": "Process Walkthrough", "term": "process walkthrough", "definition": "An information-gathering interview in which auditees explain their daily job functions to the auditor, often documented using process flowcharts."},
+      {"ch": 19, "lo": "19.3", "section": "Tests of Controls vs Substantive", "term": "tests of controls", "definition": "Audit procedures performed during fieldwork to evaluate whether controls are designed and operating effectively to prevent or detect errors and fraud."},
+      {"ch": 19, "lo": "19.3", "section": "Design vs Operating", "term": "design effectiveness", "definition": "A determination of whether a control, if operated as prescribed, meets the company's control objectives and effectively prevents or detects errors or fraud. It is tested through inquiry, observation, and inspection."},
+      {"ch": 19, "lo": "19.3", "section": "Design vs Operating", "term": "operating effectiveness", "definition": "A determination of whether a control is operated as designed by a person with appropriate authority and training. It is tested through inquiry, observation, inspection, and reperformance."},
+      {"ch": 19, "lo": "19.3", "section": "Substantive Procedures", "term": "substantive procedures", "definition": "Audit tests used to determine whether material misstatements (due to error or fraud) exist in the underlying data used to create the financial statements, often performed using data analytics over full populations."},
+      {"ch": 19, "lo": "19.3", "section": "Document Request", "term": "document request", "definition": "A formal list of all documentation needed for an audit, such as flowcharts, organizational charts, presentations, and raw data."},
+      {"ch": 19, "lo": "19.4", "section": "Wrap-up", "term": "audit workpapers", "definition": "Formal documentation capturing the control testing performed, including the steps taken, observations, and results of testing, which are referenced in the audit report."},
+      {"ch": 19, "lo": "19.4", "section": "Wrap-up", "term": "wrap-up", "definition": "The audit stage following fieldwork in which auditors complete their workpapers, ensure they are organized and properly reviewed, and draft an audit report to share with key stakeholders."},
+      {"ch": 19, "lo": "19.4", "section": "Draft Report", "term": "audit findings", "definition": "The results of an audit, such as written explanations of errors, improper activities, control weaknesses or deficiencies, and discovered fraud."},
+      {"ch": 19, "lo": "19.4", "section": "Management Response", "term": "exit meeting", "definition": "A meeting between the audit team and the auditee, held after the first draft of the audit report, to discuss findings and obtain management's response."},
+      {"ch": 19, "lo": "19.4", "section": "Management Response", "term": "management's response", "definition": "The auditee's formal plan for remediation provided during the exit meeting, including the actions management will take and a timeline for implementation."},
+      {"ch": 19, "lo": "19.4", "section": "Audit Recommendations", "term": "audit recommendations", "definition": "Suggestions provided by auditors that include the cause of an issue, details about its root cause(s), and proposed actions management can take to address the findings."},
+      {"ch": 19, "lo": "19.4", "section": "Final Report", "term": "audit report", "definition": "The final key audit deliverable that communicates audit findings—including scope, outcome, and specific findings—to auditees and their leadership throughout the organization."},
+      {"ch": 19, "lo": "19.4", "section": "Follow-up", "term": "follow-up", "definition": "The final audit stage in which the audit team verifies that management is implementing the agreed-upon remediation plan, relying on information from auditees and supporting evidence of changes implemented."},
+      {"ch": 19, "lo": "19.1", "section": "External Auditor role", "term": "audit opinion", "definition": "The section of an external audit report that presents the auditors' conclusions about whether financial statements are fairly presented in accordance with applicable accounting standards."}
+    ];
+    // freeze to deter console tampering
+    CARDS.forEach(c => Object.freeze(c));
+    Object.freeze(CARDS);
+
+    let activeCh = 'all';
+    let activeLo = 'all';
+    let deck = [];
+    let idx = 0;
+    let flipped = false;
+
+    function buildDeck() {
+      deck = CARDS.filter(c =>
+        (activeCh === 'all' || c.ch === activeCh) &&
+        (activeLo === 'all' || c.lo === activeLo)
+      );
+      idx = 0;
+      flipped = false;
+      render();
+      renderLoFilters();
+    }
+
+    function renderLoFilters() {
+      const container = document.getElementById('lo-filters');
+      if (activeCh === 'all') {
+        container.style.display = 'none';
+        container.innerHTML = '';
+        activeLo = 'all';
+        return;
+      }
+      const los = [...new Set(CARDS.filter(c => c.ch === activeCh).map(c => c.lo))].sort();
+      container.style.display = 'flex';
+      container.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'chip' + (activeLo === 'all' ? ' active' : '');
+      allBtn.textContent = 'All LOs';
+      allBtn.addEventListener('click', () => { activeLo = 'all'; buildDeck(); buildMcQuestion(); });
+      container.appendChild(allBtn);
+      los.forEach(lo => {
+        const b = document.createElement('button');
+        b.className = 'chip' + (activeLo === lo ? ' active' : '');
+        b.textContent = 'LO ' + lo;
+        b.addEventListener('click', () => { activeLo = lo; buildDeck(); buildMcQuestion(); });
+        container.appendChild(b);
+      });
+    }
+
+    function shuffleDeck() {
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      idx = 0;
+      flipped = false;
+      render();
+    }
+
+    function flip() {
+      flipped = !flipped;
+      document.getElementById('card').classList.toggle('flipped', flipped);
+    }
+
+    function next() {
+      if (idx < deck.length - 1) {
+        idx++;
+        flipped = false;
+        render();
+      }
+    }
+
+    function prev() {
+      if (idx > 0) {
+        idx--;
+        flipped = false;
+        render();
+      }
+    }
+
+    function render() {
+      const card = document.getElementById('card');
+      card.classList.toggle('flipped', flipped);
+      const cur = deck[idx];
+      if (!cur) {
+        document.getElementById('term').textContent = 'No cards match this filter.';
+        document.getElementById('def').textContent = '—';
+        ['front','back'].forEach(side => {
+          document.getElementById('ch-tag-' + side).textContent = '';
+          document.getElementById('lo-tag-' + side).textContent = '';
+          document.getElementById('section-tag-' + side).textContent = '';
+        });
+        document.getElementById('counter').textContent = '0 / 0';
+        document.getElementById('prev').disabled = true;
+        document.getElementById('next').disabled = true;
+        return;
+      }
+      document.getElementById('term').textContent = cur.term;
+      document.getElementById('def').textContent = cur.definition;
+      ['front','back'].forEach(side => {
+        document.getElementById('ch-tag-' + side).textContent = 'CH ' + cur.ch;
+        document.getElementById('lo-tag-' + side).textContent = 'LO ' + cur.lo;
+        document.getElementById('section-tag-' + side).textContent = cur.section;
+      });
+      document.getElementById('counter').textContent = (idx + 1) + ' / ' + deck.length;
+      document.getElementById('section-label').textContent = 'Key Term';
+      document.getElementById('prev').disabled = idx === 0;
+      document.getElementById('next').disabled = idx === deck.length - 1;
+    }
+
+    // filter handlers (chapter filter only)
+    document.querySelectorAll('#filters .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#filters .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        const v = btn.getAttribute('data-ch');
+        activeCh = v === 'all' ? 'all' : parseInt(v, 10);
+        activeLo = 'all'; // reset LO when chapter changes
+        buildDeck();
+        if (typeof buildMcQuestion === 'function') buildMcQuestion();
+      });
+    });
+
+    // keyboard nav
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
+    });
+
+    buildDeck();
+
+    // === PRACTICE QUIZ ===
+    const MC_STORAGE_KEY = 'bs_flash_mc_v1';
+    function loadMcState() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(MC_STORAGE_KEY));
+        if (raw && typeof raw === 'object') {
+          return {
+            correct: Number(raw.correct) || 0,
+            total: Number(raw.total) || 0,
+            mastered: Array.isArray(raw.mastered) ? raw.mastered : [],
+          };
+        }
+      } catch(e) {}
+      return { correct: 0, total: 0, mastered: [] };
+    }
+    function saveMcState() {
+      try {
+        localStorage.setItem(MC_STORAGE_KEY, JSON.stringify({
+          correct: mcCorrect,
+          total: mcTotal,
+          mastered: Array.from(mcMastered),
+        }));
+      } catch(e) {}
+    }
+    const _mcInit = loadMcState();
+    let mcMode = 'term2def';
+    let mcCorrect = _mcInit.correct;
+    let mcTotal = _mcInit.total;
+    let mcCurrent = null;
+    let mcAnswered = false;
+    let mcMastered = new Set(_mcInit.mastered); // terms answered correctly — removed from shuffle, persisted
+
+    // === TIMER (per-question resets to 0; total time is cumulative + persisted, with its own play/pause) ===
+    const TOTAL_STORAGE_KEY = 'bs_flash_total_v1';
+    const TOTAL_RUNNING_KEY = 'bs_flash_total_running_v1';
+    let timerElapsed = 0;
+    let timerRunning = false;
+    let timerInterval = null;
+    let totalElapsed = (function(){
+      try {
+        const v = parseInt(localStorage.getItem(TOTAL_STORAGE_KEY), 10);
+        return isFinite(v) && v >= 0 ? v : 0;
+      } catch(e) { return 0; }
+    })();
+    let totalRunning = (function(){
+      try {
+        const raw = localStorage.getItem(TOTAL_RUNNING_KEY);
+        if (raw === null) return true;
+        return raw === 'true';
+      } catch(e) { return true; }
+    })();
+    let totalInterval = null;
+
+    function formatTime(s) {
+      s = Math.max(0, Math.floor(s));
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return h > 0 ? h + ':' + pad(m) + ':' + pad(sec) : pad(m) + ':' + pad(sec);
+    }
+    function renderTimer() {
+      const valEl = document.getElementById('mc-timer-value');
+      const iconEl = document.getElementById('mc-timer-icon');
+      const btnEl = document.getElementById('mc-timer-btn');
+      const totalEl = document.getElementById('mc-timer-total');
+      const totalIconEl = document.getElementById('mc-total-icon');
+      const totalBtnEl = document.getElementById('mc-total-btn');
+      if (valEl) valEl.textContent = formatTime(timerElapsed);
+      if (totalEl) totalEl.textContent = formatTime(totalElapsed);
+      if (iconEl) {
+        iconEl.innerHTML = timerRunning
+          ? '<rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect>'
+          : '<path d="M1 1 L7 4 L1 7 Z"></path>';
+      }
+      if (btnEl) {
+        const label = timerRunning ? 'Pause timer' : 'Start timer';
+        btnEl.setAttribute('aria-label', label);
+        btnEl.setAttribute('title', label);
+      }
+      // Total play/pause button: disabled when no active question (all mastered / pool too small).
+      const totalDisabled = !mcCurrent;
+      if (totalIconEl) {
+        totalIconEl.innerHTML = (totalRunning && !totalDisabled)
+          ? '<rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect>'
+          : '<path d="M1 1 L7 4 L1 7 Z"></path>';
+      }
+      if (totalBtnEl) {
+        const label = totalRunning ? 'Pause total timer' : 'Start total timer';
+        totalBtnEl.setAttribute('aria-label', label);
+        totalBtnEl.setAttribute('title', label);
+        totalBtnEl.disabled = totalDisabled;
+        totalBtnEl.style.opacity = totalDisabled ? '0.5' : '1';
+        totalBtnEl.style.cursor = totalDisabled ? 'default' : 'pointer';
+      }
+    }
+    function startTimer() {
+      if (timerRunning) return;
+      timerRunning = true;
+      timerInterval = setInterval(() => {
+        timerElapsed++;
+        renderTimer();
+      }, 1000);
+      renderTimer();
+    }
+    function resetTimer() {
+      stopTimer();
+      timerElapsed = 0;
+      renderTimer();
+    }
+    function stopTimer() {
+      if (!timerRunning) return;
+      timerRunning = false;
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      renderTimer();
+    }
+    function toggleTimer() {
+      // Don't allow starting the per-question timer when there's no active question.
+      if (!mcCurrent && !timerRunning) return;
+      if (timerRunning) stopTimer(); else startTimer();
+    }
+
+    function startTotalTimer() {
+      if (totalInterval) return;
+      totalInterval = setInterval(() => {
+        totalElapsed++;
+        try { localStorage.setItem(TOTAL_STORAGE_KEY, String(totalElapsed)); } catch(e) {}
+        renderTimer();
+      }, 1000);
+    }
+    function stopTotalTimer() {
+      if (totalInterval) { clearInterval(totalInterval); totalInterval = null; }
+    }
+    function syncTotalTimer() {
+      // Total ticks when totalRunning is true AND there's an active question.
+      if (totalRunning && mcCurrent) startTotalTimer();
+      else stopTotalTimer();
+    }
+    function toggleTotalTimer() {
+      if (!mcCurrent) return; // disabled when all mastered / pool too small
+      totalRunning = !totalRunning;
+      try { localStorage.setItem(TOTAL_RUNNING_KEY, String(totalRunning)); } catch(e) {}
+      syncTotalTimer();
+      renderTimer();
+    }
+
+    document.getElementById('mc-timer-btn').addEventListener('click', toggleTimer);
+    const totalBtnInit = document.getElementById('mc-total-btn');
+    if (totalBtnInit) totalBtnInit.addEventListener('click', toggleTotalTimer);
+    renderTimer();
+
+    function mcPool() {
+      return CARDS.filter(c =>
+        (activeCh === 'all' || c.ch === activeCh) &&
+        (activeLo === 'all' || c.lo === activeLo)
+      );
+    }
+    function mcActivePool() {
+      // target pool: exclude already-mastered terms
+      return mcPool().filter(c => !mcMastered.has(c.term));
+    }
+
+    function pickRandom(arr, n, excludeTerm) {
+      const filtered = arr.filter(c => c.term !== excludeTerm);
+      const copy = filtered.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, n);
+    }
+
+    function buildMcQuestion() {
+      const fullPool = mcPool();
+      const activePool = mcActivePool();
+      const filterLabel = activeCh === 'all' ? 'All chapters' : 'Ch ' + activeCh + ' only';
+      const masteredInFilter = fullPool.length - activePool.length;
+      document.getElementById('mc-filter-label').textContent =
+        filterLabel + ' · ' + masteredInFilter + ' / ' + fullPool.length + ' mastered';
+
+      if (fullPool.length < 4) {
+        mcCurrent = null;
+        stopTimer();
+        syncTotalTimer();
+        renderTimer();
+        document.getElementById('mc-prompt').textContent = 'Not enough cards in this filter.';
+        document.getElementById('mc-prompt-sub').textContent = 'Choose "All Chapters" or a larger chapter to practice.';
+        document.getElementById('mc-options').innerHTML = '';
+        document.getElementById('mc-feedback').classList.remove('show');
+        return;
+      }
+
+      if (activePool.length === 0) {
+        mcCurrent = null;
+        stopTimer();
+        syncTotalTimer();
+        renderTimer();
+        document.getElementById('mc-prompt').textContent = 'All mastered!';
+        document.getElementById('mc-prompt-sub').textContent = 'You\u2019ve answered every term in this filter correctly. Reset the score to practice again.';
+        document.getElementById('mc-options').innerHTML = '';
+        document.getElementById('mc-feedback').classList.remove('show');
+        return;
+      }
+
+      const target = activePool[Math.floor(Math.random() * activePool.length)];
+
+      // distractor preference: same section → same LO → same chapter → filtered pool → all cards
+      const tiers = [
+        CARDS.filter(c => c.ch === target.ch && c.section === target.section),
+        CARDS.filter(c => c.ch === target.ch && c.lo === target.lo),
+        CARDS.filter(c => c.ch === target.ch),
+        fullPool,
+        CARDS,
+      ];
+      let distractors = [];
+      const used = new Set([target.term]);
+      for (const tier of tiers) {
+        if (distractors.length >= 3) break;
+        const need = 3 - distractors.length;
+        const picks = pickRandom(tier.filter(c => !used.has(c.term)), need, target.term);
+        picks.forEach(p => used.add(p.term));
+        distractors = distractors.concat(picks);
+      }
+
+      const opts = [target, ...distractors];
+      // shuffle opts
+      for (let i = opts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opts[i], opts[j]] = [opts[j], opts[i]];
+      }
+
+      mcCurrent = { target, opts };
+      mcAnswered = false;
+      syncTotalTimer();
+      renderMc();
+    }
+
+    function renderMc() {
+      if (!mcCurrent) return;
+      // Reset + auto-start timer when a new (unanswered) question is displayed.
+      if (!mcAnswered) {
+        resetTimer();
+        startTimer();
+      }
+      const { target, opts } = mcCurrent;
+      const promptLabel = document.getElementById('mc-prompt-label');
+      const prompt = document.getElementById('mc-prompt');
+      const sub = document.getElementById('mc-prompt-sub');
+
+      const metaLine = 'Ch ' + target.ch + ' · LO ' + target.lo + ' · ' + target.section;
+      if (mcMode === 'term2def') {
+        promptLabel.textContent = 'Which definition matches this term?';
+        prompt.textContent = target.term;
+        sub.textContent = metaLine;
+      } else {
+        promptLabel.textContent = 'Which term matches this definition?';
+        prompt.textContent = target.definition;
+        sub.textContent = metaLine;
+      }
+
+      const container = document.getElementById('mc-options');
+      container.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      opts.forEach((o, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'mc-option';
+        btn.setAttribute('data-idx', i);
+        const text = mcMode === 'term2def' ? o.definition : o.term;
+        btn.innerHTML = '<span class="letter">' + letters[i] + '</span><span>' + escapeHtml(text) + '</span>';
+        btn.addEventListener('click', () => answerMc(i));
+        container.appendChild(btn);
+      });
+
+      document.getElementById('mc-feedback').classList.remove('show');
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function answerMc(i) {
+      if (!mcCurrent || mcAnswered) return;
+      mcAnswered = true;
+      stopTimer();
+      const { target, opts } = mcCurrent;
+      const correctIdx = opts.findIndex(o => o.term === target.term);
+      const isRight = i === correctIdx;
+
+      const buttons = document.querySelectorAll('#mc-options .mc-option');
+      buttons.forEach((b, bi) => {
+        b.disabled = true;
+        if (bi === correctIdx) b.classList.add('correct');
+        else if (bi === i) b.classList.add('incorrect');
+        else b.classList.add('faded');
+      });
+
+      mcTotal++;
+      if (isRight) {
+        mcCorrect++;
+        mcMastered.add(target.term);
+      }
+      saveMcState();
+      updateScore();
+
+      const fb = document.getElementById('mc-feedback');
+      fb.classList.remove('right', 'wrong');
+      fb.classList.add('show');
+      if (isRight) {
+        fb.classList.add('right');
+        fb.innerHTML = '<span class="label">Correct</span>' + (mcMode === 'term2def'
+          ? '<span class="term-name">' + escapeHtml(target.term) + '</span> — ' + escapeHtml(target.definition)
+          : '<span class="term-name">' + escapeHtml(target.term) + '</span> is the term for that definition.');
+      } else {
+        fb.classList.add('wrong');
+        const answerText = mcMode === 'term2def' ? target.definition : target.term;
+        fb.innerHTML = '<span class="label">Not quite</span>The correct answer is <span class="term-name">' + escapeHtml(answerText) + '</span>' +
+          (mcMode === 'term2def' ? '.' : ' — ' + escapeHtml(target.definition));
+      }
+    }
+
+    function nextMcQuestion() {
+      buildMcQuestion();
+    }
+
+    function updateScore() {
+      document.getElementById('mc-correct').textContent = mcCorrect;
+      document.getElementById('mc-total').textContent = mcTotal;
+      const pct = mcTotal === 0 ? '—' : Math.round((mcCorrect / mcTotal) * 100) + '%';
+      document.getElementById('mc-pct').textContent = pct;
+    }
+
+    function resetMcScore() {
+      mcCorrect = 0;
+      mcTotal = 0;
+      mcMastered = new Set();
+      try { localStorage.removeItem(MC_STORAGE_KEY); } catch(e) {}
+      try { localStorage.removeItem(TOTAL_STORAGE_KEY); } catch(e) {}
+      try { localStorage.removeItem(TOTAL_RUNNING_KEY); } catch(e) {}
+      try { localStorage.removeItem('bs_flash_timer_v1'); } catch(e) {} // legacy cleanup
+      totalElapsed = 0;
+      totalRunning = true;
+      resetTimer();
+      updateScore();
+      buildMcQuestion();
+    }
+
+    // mode switch handlers
+    document.querySelectorAll('#mc-mode .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#mc-mode .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        mcMode = btn.getAttribute('data-mode');
+        buildMcQuestion();
+      });
+    });
+
+    updateScore();
+    buildMcQuestion();
+
+    // === LEARN (WRITE) MODE ===
+    const LEARN_STORAGE_KEY = 'bs_flash_learn_v1';
+    function loadLearnState() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(LEARN_STORAGE_KEY));
+        if (raw && typeof raw === 'object') {
+          return {
+            correct: Number(raw.correct) || 0,
+            total: Number(raw.total) || 0,
+            mastered: Array.isArray(raw.mastered) ? raw.mastered : [],
+          };
+        }
+      } catch(e) {}
+      return { correct: 0, total: 0, mastered: [] };
+    }
+    function saveLearnState() {
+      try {
+        localStorage.setItem(LEARN_STORAGE_KEY, JSON.stringify({
+          correct: learnCorrect,
+          total: learnTotal,
+          mastered: Array.from(learnMastered),
+        }));
+      } catch(e) {}
+    }
+    const _learnInit = loadLearnState();
+    let learnMode = 'def2term';
+    let learnCorrect = _learnInit.correct;
+    let learnTotal = _learnInit.total;
+    let learnCurrent = null;
+    let learnAnswered = false;
+    let learnLastWasClose = false;
+    let learnMastered = new Set(_learnInit.mastered);
+
+    function normalizeAnswer(s) {
+      return String(s).toLowerCase()
+        .replace(/[^a-z0-9 ]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // Extract acceptable answer keys — handles "Full Term (ACR)" form.
+    function answerKeysForTerm(term) {
+      const keys = new Set();
+      const base = normalizeAnswer(term);
+      if (base) keys.add(base);
+      const m = term.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+      if (m) {
+        const left = normalizeAnswer(m[1]);
+        const right = normalizeAnswer(m[2]);
+        if (left) keys.add(left);
+        if (right) keys.add(right);
+      }
+      return Array.from(keys);
+    }
+
+    // Key phrases from a definition — used to lightly grade Term → Type Definition.
+    function keyPhrasesForDefinition(def) {
+      const words = normalizeAnswer(def).split(' ').filter(w => w.length >= 4);
+      const stop = new Set(['that','this','with','from','into','their','which','when','where','what','have','been','such','also','some','other','than','then','they','them','will','would','about','because','these','those','each','more','most','very','upon','does','under','over','between','during','after','before','while','being','only','both','same','while','using','used','uses']);
+      const freq = {};
+      words.forEach(w => { if (!stop.has(w)) freq[w] = (freq[w]||0) + 1; });
+      return Object.keys(freq);
+    }
+
+    function levenshtein(a, b) {
+      if (a === b) return 0;
+      const al = a.length, bl = b.length;
+      if (al === 0) return bl;
+      if (bl === 0) return al;
+      const v0 = new Array(bl + 1);
+      const v1 = new Array(bl + 1);
+      for (let i = 0; i <= bl; i++) v0[i] = i;
+      for (let i = 0; i < al; i++) {
+        v1[0] = i + 1;
+        for (let j = 0; j < bl; j++) {
+          const cost = a.charCodeAt(i) === b.charCodeAt(j) ? 0 : 1;
+          v1[j + 1] = Math.min(v1[j] + 1, v0[j + 1] + 1, v0[j] + cost);
+        }
+        for (let j = 0; j <= bl; j++) v0[j] = v1[j];
+      }
+      return v0[bl];
+    }
+
+    function learnPool() {
+      return CARDS.filter(c =>
+        (activeCh === 'all' || c.ch === activeCh) &&
+        (activeLo === 'all' || c.lo === activeLo)
+      );
+    }
+    function learnActivePool() {
+      return learnPool().filter(c => !learnMastered.has(c.term));
+    }
+
+    function buildLearnQuestion() {
+      const fullPool = learnPool();
+      const activePool = learnActivePool();
+      const filterLabel = activeCh === 'all' ? 'All chapters' : 'Ch ' + activeCh + ' only';
+      const masteredInFilter = fullPool.length - activePool.length;
+      document.getElementById('learn-filter-label').textContent =
+        filterLabel + ' · ' + masteredInFilter + ' / ' + fullPool.length + ' learned';
+
+      const input = document.getElementById('learn-input');
+      const submitBtn = document.getElementById('learn-submit');
+      const nextBtn = document.getElementById('learn-next');
+      const dontBtn = document.getElementById('learn-dontknow');
+      const overrideBtn = document.getElementById('learn-override');
+      const fb = document.getElementById('learn-feedback');
+
+      fb.classList.remove('show','right','wrong');
+      fb.innerHTML = '';
+      input.value = '';
+      input.classList.remove('correct','incorrect','close');
+      input.disabled = false;
+      submitBtn.style.display = '';
+      dontBtn.style.display = '';
+      overrideBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      learnAnswered = false;
+      learnLastWasClose = false;
+
+      if (fullPool.length < 1) {
+        learnCurrent = null;
+        document.getElementById('learn-prompt').textContent = 'No cards in this filter.';
+        document.getElementById('learn-prompt-sub').textContent = '';
+        input.disabled = true;
+        submitBtn.disabled = true;
+        dontBtn.disabled = true;
+        return;
+      }
+      if (activePool.length === 0) {
+        learnCurrent = null;
+        document.getElementById('learn-prompt').textContent = 'All learned!';
+        document.getElementById('learn-prompt-sub').textContent = 'You\u2019ve typed every term correctly. Reset progress to practice again.';
+        input.disabled = true;
+        submitBtn.disabled = true;
+        dontBtn.disabled = true;
+        return;
+      }
+      submitBtn.disabled = false;
+      dontBtn.disabled = false;
+
+      const target = activePool[Math.floor(Math.random() * activePool.length)];
+      learnCurrent = { target };
+
+      const promptLabel = document.getElementById('learn-prompt-label');
+      const prompt = document.getElementById('learn-prompt');
+      const sub = document.getElementById('learn-prompt-sub');
+      const metaLine = 'Ch ' + target.ch + ' · LO ' + target.lo + ' · ' + target.section;
+      if (learnMode === 'def2term') {
+        promptLabel.textContent = 'Type the term that matches this definition';
+        prompt.textContent = target.definition;
+        sub.textContent = metaLine;
+        input.placeholder = 'Type the term…';
+      } else {
+        promptLabel.textContent = 'Type the definition for this term';
+        prompt.textContent = target.term;
+        sub.textContent = metaLine;
+        input.placeholder = 'Type the definition (key phrases are enough)…';
+      }
+      setTimeout(() => input.focus(), 0);
+    }
+
+    function gradeLearnAnswer(userRaw) {
+      if (!learnCurrent) return { kind: 'wrong' };
+      const { target } = learnCurrent;
+      const user = normalizeAnswer(userRaw);
+      if (!user) return { kind: 'empty' };
+
+      if (learnMode === 'def2term') {
+        const keys = answerKeysForTerm(target.term);
+        for (const k of keys) {
+          if (user === k) return { kind: 'right' };
+        }
+        // typo tolerance — distance scaled to length
+        let bestDist = Infinity;
+        for (const k of keys) {
+          const d = levenshtein(user, k);
+          if (d < bestDist) bestDist = d;
+        }
+        const longest = Math.max.apply(null, keys.map(k => k.length));
+        const typoTol = longest >= 12 ? 2 : (longest >= 6 ? 1 : 0);
+        if (bestDist <= typoTol) return { kind: 'right' };
+        if (bestDist <= typoTol + 2) return { kind: 'close' };
+        return { kind: 'wrong' };
+      } else {
+        // term -> definition: grade on key-phrase coverage
+        const phrases = keyPhrasesForDefinition(target.definition);
+        if (phrases.length === 0) return { kind: 'right' }; // degenerate
+        const userTokens = new Set(user.split(' '));
+        let hits = 0;
+        phrases.forEach(p => { if (userTokens.has(p)) hits++; });
+        const ratio = hits / phrases.length;
+        if (ratio >= 0.55) return { kind: 'right' };
+        if (ratio >= 0.3) return { kind: 'close' };
+        return { kind: 'wrong' };
+      }
+    }
+
+    function correctAnswerText() {
+      if (!learnCurrent) return '';
+      return learnMode === 'def2term' ? learnCurrent.target.term : learnCurrent.target.definition;
+    }
+
+    function showLearnFeedback(kind, userRaw) {
+      const fb = document.getElementById('learn-feedback');
+      const input = document.getElementById('learn-input');
+      const submitBtn = document.getElementById('learn-submit');
+      const nextBtn = document.getElementById('learn-next');
+      const dontBtn = document.getElementById('learn-dontknow');
+      const overrideBtn = document.getElementById('learn-override');
+
+      input.disabled = true;
+      submitBtn.style.display = 'none';
+      dontBtn.style.display = 'none';
+      nextBtn.style.display = '';
+      fb.classList.remove('right','wrong');
+      fb.classList.add('show');
+
+      if (kind === 'right') {
+        input.classList.add('correct');
+        fb.classList.add('right');
+        fb.innerHTML = '<span class="label">Correct</span>' +
+          '<span class="term-name">' + escapeHtml(learnCurrent.target.term) + '</span> — ' +
+          escapeHtml(learnCurrent.target.definition);
+        overrideBtn.style.display = 'none';
+      } else {
+        input.classList.add(kind === 'close' ? 'close' : 'incorrect');
+        fb.classList.add('wrong');
+        const header = kind === 'close' ? 'Close — but not quite' : 'Not quite';
+        const answer = correctAnswerText();
+        const youWrote = userRaw ? '<div style="margin-top:6px;font-size:0.85rem;opacity:0.85;">You wrote: <em>' + escapeHtml(userRaw) + '</em></div>' : '';
+        fb.innerHTML = '<span class="label">' + header + '</span>' +
+          'The correct answer is <span class="term-name">' + escapeHtml(answer) + '</span>' +
+          (learnMode === 'def2term' ? '.' : '') +
+          youWrote;
+        overrideBtn.style.display = '';
+        learnLastWasClose = true;
+      }
+    }
+
+    function submitLearn() {
+      if (!learnCurrent || learnAnswered) return;
+      const input = document.getElementById('learn-input');
+      const userRaw = input.value;
+      const res = gradeLearnAnswer(userRaw);
+      if (res.kind === 'empty') { input.focus(); return; }
+
+      learnAnswered = true;
+      learnTotal++;
+      if (res.kind === 'right') {
+        learnCorrect++;
+        learnMastered.add(learnCurrent.target.term);
+      }
+      saveLearnState();
+      updateLearnScore();
+      showLearnFeedback(res.kind, userRaw);
+    }
+
+    function revealLearn() {
+      if (!learnCurrent || learnAnswered) return;
+      learnAnswered = true;
+      learnTotal++;
+      saveLearnState();
+      updateLearnScore();
+      showLearnFeedback('wrong', '');
+    }
+
+    function overrideLearn() {
+      // User asserts their answer was correct (typo, alt phrasing, etc.)
+      if (!learnCurrent || !learnAnswered) return;
+      if (learnMastered.has(learnCurrent.target.term)) return;
+      learnCorrect++;
+      learnMastered.add(learnCurrent.target.term);
+      saveLearnState();
+      updateLearnScore();
+      const fb = document.getElementById('learn-feedback');
+      const input = document.getElementById('learn-input');
+      input.classList.remove('incorrect','close');
+      input.classList.add('correct');
+      fb.classList.remove('wrong');
+      fb.classList.add('right');
+      fb.innerHTML = '<span class="label">Marked correct</span>' +
+        '<span class="term-name">' + escapeHtml(learnCurrent.target.term) + '</span> — ' +
+        escapeHtml(learnCurrent.target.definition);
+      document.getElementById('learn-override').style.display = 'none';
+    }
+
+    function nextLearnQuestion() { buildLearnQuestion(); }
+
+    function updateLearnScore() {
+      document.getElementById('learn-correct').textContent = learnCorrect;
+      document.getElementById('learn-total').textContent = learnTotal;
+      const pct = learnTotal === 0 ? '—' : Math.round((learnCorrect / learnTotal) * 100) + '%';
+      document.getElementById('learn-pct').textContent = pct;
+    }
+
+    function resetLearnScore() {
+      learnCorrect = 0;
+      learnTotal = 0;
+      learnMastered = new Set();
+      try { localStorage.removeItem(LEARN_STORAGE_KEY); } catch(e) {}
+      updateLearnScore();
+      buildLearnQuestion();
+    }
+
+    // Learn mode switch handlers
+    document.querySelectorAll('#learn-mode .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#learn-mode .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        learnMode = btn.getAttribute('data-mode');
+        buildLearnQuestion();
+      });
+    });
+
+    // Submit via Enter key
+    document.getElementById('learn-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (learnAnswered) nextLearnQuestion();
+      else submitLearn();
+    });
+
+    // Rebuild Learn question when chapter/LO filter changes (hook into existing handlers)
+    (function hookLearnIntoFilters() {
+      const origBuildDeck = buildDeck;
+      // buildDeck is already called by filter click handlers; those also call buildMcQuestion().
+      // We piggyback: re-bind filter chip clicks to also run buildLearnQuestion().
+      document.querySelectorAll('#filters .chip').forEach(btn => {
+        btn.addEventListener('click', () => { buildLearnQuestion(); });
+      });
+      // LO filters are rebuilt dynamically — wrap renderLoFilters to re-attach.
+      const origRender = renderLoFilters;
+      window.renderLoFilters = function() {
+        origRender.apply(this, arguments);
+        document.querySelectorAll('#lo-filters .chip').forEach(btn => {
+          btn.addEventListener('click', () => { buildLearnQuestion(); });
+        });
+      };
+      // Also trigger once now so filter chips reflect current state.
+      window.renderLoFilters();
+    })();
+
+    updateLearnScore();
+    buildLearnQuestion();
+  </script>
+</body>
+</html>

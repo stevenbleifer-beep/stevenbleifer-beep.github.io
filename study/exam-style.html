@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Exam-Style Questions — Bleifer Study</title>
+  <meta name="description" content="100 multiple-choice questions in Lanz exam format for AIS Chapters 7, 14, and 19" />
+  <meta name="theme-color" content="#fbf9f4" />
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React + ReactDOM + Babel standalone for in-browser JSX -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body { background: #fbf9f4; }
+    /* Hide un-hydrated content flash */
+    #root:empty::before {
+      content: "Loading…";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+    <div id="devtools-shield" style="display:none;position:fixed;inset:0;z-index:99999;background:#fbf9f4;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;color:#a8a29e;font-size:1.2rem;">
+    Please close developer tools to continue studying.
+  </div>
+
+  <!-- Anti-tampering -->
+  <script>
+  (function(){
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='F12') { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && (e.key==='u'||e.key==='s')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e){
+      var t = e.target;
+      if (t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+    var shield = document.getElementById('devtools-shield');
+    var root = document.getElementById('root');
+    function checkDevTools(){
+      var w = window.outerWidth - window.innerWidth > 160;
+      var h = window.outerHeight - window.innerHeight > 160;
+      var isOpen = w || h;
+      if(!isOpen){ var s=performance.now(); (function(){}).constructor('debugger')(); if(performance.now()-s>100) isOpen=true; }
+      if(isOpen){ shield.style.display='flex'; root.style.display='none'; }
+      else { shield.style.display='none'; root.style.display=''; }
+    }
+    setInterval(checkDevTools, 1000);
+    checkDevTools();
+    console.clear();
+    console.log('%cStop!','color:red;font-size:48px;font-weight:bold;');
+    console.log('%cThis is a study tool. Inspecting answers defeats the purpose of learning.','font-size:16px;');
+  })();
+  </script>
+
+  <script type="text/babel" data-type="module">
+const { useState, useMemo, useEffect } = React;
+
+
+// ===== QUESTION BANK =====
+// Each: { ch, lo, section, type, q, options[4], explain }
+const BANK = [
+  { ch: 7, lo: "7.EXAM", section: "Emerging vs Disruptive", type: "memorization",
+    q: "Which of the following best describes the difference between an emerging technology and a disruptive technology?",
+    options: ["Emerging technologies are always cheaper than disruptive technologies", "Emerging technologies are not yet regularly used by companies, while disruptive technologies have gained adoption and change how businesses function", "Disruptive technologies only affect the IT department, while emerging technologies affect all departments", "Disruptive technologies are always new, while emerging technologies are mature"],
+    explain: "Emerging technology is not yet regularly used; disruptive technology has achieved broader adoption and changes how businesses operate." },
+  { ch: 7, lo: "7.EXAM", section: "Emerging Tech Team", type: "application",
+    q: "Lucia, a new controller at Vandergraff Industries, has been asked to form a specialized group whose primary objective is evaluating how emerging and disruptive technologies fit into current operations. Which team should Lucia form?",
+    options: ["Internal Audit team", "Emerging Technology Center of Excellence", "Enterprise Risk Management team", "IT help desk"],
+    explain: "The Emerging Technology Center of Excellence is the specialized group whose primary purpose is evaluating fit of emerging and disruptive technologies." },
+  { ch: 7, lo: "7.EXAM", section: "Internal Audit Role", type: "application",
+    q: "Priya is an internal auditor reviewing a new AI tool management has implemented. Management has already provided a risk assessment. What is Priya's most appropriate stance?",
+    options: ["Accept management's assessment without review", "Replace management's assessment with her own register", "Remain professionally skeptical about management's risk assessment", "Defer to the external auditors' assessment"],
+    explain: "Internal audit is expected to remain professionally skeptical about management's risk assessments of emerging technologies." },
+  { ch: 7, lo: "7.EXAM", section: "ERM and Technology", type: "application",
+    q: "Oscar, a manager at Crestline Foods, is wondering which group typically works with IT to strategize and approve emerging technology initiatives. Which group fits?",
+    options: ["External auditors", "Enterprise Risk Management (ERM)", "Board of directors", "Shareholders"],
+    explain: "ERM works with IT to assess risk and strategize approvals of emerging and disruptive technology initiatives." },
+  { ch: 7, lo: "7.EXAM", section: "Disruptive Examples", type: "memorization",
+    q: "Which of the following is NOT listed as an example of a disruptive technology in the chapter?",
+    options: ["Blockchain", "Robotic process automation", "Typewriters", "Artificial intelligence"],
+    explain: "Typewriters are a legacy technology. Blockchain, RPA, and AI are all cited as disruptive technologies." },
+  { ch: 7, lo: "7.EXAM", section: "IoT Wearables", type: "application",
+    q: "Monarch Life Insurance collects heart rate, calorie burn, and sleep quality data from its policyholders' smartwatches to set life insurance premiums. Which IoT category does this use case best fit?",
+    options: ["Consumer-facing IoT wearables leveraged via big data", "Business operations IoT wearables", "Autonomous Things wearables", "Extended reality wearables"],
+    explain: "Consumer-facing wearables like Apple Watch / FitBit generate big data that life insurance companies use to estimate longevity." },
+  { ch: 7, lo: "7.EXAM", section: "Extended Reality", type: "memorization",
+    q: "Which statement correctly describes the XR continuum?",
+    options: ["AR and VR are unrelated technologies, and MR does not exist", "XR progresses from reality to AR, then MR, then VR", "MR is another name for VR used only in business", "VR replaces reality with the physical world"],
+    explain: "The XR spectrum runs from reality to AR, then MR (mixed reality), then VR." },
+  { ch: 7, lo: "7.EXAM", section: "Gamification", type: "application",
+    q: "Tasha at Northwind Consulting is designing a training tool that awards employees points and badges for correctly responding to simulated cyberattacks in a VR environment. What concept is Tasha applying?",
+    options: ["Robotic process automation", "Gamification", "Continuous monitoring", "Disruption"],
+    explain: "Gamification merges video game principles (points, badges, levels) with real-world simulation/learning." },
+  { ch: 7, lo: "7.EXAM", section: "Autonomous Things", type: "memorization",
+    q: "According to the chapter, PwC uses the term 'cobots' to describe which of the following?",
+    options: ["Fully autonomous robots that replace human workers", "Robots that collaborate with humans to complete tasks", "Chatbots deployed on websites", "Bots used for cryptocurrency mining"],
+    explain: "Cobots collaborate with humans to complete tasks; they are not fully autonomous replacements." },
+  { ch: 7, lo: "7.EXAM", section: "IoT Business Ops", type: "application",
+    q: "Mining company AtlasCore equips its field workers with smart safety glasses that track air quality and location. This use case is best classified as:",
+    options: ["Consumer-facing IoT wearables", "Business operations IoT wearables", "Gamification", "Extended reality"],
+    explain: "Safety glasses and air-quality trackers worn by employees in operational contexts are business operations IoT wearables." },
+  { ch: 7, lo: "7.EXAM", section: "RPA vs AI", type: "application",
+    q: "Maricela, a manager at Hollowell Logistics, wants software that can evolve its decisions over time as it encounters new scenarios and self-select appropriate responses without being reprogrammed. Which technology best fits Maricela's need?",
+    options: ["RPA, because RPA bots self-learn from each task", "AI, because AI simulates human decision-making and evolves through self-learning", "RPA, because RPA uses drag-and-drop interfaces", "AI, because AI uses only pre-programmed rules"],
+    explain: "RPA tasks do not change once programmed; AI evolves through self-learning." },
+  { ch: 7, lo: "7.EXAM", section: "RPA ELSE", type: "application",
+    q: "An RPA developer at Briarwood Retail needs the bot to take a default action when none of the specified trigger conditions are met. Which conditional element handles this?",
+    options: ["AND", "OR", "ELSE", "ELSE IF"],
+    explain: "ELSE captures what the automation should do when none of the specified scenarios occur." },
+  { ch: 7, lo: "7.EXAM", section: "RPA Feasibility", type: "application",
+    q: "Which of the following is LEAST suitable as an RPA project?",
+    options: ["Monthly reconciliation of a digital bank feed to the general ledger", "Daily reformatting of standardized vendor invoice files", "Investigating unusual one-off fraud cases that require professional judgment", "Weekly extraction of sales data from a digital dashboard"],
+    explain: "Ideal RPA projects are routine, rules-based, and frequent. One-off judgment cases are not good RPA candidates." },
+  { ch: 7, lo: "7.EXAM", section: "AI Definition", type: "memorization",
+    q: "Which statement best describes artificial intelligence as discussed in the chapter?",
+    options: ["Software that simulates human decision-making and can evolve through self-learning", "Software that executes a single task exactly the same way every time", "Hardware that physically replaces factory workers", "A spreadsheet macro that automates repetitive calculations"],
+    explain: "AI is defined as software that simulates human decision-making and evolves via self-learning." },
+  { ch: 7, lo: "7.EXAM", section: "RPA Deployment Risk", type: "application",
+    q: "Parker, an internal auditor, is reviewing an RPA implementation. Which of the following would be the greatest red flag?",
+    options: ["The bot is used for a routine, high-volume process", "The bot operates on a standardized digital input", "The bot was deployed into production without any testing", "The bot uses ELSE logic for fall-through conditions"],
+    explain: "Deploying a bot without testing is a core control weakness; the other items describe appropriate RPA design." },
+  { ch: 7, lo: "7.EXAM", section: "Blockchain Principles", type: "memorization",
+    q: "Which causal ordering best describes blockchain's three fundamental principles?",
+    options: ["Immutability leads to transparency, which leads to decentralization", "Decentralization leads to transparency, which leads to immutability", "Transparency leads to immutability, which leads to decentralization", "The three principles are independent with no causal ordering"],
+    explain: "Decentralization of power leads to transparency, which in turn leads to immutability." },
+  { ch: 7, lo: "7.EXAM", section: "Network Size", type: "application",
+    q: "Why does increasing the size of a blockchain network reduce the risk of malicious control?",
+    options: ["Larger networks use stronger encryption automatically", "Larger networks require more malicious parties to collude to gain consensus", "Larger networks are regulated by the SEC", "Larger networks validate transactions instantly"],
+    explain: "It is harder for malicious parties to gain consensus when the network is larger, because more colluders would be needed." },
+  { ch: 7, lo: "7.EXAM", section: "Data Security", type: "memorization",
+    q: "Which blockchain data-quality characteristic is driven by the requirement that a MAJORITY of participants would have to collude for fraud to succeed?",
+    options: ["Data Retention", "Data Security", "Data Integrity", "Data Transparency"],
+    explain: "Majority collusion to commit fraud is attributed to Data Security in the textbook comparison." },
+  { ch: 7, lo: "7.EXAM", section: "Encryption vs Decryption", type: "memorization",
+    q: "Which statement best distinguishes encryption from decryption?",
+    options: ["Encryption scrambles plaintext into ciphertext; decryption reverses it back to readable form", "Encryption protects data in transit only; decryption protects data at rest", "Encryption is performed by miners; decryption is performed by regulators", "Encryption and decryption are synonyms"],
+    explain: "Encryption converts readable plaintext into ciphertext; decryption reverses the process." },
+  { ch: 7, lo: "7.EXAM", section: "Immutability", type: "memorization",
+    q: "Immutability of blockchain data is most directly enabled by which mechanism?",
+    options: ["Proof-of-work mining rewards", "Each block cryptographically referencing the previous block", "Government-issued digital identities", "Centralized storage at a primary data center"],
+    explain: "Each block is linked to the prior block via a cryptographic hash, making tampering with past records computationally infeasible." },
+  { ch: 7, lo: "7.EXAM", section: "Smart Contracts", type: "application",
+    q: "Arlo is helping Verona Realty automate royalty payments so that funds release automatically when specified conditions are met on a blockchain. What is Arlo implementing?",
+    options: ["A smart contract", "A traditional ERP workflow", "A continuous monitoring rule", "An intrusion detection system"],
+    explain: "A smart contract is self-executing code that automatically releases funds when conditions encoded on the blockchain are met." },
+  { ch: 7, lo: "7.EXAM", section: "Triple-Entry Accounting", type: "memorization",
+    q: "Which statement best describes triple-entry accounting?",
+    options: ["Each transaction is entered once in each party's books and once on a shared blockchain", "Each transaction is entered three times in the same ledger to prevent typos", "Triple-entry means three auditors must sign every journal entry", "Triple-entry replaces debits and credits with three new account types"],
+    explain: "Triple-entry accounting adds a blockchain entry shared between the parties on top of each party's traditional double-entry books." },
+  { ch: 7, lo: "7.EXAM", section: "Tokenization", type: "application",
+    q: "Sierra Arts wants to split ownership of a high-value painting among many investors using blockchain-based tokens. This practice is best described as:",
+    options: ["Mining", "Tokenization of a physical asset", "Proof-of-work consensus", "Public key encryption"],
+    explain: "Tokenization represents ownership of a physical or digital asset as tokens on a blockchain." },
+  { ch: 7, lo: "7.EXAM", section: "Public vs Private", type: "memorization",
+    q: "Which statement about public and private blockchains is TRUE?",
+    options: ["Public blockchains restrict participation to preapproved members", "Private blockchains restrict participation to preapproved members", "Private blockchains have no administrator", "Public blockchains cannot store cryptocurrency"],
+    explain: "Private (permissioned) blockchains restrict participation to preapproved members; public blockchains are open to anyone." },
+  { ch: 7, lo: "7.EXAM", section: "Data Integrity", type: "application",
+    q: "Weldon Supply is worried about after-the-fact tampering of transaction records. Which blockchain characteristic most directly addresses this concern?",
+    options: ["Data Integrity via immutability", "Data Volume", "Data Velocity", "Data Variety"],
+    explain: "Data Integrity through immutability prevents altering records once they are written to the chain." },
+  { ch: 14, lo: "14.EXAM", section: "COBIT Year", type: "memorization",
+    q: "The framework used by many publicly traded companies to demonstrate compliance with internal control expectations resulting from SEC technology-related financial reporting requirements is:",
+    options: ["COBIT - 2019", "COSO - 2013", "COSO - 2017", "COSO - 2024"],
+    explain: "COBIT 2019 is the IT governance framework used to address SEC technology-related financial reporting expectations." },
+  { ch: 14, lo: "14.EXAM", section: "COSO IC Components", type: "memorization",
+    q: "Which of the following is NOT one of the COSO Internal Control Integrated Framework control components?",
+    options: ["Control environment", "Risk assessment", "Information and communication", "Compliance objectives"],
+    explain: "The five components are control environment, risk assessment, control activities, information and communication, and monitoring. Compliance objectives is a distractor." },
+  { ch: 14, lo: "14.EXAM", section: "COSO ERM 2017", type: "memorization",
+    q: "Which statement about the COSO Enterprise Risk Management Integrating with Strategy and Performance framework is TRUE?",
+    options: ["The 2013 release updated the framework to focus more on strategy and less on risk", "The 2017 release updated the framework to reflect the importance of risk management in strategic planning", "The 2017 release still utilizes the original COSO Cube components", "The 2017 release includes four objectives and eight components"],
+    explain: "The 2017 ERM update emphasizes integration of ERM with strategy and performance." },
+  { ch: 14, lo: "14.EXAM", section: "COBIT Domains", type: "memorization",
+    q: "Which COBIT 2019 domain is the only IT Governance objective (rather than a Management objective)?",
+    options: ["APO - Align, Plan, and Organize", "BAI - Build, Acquire, and Implement", "EDM - Evaluate, Direct, and Monitor", "MEA - Monitor, Evaluate, and Assess"],
+    explain: "EDM is the only governance-focused domain; APO, BAI, DSS, and MEA are Management IT objectives." },
+  { ch: 14, lo: "14.EXAM", section: "COBIT Domain App", type: "application",
+    q: "Riverton Mutual is acquiring and implementing a new ERP system. Which COBIT 2019 domain best describes this activity?",
+    options: ["EDM", "APO", "BAI", "DSS"],
+    explain: "BAI (Build, Acquire, and Implement) covers acquiring and implementing new technology." },
+  { ch: 14, lo: "14.EXAM", section: "COBIT vs COSO", type: "application",
+    q: "Jalen, a CPA not specialized in IT, asks why a company would adopt COBIT 2019 if it already uses COSO. The best answer is:",
+    options: ["COBIT entirely replaces COSO for public companies", "COBIT 2019 addresses IT governance and IT-specific controls, while COSO addresses corporate governance and all internal controls", "They are identical frameworks with different names", "COBIT covers only financial reporting while COSO covers only fraud"],
+    explain: "COBIT and COSO are complementary: COBIT focuses on IT, COSO on corporate governance and all internal controls." },
+  { ch: 14, lo: "14.EXAM", section: "ERM Objectives", type: "memorization",
+    q: "How many objective categories does the COSO ERM Integrating with Strategy and Performance framework include?",
+    options: ["Three", "Four", "Five", "Eight"],
+    explain: "The framework includes four objective categories paired with the components." },
+  { ch: 14, lo: "14.EXAM", section: "RBAC", type: "memorization",
+    q: "Role-Based Access Control (RBAC) grants users access based on:",
+    options: ["Their role or job function within the organization", "How long they have been employed", "Their personal preferences", "Whether their manager logs in with them"],
+    explain: "RBAC grants access based on job roles, not individual identities or tenure." },
+  { ch: 14, lo: "14.EXAM", section: "Authentication vs Authorization", type: "memorization",
+    q: "Which statement correctly distinguishes authentication from authorization?",
+    options: ["Authentication confirms identity; authorization determines what the user may do", "Authentication determines what the user may do; authorization confirms identity", "Authentication and authorization are synonyms", "Neither involves user identity"],
+    explain: "Authentication verifies WHO a user is; authorization defines WHAT that user is permitted to do." },
+  { ch: 14, lo: "14.EXAM", section: "MFA", type: "application",
+    q: "Halston Bank requires employees to enter a password and a code from a physical token. This is an example of:",
+    options: ["Single-factor authentication", "Multi-factor authentication combining 'something you know' and 'something you have'", "Role-based access control", "Physical access control"],
+    explain: "Password (something you know) + physical token (something you have) is classic multi-factor authentication." },
+  { ch: 14, lo: "14.EXAM", section: "Least Privilege", type: "application",
+    q: "Elena, an IT security manager at Kipton Corp, configures every user account to have only the permissions strictly necessary for their tasks. Elena is applying:",
+    options: ["The principle of least privilege", "The principle of maximum access", "Segregation of duties", "Authentication"],
+    explain: "Least privilege grants only the minimum access rights required for the user's job." },
+  { ch: 14, lo: "14.EXAM", section: "SoD IT", type: "application",
+    q: "At Pennington Energy, the same developer writes new code and also deploys it to production. Which principle is violated?",
+    options: ["Segregation of duties", "Principle of least privilege only", "Role-based access control only", "Multi-factor authentication"],
+    explain: "A developer who also deploys to production violates segregation of duties between development and operations." },
+  { ch: 14, lo: "14.EXAM", section: "Biometric Auth", type: "memorization",
+    q: "A fingerprint scanner used to unlock a corporate laptop is an example of which authentication factor?",
+    options: ["Something you know", "Something you have", "Something you are", "Something you own"],
+    explain: "Biometric factors like fingerprints are 'something you are.'" },
+  { ch: 14, lo: "14.EXAM", section: "Physical Controls", type: "application",
+    q: "Which of the following is an example of a physical access control at a data center?",
+    options: ["A firewall", "A biometric scanner at the entrance", "Antivirus software", "An intrusion detection system"],
+    explain: "Biometric entry scanners are physical access controls. Firewalls, AV, and IDS are logical controls." },
+  { ch: 14, lo: "14.EXAM", section: "Data Center Environ", type: "memorization",
+    q: "Which of the following is a common environmental control for a data center?",
+    options: ["Fire suppression and climate control systems", "Employee performance reviews", "Accounts receivable aging", "Marketing dashboards"],
+    explain: "Fire suppression, HVAC, and humidity control are standard data-center environmental controls." },
+  { ch: 14, lo: "14.EXAM", section: "Mantrap", type: "application",
+    q: "Fairmont Data Solutions installs a two-door vestibule where the second door cannot open until the first has closed and the user is verified. This control is called a:",
+    options: ["Mantrap", "Firewall", "Honeypot", "Proxy server"],
+    explain: "A mantrap (access vestibule) controls tailgating into secure facilities." },
+  { ch: 14, lo: "14.EXAM", section: "CCTV", type: "memorization",
+    q: "Surveillance cameras monitoring the data center entrance are primarily classified as:",
+    options: ["Detective controls", "Compensating controls only", "Corrective controls only", "Strategic controls"],
+    explain: "CCTV is primarily a detective control, though it also has a deterrent effect." },
+  { ch: 14, lo: "14.EXAM", section: "Hot Site", type: "application",
+    q: "Gladwell Insurance maintains a fully operational alternate site with live data replication so that operations can resume within minutes of a disaster. What kind of site is this?",
+    options: ["Cold site", "Warm site", "Hot site", "Reciprocal site"],
+    explain: "A hot site is a fully operational alternate facility with current data, enabling near-immediate recovery." },
+  { ch: 14, lo: "14.EXAM", section: "Cold Site", type: "memorization",
+    q: "A cold site typically includes:",
+    options: ["Space and basic utilities but no pre-installed hardware or current data", "Fully operational systems with real-time data replication", "Partially configured hardware with periodic data copies", "A mirrored data center in a different country"],
+    explain: "Cold sites provide space/utilities only; hardware and data must be brought in after a disaster." },
+  { ch: 14, lo: "14.EXAM", section: "RTO vs RPO", type: "memorization",
+    q: "Which statement correctly distinguishes RTO from RPO?",
+    options: ["RTO is the maximum tolerable downtime; RPO is the maximum tolerable data loss measured in time", "RTO is the maximum tolerable data loss; RPO is the maximum tolerable downtime", "RTO and RPO are the same metric", "RTO applies only to physical sites; RPO applies only to logical sites"],
+    explain: "Recovery Time Objective = downtime tolerance; Recovery Point Objective = data-loss tolerance (time since last valid backup)." },
+  { ch: 14, lo: "14.EXAM", section: "RPO Application", type: "application",
+    q: "Bronson Foods determines it cannot afford to lose more than 15 minutes of order data. This determination directly defines:",
+    options: ["The RTO", "The RPO", "The MTBF", "The SLA"],
+    explain: "The maximum tolerable data loss in time is the Recovery Point Objective." },
+  { ch: 14, lo: "14.EXAM", section: "Backup Types", type: "memorization",
+    q: "Which backup type copies ONLY the data changed since the last FULL backup?",
+    options: ["Full backup", "Incremental backup", "Differential backup", "Mirror backup"],
+    explain: "Differential backups capture changes since the last full backup; incremental backups capture changes since the last backup of any type." },
+  { ch: 14, lo: "14.EXAM", section: "Backup Test", type: "application",
+    q: "Zenith Holdings has weekly backups but has never tested restoring them. What is the primary risk?",
+    options: ["Backups may be unreadable or incomplete when needed", "Backups take up too much storage", "Backups may be too fast", "Backups will automatically fail after seven days"],
+    explain: "Untested backups may be corrupt or incomplete; restoration tests validate recoverability." },
+  { ch: 14, lo: "14.EXAM", section: "Change Mgmt Purpose", type: "memorization",
+    q: "The primary purpose of change management controls is to:",
+    options: ["Ensure that changes to systems are authorized, tested, and documented before deployment", "Maximize the speed at which developers deploy code", "Eliminate the need for user acceptance testing", "Give developers direct access to production"],
+    explain: "Change management ensures changes are authorized, tested, and documented before release to production." },
+  { ch: 14, lo: "14.EXAM", section: "Emergency Change", type: "application",
+    q: "Kira, a developer at Sterlington Systems, pushes a fix directly to production after hours to resolve a critical outage. What change-management safeguard should still apply?",
+    options: ["The change should be reviewed, documented, and formally approved retroactively", "The change can be left undocumented since it was an emergency", "The change should be hidden from management", "The change should be reversed automatically"],
+    explain: "Emergency changes still require after-the-fact review, documentation, and approval per change management policy." },
+  { ch: 14, lo: "14.EXAM", section: "Change Advisory Board", type: "memorization",
+    q: "Which group typically reviews and approves significant system changes before deployment?",
+    options: ["The Change Advisory Board (CAB)", "The external auditor", "The marketing department", "The payroll clerk"],
+    explain: "Change Advisory Boards are cross-functional groups that review and approve proposed changes." },
+  { ch: 14, lo: "14.EXAM", section: "UAT Change", type: "application",
+    q: "During which change-management step would an end user confirm that the system meets their expectations before it goes live?",
+    options: ["Development", "User acceptance testing", "Request logging", "Post-implementation review"],
+    explain: "User acceptance testing (UAT) is the step where end users validate that the system meets their requirements." },
+  { ch: 14, lo: "14.EXAM", section: "SoD Change", type: "application",
+    q: "Which of the following best reflects segregation of duties in change management?",
+    options: ["The same person writes, tests, and deploys the code", "Different individuals are responsible for development, testing, and deployment to production", "Only one person holds all production credentials", "Developers double as system administrators"],
+    explain: "Developers, testers, and deployers should be different individuals to prevent unauthorized production changes." },
+  { ch: 14, lo: "14.EXAM", section: "SOC 1 Purpose", type: "memorization",
+    q: "A SOC 1 report primarily addresses:",
+    options: ["Controls relevant to user entities' internal control over financial reporting", "General cybersecurity marketing disclosures", "Controls over physical inventory counts", "Payroll processing accuracy only"],
+    explain: "SOC 1 focuses on controls at a service organization that are relevant to user entities' ICFR." },
+  { ch: 14, lo: "14.EXAM", section: "SOC 2", type: "memorization",
+    q: "A SOC 2 report addresses controls related to:",
+    options: ["Financial statement audits only", "The Trust Services Criteria (security, availability, processing integrity, confidentiality, privacy)", "Physical inventory counts", "Tax filings"],
+    explain: "SOC 2 evaluates controls over the Trust Services Criteria." },
+  { ch: 14, lo: "14.EXAM", section: "SOC 3", type: "memorization",
+    q: "A SOC 3 report differs from a SOC 2 report primarily in that:",
+    options: ["It covers financial reporting instead of trust services", "It is a general-use report that can be freely distributed", "It requires no CPA involvement", "It is issued by the SEC"],
+    explain: "SOC 3 is a general-use, distributable summary of trust services results; SOC 2 is restricted-use and detailed." },
+  { ch: 14, lo: "14.EXAM", section: "Type I vs II", type: "memorization",
+    q: "Which statement distinguishes a SOC Type I from a SOC Type II report?",
+    options: ["Type I tests controls over a period; Type II reports only design at a point in time", "Type I reports only on design at a point in time; Type II reports on design and operating effectiveness over a period", "Type I and Type II are identical", "Type II is only issued for SOC 3 engagements"],
+    explain: "Type I = point-in-time design; Type II = period-of-time design AND operating effectiveness." },
+  { ch: 14, lo: "14.EXAM", section: "BCP Definition", type: "memorization",
+    q: "A business continuity plan (BCP) primarily ensures that:",
+    options: ["Critical business functions can continue during and after a disruption", "Employees receive quarterly bonuses", "The company pays no taxes", "The marketing department meets its deadlines"],
+    explain: "BCP ensures critical functions continue during and after a disruption." },
+  { ch: 14, lo: "14.EXAM", section: "BIA", type: "application",
+    q: "Dariana, a BCP analyst at Kensington Health, is prioritizing which business processes must be restored first after a disaster. What analysis is Dariana performing?",
+    options: ["A cost-benefit analysis", "A business impact analysis (BIA)", "A penetration test", "A SOC audit"],
+    explain: "A BIA prioritizes processes by impact and drives recovery priorities in the BCP/DR plan." },
+  { ch: 14, lo: "14.EXAM", section: "DR Test", type: "application",
+    q: "Which BCP/DR activity is most useful for confirming that documented procedures actually work?",
+    options: ["Running tabletop exercises and full recovery tests", "Archiving the plan in a locked drawer", "Emailing the plan once a year", "Assigning ownership without testing"],
+    explain: "Testing (tabletop or full) is the activity that validates that documented procedures actually work." },
+  { ch: 19, lo: "19.EXAM", section: "Planning Phase", type: "application",
+    q: "What step in the planning phase occurs to determine if the proposed project is realistic?",
+    options: ["Project plan", "Project scope", "Feasibility study", "Technical study"],
+    explain: "The feasibility study in planning determines whether a proposed project is realistic." },
+  { ch: 19, lo: "19.EXAM", section: "Requirements Definition", type: "application",
+    q: "Amar is a new systems analyst with Ally Corporation. Amar is tasked with reviewing a requirements definition document for Ally. Which of the following should Amar suggest Ally should have dealt with before creating the requirements definition?",
+    options: ["Documentation of the final project goal", "Steps needed to achieve the project goal", "An outline of the overall system plan", "Risk and reward list for cloud-based versus local system"],
+    explain: "Risk and reward comparisons (e.g., cloud vs local) are typically resolved in the feasibility/planning stage before drafting requirements." },
+  { ch: 19, lo: "19.EXAM", section: "Design Stage", type: "application",
+    q: "Davidson Equipment Company is working through the SDLC framework in an effort to successfully build and implement a new parts inventory system. Davidson is unsure what technology will be needed for the system. What element in the design stage needs to be completed to resolve this issue for Davidson?",
+    options: ["Conceptual design", "Technical architecture specifications", "Systems model", "Graphical user interface"],
+    explain: "Technical architecture specifications within the design stage define the technology needed." },
+  { ch: 19, lo: "19.EXAM", section: "Development Testing", type: "application",
+    q: "At what stage in the SDLC are programmers responsible for testing code?",
+    options: ["Development stage", "Testing stage", "Design stage", "Analysis stage"],
+    explain: "Programmers test code during the development stage as they build it; a separate testing stage addresses integrated testing." },
+  { ch: 19, lo: "19.EXAM", section: "UAT Identify", type: "application",
+    q: "Dana invites a few customers to test the new parts system at Davidson Equipment. The customers are given a list of tasks to complete on the new system. Observing the testing process and results allows Dana to verify that the system meets the expectations of the customers. What kind of testing did Dana implement?",
+    options: ["Systems model testing", "User acceptance testing", "User verified testing", "Systems congruence testing"],
+    explain: "User acceptance testing (UAT) has end users validate that the system meets their expectations." },
+  { ch: 19, lo: "19.EXAM", section: "Audit Stages", type: "memorization",
+    q: "Which of the following is the correct order of the internal audit stages?",
+    options: ["Fieldwork, planning, wrap-up, follow-up", "Planning, fieldwork, wrap-up, follow-up", "Planning, wrap-up, fieldwork, follow-up", "Follow-up, planning, fieldwork, wrap-up"],
+    explain: "Internal audit stages proceed Planning → Fieldwork → Wrap-up → Follow-up." },
+  { ch: 19, lo: "19.EXAM", section: "Planning Kickoff", type: "application",
+    q: "Braylon, an internal audit senior, is meeting with the auditee to confirm scope and timing of an upcoming engagement. This activity belongs in which stage?",
+    options: ["Planning", "Fieldwork", "Wrap-up", "Follow-up"],
+    explain: "Kickoff meetings with the auditee occur during the Planning stage." },
+  { ch: 19, lo: "19.EXAM", section: "Walkthrough", type: "application",
+    q: "During fieldwork, which activity involves the auditor tracing a single transaction through the process to confirm their understanding of how controls operate?",
+    options: ["Walkthrough", "Tabletop exercise", "Continuous monitoring", "Kickoff meeting"],
+    explain: "A walkthrough traces a transaction end-to-end to validate process understanding." },
+  { ch: 19, lo: "19.EXAM", section: "Scoping", type: "application",
+    q: "Which deliverable is PRIMARILY produced during the planning stage of an internal audit?",
+    options: ["The audit scope and plan", "The final report", "The corrective action plan", "The follow-up memo"],
+    explain: "Planning produces scope and the audit plan; reports and CAPs come later." },
+  { ch: 19, lo: "19.EXAM", section: "Wrap-up", type: "memorization",
+    q: "Which deliverable is PRIMARILY produced during wrap-up of an internal audit?",
+    options: ["Kickoff agenda", "The draft audit report and finalized workpapers", "Scoping document", "Vendor onboarding checklist"],
+    explain: "Wrap-up finalizes workpapers and drafts the audit report." },
+  { ch: 19, lo: "19.EXAM", section: "Follow-up", type: "application",
+    q: "During follow-up, management claims findings are remediated but provides no documentation. The auditor should:",
+    options: ["Accept the verbal assertion", "Rely on both information from the auditee AND documentation of the implemented changes before closing findings", "Reopen the audit from planning", "Refer to external auditors immediately"],
+    explain: "Follow-up relies on both auditee statements and supporting documentation before closing findings." },
+  { ch: 19, lo: "19.EXAM", section: "Testing Types", type: "memorization",
+    q: "Which of the following is an example of a test of controls?",
+    options: ["Recomputing a year-end inventory valuation", "Inspecting a sample of invoices for evidence of supervisory approval", "Confirming receivables with customers", "Observing the physical inventory count"],
+    explain: "Testing whether invoices show supervisor approval is a test of controls (evaluating control operation)." },
+  { ch: 19, lo: "19.EXAM", section: "Substantive Test", type: "memorization",
+    q: "Which of the following is an example of a substantive test?",
+    options: ["Recomputing the accumulated depreciation balance", "Checking that a purchase order was signed by an authorized manager", "Inspecting the audit committee charter", "Reviewing segregation of duties in the ERP"],
+    explain: "Substantive tests focus on the dollar balances themselves (e.g., recomputing depreciation)." },
+  { ch: 19, lo: "19.EXAM", section: "Audit Evidence", type: "memorization",
+    q: "Which form of audit evidence is generally considered MOST reliable?",
+    options: ["Original documents obtained directly from third parties", "Photocopies provided by the client", "Oral inquiries of staff only", "The client's summary memo"],
+    explain: "Third-party evidence obtained directly is generally most reliable; oral inquiry is least reliable." },
+  { ch: 19, lo: "19.EXAM", section: "Sampling", type: "application",
+    q: "Whitfield Energy's auditor selects 30 invoices from a population of 3,000 to test for approval. What technique is being used?",
+    options: ["Audit sampling", "Full population testing", "Continuous auditing", "Walkthrough"],
+    explain: "Testing a subset to draw conclusions about a population is audit sampling." },
+  { ch: 19, lo: "19.EXAM", section: "Data Analytics Tools", type: "memorization",
+    q: "Which of the following is an example of generalized audit software commonly used in data analytics for auditing?",
+    options: ["ACL and IDEA", "Microsoft Paint", "Adobe Illustrator", "Notepad"],
+    explain: "ACL and IDEA are generalized audit software packages used for audit data analytics." },
+  { ch: 19, lo: "19.EXAM", section: "Finding Structure", type: "memorization",
+    q: "An internal audit finding is typically structured around which five elements?",
+    options: ["Condition, criteria, cause, effect, and recommendation", "Risk, reward, response, review, and report", "Who, what, when, where, and why only", "Design, develop, deploy, document, and decommission"],
+    explain: "Findings use the 5 Cs: Condition, Criteria, Cause, Effect (Consequence), and Recommendation (Corrective action)." },
+  { ch: 19, lo: "19.EXAM", section: "CAP", type: "application",
+    q: "Management agrees to implement a corrective action plan in 60 days. Which audit stage is responsible for verifying implementation?",
+    options: ["Planning", "Fieldwork", "Wrap-up", "Follow-up"],
+    explain: "Follow-up verifies that management has implemented agreed-upon corrective actions." },
+  { ch: 19, lo: "19.EXAM", section: "Rating Findings", type: "application",
+    q: "Brigid, an internal auditor, classifies a finding as 'high' severity because it could cause material misstatement. This reflects which dimension of the finding?",
+    options: ["Effect (consequence)", "Criteria", "Condition", "Cause"],
+    explain: "Severity relates to the Effect / Consequence of the finding (what could happen)." },
+  { ch: 19, lo: "19.EXAM", section: "Root Cause", type: "application",
+    q: "Ayodele is analyzing WHY a control failure occurred, not just WHAT failed. Which element of a finding is Ayodele focused on?",
+    options: ["Cause", "Condition", "Criteria", "Effect"],
+    explain: "Root cause analysis addresses the 'Cause' element of a finding." },
+  { ch: 19, lo: "19.EXAM", section: "Reporting to Audit Comm", type: "memorization",
+    q: "The internal audit function reports functionally to which body to preserve independence?",
+    options: ["The CFO", "The audit committee of the board of directors", "The marketing department", "The external auditors"],
+    explain: "Internal audit reports functionally to the audit committee to preserve independence from management." },
+  { ch: 19, lo: "19.EXAM", section: "Risk Statement", type: "application",
+    q: "Maurice is currently engaged to assist their client in identifying and preparing a risk statement relating to the revenue cycle. The risk statement prepared by Maurice must include:",
+    options: ["The improvement and the solution", "The improvement and the possible outcome", "The issue and the solution", "The issue and the possible outcome"],
+    explain: "A proper risk statement describes the issue (risk event) paired with its possible outcome." },
+  { ch: 19, lo: "19.EXAM", section: "Second Line", type: "application",
+    q: "Sue currently works in the department representing the second line of defense at her employer. The department is responsible for helping the organization update its ERM program. Sue has been assigned to work on the second step of the ERM assignment. What is Sue responsible for?",
+    options: ["Categorizing risks based on their type", "Identifying risks", "Responding to a company's risk", "Categorizing risks based on response"],
+    explain: "The second step of ERM risk management is categorizing risks based on their type." },
+  { ch: 19, lo: "19.EXAM", section: "Technology Risk", type: "application",
+    q: "During an upcoming meeting with your client, you will have the opportunity to introduce the firm's technology risk service offering. How would you define the risks that these services address to the client?",
+    options: ["When technology failures have the potential of improving business", "When technology failures have the potential of disrupting business", "When technology is deployed to solve business problems", "When technology is removed from business operations"],
+    explain: "Technology risk is defined as technology failures with the potential to disrupt the business." },
+  { ch: 19, lo: "19.EXAM", section: "Risk Score Reduction", type: "application",
+    q: "Your company implemented your risk mitigation recommendation related to the processing of invoices. This reduced the risk likelihood from a 3 to a 2 and the risk impact from a 4 to a 3. By what percent is the risk score reduced?",
+    options: ["50%", "100%", "25%", "33%"],
+    explain: "Original score: 3 × 4 = 12. New score: 2 × 3 = 6. Reduction = (12 − 6)/12 = 50%." },
+  { ch: 19, lo: "19.EXAM", section: "Risk Responses", type: "memorization",
+    q: "In responding to risks, how many types of responses are there?",
+    options: ["4", "3", "5", "8"],
+    explain: "There are four risk responses: mitigate, accept, share/transfer, and avoid." },
+  { ch: 19, lo: "19.EXAM", section: "Mitigation Definition", type: "application",
+    q: "The board of directors is concerned with an existing risk facing the organization and demands that management appropriately mitigate the risk. What are they demanding of management?",
+    options: ["Mitigating the risk is when an inherent risk is present, but the organization chooses not to act", "Mitigating the risk eliminates the risk by completely avoiding the events causing the risk", "Mitigating the risk is when a company decides to minimize its impact if it occurs through additional business processes or controls", "Mitigating the risk is the shifting of the risk to a third party"],
+    explain: "Mitigation reduces likelihood/impact through additional controls or processes; avoidance eliminates the activity; transfer shifts to a third party." },
+  { ch: 19, lo: "19.EXAM", section: "Audit Committee Line", type: "application",
+    q: "The function(s) that report directly to the audit committee is responsible for which line(s) of defense?",
+    options: ["First", "Second", "Third", "Second and Third"],
+    explain: "Only the third line (internal audit) reports directly to the audit committee." },
+  { ch: 19, lo: "19.EXAM", section: "SOX Goal", type: "memorization",
+    q: "The goal of the Sarbanes-Oxley Act of 2002 is to:",
+    options: ["Protect the U.S. government from fraudulent acts committed by U.S. companies", "Protect investors from fraud and other risks by improving the reliability and accuracy of financial statements", "Protect companies from the U.S. government interest in how they present financial statements", "Protect investors from the risk of increased taxes impacting the financial statements of companies in which they are invested"],
+    explain: "SOX 2002 protects investors by improving the reliability and accuracy of financial statements." },
+  { ch: 19, lo: "19.EXAM", section: "First Line", type: "application",
+    q: "As assistant controller and part of the first line of defense, you report to the CFO, who is asking for help in enhancing the organization's risk management program. Specifically, you have been assigned to reconsider and, if needed, help implement risk responses. In doing so, what would most likely (best choice) be the course of action you would take?",
+    options: ["Decide how the company will address the prioritized risks", "Select which risks are most likely to occur or will have the largest impact", "Categorize risks based on their types", "Identify existing risks and their outcomes"],
+    explain: "Risk response = deciding how the company will address prioritized risks (the response step)." },
+  { ch: 19, lo: "19.EXAM", section: "Third Line", type: "memorization",
+    q: "Which function represents the third line of defense?",
+    options: ["Operational management", "Risk and compliance functions", "Internal audit", "External parties"],
+    explain: "Internal audit is the third line of defense, providing independent assurance." },
+  { ch: 19, lo: "19.EXAM", section: "Second Line Role", type: "memorization",
+    q: "Which of the following best describes the second line of defense?",
+    options: ["Operations and process owners executing daily controls", "Risk management and compliance functions that oversee and support the first line", "Independent assurance function", "External regulators"],
+    explain: "The second line consists of risk management and compliance functions overseeing the first line." },
+  { ch: 19, lo: "19.EXAM", section: "Preventative Controls", type: "memorization",
+    q: "Which of the following is an example of a preventative control?",
+    options: ["Security camera footage reviewed weekly", "Segregation of duties in cash handling", "Monthly account reconciliation", "Insurance policies"],
+    explain: "Segregation of duties prevents errors/fraud before they occur (preventative). Reconciliation is detective; insurance is corrective." },
+  { ch: 19, lo: "19.EXAM", section: "All Three Control Types", type: "application",
+    q: "Usually, controls function as a preventative, detective, or corrective control. Which one of the controls below uses all functions simultaneously?",
+    options: ["Locked doors", "Security cameras", "Firewall", "Security guard"],
+    explain: "A security guard deters (preventative), identifies (detective), and can intervene (corrective) all at once." },
+  { ch: 19, lo: "19.EXAM", section: "Continuous Monitoring", type: "memorization",
+    q: "You are asked to educate the audit committee on the benefits of continuous monitoring. Which of the following benefits would NOT be included in your presentation because it is incorrect?",
+    options: ["Data analysts use continuous monitoring technology to create detective controls", "Continuous monitoring software uses rules-based programming to monitor the business's data for red flags of risks", "Continuous monitoring can notify management in real-time when risk events occur", "Continuous monitoring focuses on segregation of duties to prevent fraud"],
+    explain: "Continuous monitoring supports preventative/fraud detection via SoD, uses rules-based monitoring, and provides real-time alerts; it is NOT primarily about creating detective controls for analysts." },
+  { ch: 19, lo: "19.EXAM", section: "Fraud & Breach IT GC", type: "application",
+    q: "Fraud & Breach, CPAs (FB) has been engaged to make recommendations on what kinds of IT general controls the client should implement to prevent any disruption of services. How should FB start their analysis?",
+    options: ["FB should create a detailed list of risks to the system", "FB should recommend an insurance coverage review", "FB should review the business continuity plan", "FB should create system roles to enforce separation of duties"],
+    explain: "IT GC work begins by creating a detailed list of risks to the system; other items are later or alternative controls." },
+  { ch: 19, lo: "19.EXAM", section: "SQL Select All", type: "application",
+    q: "You need to write a command to retrieve all the records in the Products table. Which of the following syntax is the correct command?",
+    options: ["SELECT all FROM Products", "SELECT * FROM Products", "RETRIEVE all FROM Products", "RETRIEVE * FROM Products"],
+    explain: "SELECT * FROM Products returns all records from that table." },
+  { ch: 19, lo: "19.EXAM", section: "Foreign Key Table", type: "application",
+    q: "In a relational database, data is stored in tables of related data. The database for Motorcycle Parts Warehouse has the following tables: Items, Employees, Sales, and Customers. Which table would you insert a field to store the delivery address used to ship a customer their order?",
+    options: ["Items", "Employees", "Sales", "Customers"],
+    explain: "A delivery address associated with a customer belongs in the Customers table (attribute of the customer entity)." },
+  { ch: 19, lo: "19.EXAM", section: "Reduce Redundancy", type: "application",
+    q: "Relational databases are designed to reduce redundancy by:",
+    options: ["Not allowing more than 5 fields per table", "Ensuring that the primary key is not null", "Referencing needed data already stored in a different table", "Storing duplicate data in foreign keys"],
+    explain: "Redundancy is reduced by referencing data stored once in another table via foreign keys (normalization)." },
+  { ch: 19, lo: "19.EXAM", section: "Real-time Dashboard", type: "application",
+    q: "Your organization has been reviewing information from the accounting information system based on weekly reports. You are tasked with designing a digital dashboard to display key performance indicators (KPIs) to management at your organization. Which enhancing characteristic of useful information are you improving for the business by creating a dashboard that is updated in real-time with KPIs?",
+    options: ["Verifiability", "Timeliness", "Understandability", "Comparability"],
+    explain: "Real-time updating improves timeliness of information." },
+];
+
+// ===== UI COMPONENT =====
+
+const CHAPTER_META = {
+  7: { title: "Emerging & Disruptive Technologies", accent: "#d97706" },
+  14: { title: "Information Systems and Controls", accent: "#0891b2" },
+  19: { title: "Audit Assurance", accent: "#7c3aed" },
+};
+
+const LO_META = {
+  "7.EXAM": "Exam-Style",
+  "14.EXAM": "Exam-Style",
+  "19.EXAM": "Exam-Style",
+};
+
+// Answer verification (encoded)
+const _E="2b2a2e2c2c2f31303332353734373a383b3a3c3c3e3f414042434744444549484a4b4d4d4e4d51515253565556565a595a5b5c5c5f5f616063636565646469696b6a6c6d6e6e717072737475767478797b787c7c7e7f828383838684878488898b888e8c";
+(function(){BANK.forEach((q,i)=>{const v=parseInt(_E.substr(i*2,2),16)^((i+42)&0xFF);Object.defineProperty(q,'_x',{value:v,enumerable:false,configurable:false,writable:false});Object.freeze(q.options);Object.freeze(q);});Object.freeze(BANK);})();
+
+const LOS_BY_CHAPTER = {
+  7: ["7.EXAM"],
+  14: ["14.EXAM"],
+  19: ["19.EXAM"],
+};
+
+function formatTime(s) {
+  s = Math.max(0, Math.floor(s));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const pad = n => String(n).padStart(2, "0");
+  return h > 0 ? h + ":" + pad(m) + ":" + pad(sec) : pad(m) + ":" + pad(sec);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRandom(pool, exceptIndex) {
+  if (pool.length === 0) return null;
+  if (pool.length === 1) return 0;
+  let i = Math.floor(Math.random() * pool.length);
+  while (i === exceptIndex) i = Math.floor(Math.random() * pool.length);
+  return i;
+}
+
+function AISQuiz() {
+  const [selectedChapter, setSelectedChapter] = useState("all"); // "all" | 7 | 14 | 19
+  const [selectedLO, setSelectedLO] = useState("all"); // "all" | "7.1" | "14.3" | etc.
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [current, setCurrent] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  // Streaks are live counters (persisted separately from the mastered map).
+  // correct/total/byChapter are DERIVED from `answered` so they stay in sync
+  // with the "Mastered this cycle" graphic.
+  const [streakState, setStreakState] = useState(() => {
+    try {
+      const s = JSON.parse(localStorage.getItem("bs_exam_streak_v1"));
+      if (s && typeof s === "object") {
+        return { streak: s.streak || 0, bestStreak: s.bestStreak || 0 };
+      }
+    } catch(e) {}
+    return { streak: 0, bestStreak: 0 };
+  });
+  const [answered, setAnswered] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("bs_exam_answered_v1")) || {}; }
+    catch(e) { return {}; }
+  });
+  const [cycleComplete, setCycleComplete] = useState(false);
+
+  // Per-question timer (resets to 0 each new question) + persisted total time on page.
+  const [timerElapsed, setTimerElapsed] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [totalElapsed, setTotalElapsed] = useState(() => {
+    try {
+      const v = parseInt(localStorage.getItem("bs_exam_total_v1"), 10);
+      return isFinite(v) && v >= 0 ? v : 0;
+    } catch(e) { return 0; }
+  });
+  const [totalRunning, setTotalRunning] = useState(() => {
+    try {
+      const raw = localStorage.getItem("bs_exam_total_running_v1");
+      if (raw === null) return true;
+      return raw === "true";
+    } catch(e) { return true; }
+  });
+
+  const stats = useMemo(() => {
+    let correct = 0, total = 0;
+    const byChapter = {};
+    for (const key of Object.keys(answered)) {
+      const q = BANK[key];
+      if (!q) continue;
+      const isCorrect = answered[key] === "correct";
+      total++;
+      if (isCorrect) correct++;
+      const ch = q.ch;
+      if (!byChapter[ch]) byChapter[ch] = { correct: 0, total: 0 };
+      byChapter[ch].total++;
+      if (isCorrect) byChapter[ch].correct++;
+    }
+    return { correct, total, byChapter, streak: streakState.streak, bestStreak: streakState.bestStreak };
+  }, [answered, streakState]);
+
+  const filteredPool = useMemo(() => {
+    return BANK.map((q, i) => { const o = { ...q, idx: i }; Object.defineProperty(o,'_x',{value:q._x,enumerable:false,configurable:false,writable:false}); return o; })
+      .filter(q => selectedChapter === "all" || q.ch === selectedChapter)
+      .filter(q => selectedLO === "all" || q.lo === selectedLO)
+      .filter(q => typeFilter === "all" || q.type === typeFilter);
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_exam_answered_v1", JSON.stringify(answered)); } catch(e) {}
+  }, [answered]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_exam_streak_v1", JSON.stringify(streakState)); } catch(e) {}
+  }, [streakState]);
+
+  // Timer: reset to 0 and auto-start on each new question; auto-stop on reveal.
+  // Also stop (and prevent running) when the cycle is complete.
+  useEffect(() => {
+    if (cycleComplete) {
+      setTimerRunning(false);
+      return;
+    }
+    if (current && !revealed) {
+      setTimerElapsed(0);
+      setTimerRunning(true);
+    } else if (revealed) {
+      setTimerRunning(false);
+    }
+  }, [current, revealed, cycleComplete]);
+
+  // Per-question timer tick.
+  useEffect(() => {
+    if (!timerRunning) return;
+    const iv = setInterval(() => {
+      setTimerElapsed(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [timerRunning]);
+
+  // Total (cumulative) timer tick — independent of per-question; paused when cycle is complete
+  // or the user presses the total play/pause button.
+  useEffect(() => {
+    if (!totalRunning || cycleComplete) return;
+    const iv = setInterval(() => {
+      setTotalElapsed(prev => {
+        const next = prev + 1;
+        try { localStorage.setItem("bs_exam_total_v1", String(next)); } catch(e) {}
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [totalRunning, cycleComplete]);
+
+  // Persist totalRunning preference.
+  useEffect(() => {
+    try { localStorage.setItem("bs_exam_total_running_v1", String(totalRunning)); } catch(e) {}
+  }, [totalRunning]);
+
+  const loadNext = () => {
+    if (filteredPool.length === 0) {
+      setCurrent(null);
+      setCycleComplete(false);
+      return;
+    }
+    // Only pick from questions not yet answered correctly — wrong answers stay in the shuffle
+    const unseen = filteredPool.filter(q => answered[q.idx] !== "correct");
+    if (unseen.length === 0) {
+      setCurrent(null);
+      setCycleComplete(true);
+      return;
+    }
+    const pick = unseen[Math.floor(Math.random() * unseen.length)];
+
+    // shuffle options but track where correct went
+    const indexed = pick.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === pick._x);
+
+    setCycleComplete(false);
+    setCurrent({
+      q: pick,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  const jumpToQuestion = (q) => {
+    // Show a specific question (click-through from tracker blocks)
+    const indexed = q.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === q._x);
+    setCycleComplete(false);
+    setCurrent({
+      q,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  useEffect(() => {
+    loadNext();
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    // When filters toggle, reset the active question
+    loadNext();
+    // eslint-disable-next-line
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    // Auto-load a question if pool is available and none is active and we're not in complete state
+    if (!current && !cycleComplete && filteredPool.length > 0) {
+      loadNext();
+    }
+    // eslint-disable-next-line
+  }, [answered, cycleComplete]);
+
+  // Keyboard shortcuts: 1-4 select option, Enter/Space advance
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!current) return;
+      // Don't hijack when user is typing in an input
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
+
+      if (!revealed && ["1","2","3","4"].includes(e.key)) {
+        const i = parseInt(e.key, 10) - 1;
+        if (i < current.shuffledOptions.length) {
+          e.preventDefault();
+          handleSelect(i);
+        }
+      } else if (revealed && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        loadNext();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+    // eslint-disable-next-line
+  }, [current, revealed]);
+
+  const handleSelect = (i) => {
+    if (revealed) return;
+    setSelected(i);
+    setRevealed(true);
+    const correct = i === current.correctShuffledIndex;
+    setAnswered(prev => ({ ...prev, [current.q.idx]: correct ? "correct" : "wrong" }));
+    setStreakState(prev => {
+      const newStreak = correct ? prev.streak + 1 : 0;
+      return {
+        streak: newStreak,
+        bestStreak: Math.max(prev.bestStreak, newStreak),
+      };
+    });
+  };
+
+  const selectChapter = (ch) => {
+    setSelectedChapter(ch);
+    setSelectedLO("all"); // reset LO filter when chapter changes
+  };
+
+  const resetStats = () => {
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setAnswered({});
+    setCycleComplete(false);
+    setTimerElapsed(0);
+    setTimerRunning(false);
+    setTotalElapsed(0);
+    setTotalRunning(true);
+    try { localStorage.removeItem("bs_exam_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_streak_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_total_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_total_running_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_stats_v1"); } catch(e) {} // legacy cleanup
+    try { localStorage.removeItem("bs_exam_timer_v1"); } catch(e) {} // legacy cleanup
+    loadNext();
+  };
+
+  const startNewCycle = () => {
+    setAnswered({});
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setCycleComplete(false);
+    try { localStorage.removeItem("bs_exam_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_streak_v1"); } catch(e) {}
+  };
+
+  const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+
+  return (
+    <div className="min-h-screen w-full" style={{
+      background: "linear-gradient(180deg, #fbf9f4 0%, #f4f1ea 100%)",
+      fontFamily: "'Inter', -apple-system, sans-serif",
+      color: "#1c1917",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+        .font-serif-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+        .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+        .option-btn { transition: all 0.18s cubic-bezier(.4,0,.2,1); }
+        .option-btn:not(:disabled):hover { transform: translateX(4px); }
+        .fade-in { animation: fadeIn 0.35s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .dot-grid {
+          background-image: radial-gradient(circle, #d6d3d1 1px, transparent 1px);
+          background-size: 24px 24px;
+        }
+      `}</style>
+
+      <div className="max-w-4xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
+
+        {/* Back link */}
+        <a href="ais.html" className="inline-block font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 hover:text-stone-900 mb-6 no-underline">
+          ← AIS Study Tools
+        </a>
+
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-baseline justify-between flex-wrap gap-4">
+            <div>
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-stone-500 mb-2">
+                Exam-Style · Lanz format · 100 questions
+              </div>
+              <h1 className="font-serif-display text-4xl sm:text-5xl font-bold leading-[1.05] text-stone-900">
+                Exam <span className="italic">Style</span>
+              </h1>
+              <p className="font-serif-display italic text-stone-600 text-lg mt-1">
+                Chapters 7 · 14 · 19
+              </p>
+            </div>
+            <div className="flex items-center gap-5 font-mono text-xs">
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Score</div>
+                <div className="text-2xl font-bold text-stone-900">{stats.correct}<span className="text-stone-400">/{stats.total}</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Acc</div>
+                <div className="text-2xl font-bold text-stone-900">{accuracy}<span className="text-stone-400 text-base">%</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Streak</div>
+                <div className="text-2xl font-bold" style={{ color: stats.streak >= 3 ? "#d97706" : "#1c1917" }}>
+                  {stats.streak}{stats.bestStreak > 0 && <span className="text-stone-400 text-sm font-normal"> / {stats.bestStreak}</span>}
+                </div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Time</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl font-bold text-stone-900 tabular-nums">{formatTime(totalElapsed)}</div>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTotalRunning(r => !r); }}
+                    aria-label={totalRunning ? "Pause total timer" : "Start total timer"}
+                    title={totalRunning ? "Pause total timer" : "Start total timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 22, height: 22, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {totalRunning && !cycleComplete ? (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Chapter filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Chapter:</span>
+          <button
+            onClick={() => selectChapter("all")}
+            className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+            style={{
+              background: selectedChapter === "all" ? "#1c1917" : "transparent",
+              color: selectedChapter === "all" ? "#fff" : "#78716c",
+              borderColor: selectedChapter === "all" ? "#1c1917" : "#d6d3d1",
+            }}
+          >
+            All chapters
+          </button>
+          {[7, 14, 19].map(ch => {
+            const active = selectedChapter === ch;
+            const meta = CHAPTER_META[ch];
+            const chStats = stats.byChapter[ch];
+            return (
+              <button
+                key={ch}
+                onClick={() => selectChapter(ch)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? meta.accent : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? meta.accent : "#d6d3d1",
+                }}
+              >
+                Ch {ch} · {meta.title}
+                {chStats && (
+                  <span className="ml-2 font-mono opacity-80">
+                    {chStats.correct}/{chStats.total}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+          <button
+            onClick={resetStats}
+            className="option-btn ml-auto px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-stone-500 hover:text-stone-900 border border-stone-300 rounded-full"
+          >
+            Reset
+          </button>
+        </div>
+
+        {/* LO sub-topic filter — only visible when a specific chapter is selected */}
+        {selectedChapter !== "all" && (
+          <div className="flex flex-wrap items-center gap-2 mb-3 fade-in">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Topic:</span>
+            <button
+              onClick={() => setSelectedLO("all")}
+              className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+              style={{
+                background: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "transparent",
+                color: selectedLO === "all" ? "#fff" : "#78716c",
+                borderColor: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+              }}
+            >
+              All topics
+            </button>
+            {LOS_BY_CHAPTER[selectedChapter].map(lo => {
+              const active = selectedLO === lo;
+              const count = BANK.filter(q => q.lo === lo).length;
+              return (
+                <button
+                  key={lo}
+                  onClick={() => setSelectedLO(lo)}
+                  className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                  style={{
+                    background: active ? CHAPTER_META[selectedChapter].accent : "transparent",
+                    color: active ? "#fff" : "#78716c",
+                    borderColor: active ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+                  }}
+                  title={LO_META[lo]}
+                >
+                  LO {lo} · {LO_META[lo]}
+                  <span className="ml-2 font-mono opacity-70">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Type filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 pb-6 border-b border-stone-300">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Type:</span>
+          {[
+            { key: "all", label: "All" },
+            { key: "application", label: "Application" },
+            { key: "memorization", label: "Memorization" },
+          ].map(({ key, label }) => {
+            const active = typeFilter === key;
+            const count = BANK.filter(q =>
+              (selectedChapter === "all" || q.ch === selectedChapter) &&
+              (selectedLO === "all" || q.lo === selectedLO) &&
+              (key === "all" || q.type === key)
+            ).length;
+            return (
+              <button
+                key={key}
+                onClick={() => setTypeFilter(key)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? "#1c1917" : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? "#1c1917" : "#d6d3d1",
+                }}
+              >
+                {label} <span className="font-mono opacity-70 ml-1">({count})</span>
+              </button>
+            );
+          })}
+          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 hidden sm:inline">
+            Keys: 1–4 · Enter
+          </span>
+        </div>
+
+        {/* Progress & status row */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex-1 min-w-[180px]">
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.15em] text-stone-500 mb-1.5">
+              <span>Mastered this cycle</span>
+              <span className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5">
+                  <span className="tabular-nums text-stone-700" style={{ fontSize: 11 }}>{formatTime(timerElapsed)}</span>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTimerRunning(r => !r); }}
+                    aria-label={timerRunning ? "Pause timer" : "Start timer"}
+                    title={timerRunning ? "Pause timer" : "Start timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 18, height: 18, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {timerRunning ? (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </span>
+                <span>
+                  {filteredPool.filter(q => answered[q.idx] === "correct").length} / {filteredPool.length}
+                </span>
+              </span>
+            </div>
+            <div className="flex gap-[2px] flex-wrap">
+              {filteredPool.map(q => {
+                const s = answered[q.idx];
+                const isCurrent = current && current.q && current.q.idx === q.idx;
+                const bg = s === "correct" ? "#16a34a" : s === "wrong" ? "#dc2626" : "#e7e5e4";
+                const label = s === "correct" ? "Correct" : s === "wrong" ? "Wrong" : "Unseen";
+                return (
+                  <button
+                    key={q.idx}
+                    type="button"
+                    onClick={() => jumpToQuestion(q)}
+                    title={label + " — click to revisit"}
+                    aria-label={"Jump to question: " + label}
+                    style={{
+                      width: 10, height: 10, borderRadius: 2, background: bg,
+                      padding: 0, border: 0, cursor: "pointer",
+                      outline: isCurrent ? "2px solid #1c1917" : "none",
+                      outlineOffset: isCurrent ? 1 : 0,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {cycleComplete && (
+          <div className="fade-in mb-6 rounded-2xl p-5 border" style={{ background: "#fff", borderColor: "#d6d3d1" }}>
+            <div className="font-serif-display text-xl font-bold text-stone-900 mb-1">All mastered</div>
+            <div className="text-sm text-stone-600 mb-3">
+              You've answered all {filteredPool.length} questions in this filter correctly. Start a new cycle to go through them again.
+            </div>
+            <button
+              onClick={startNewCycle}
+              className="option-btn px-4 py-2 text-sm font-medium rounded-full text-white"
+              style={{ background: "#1c1917" }}
+            >
+              Start new cycle
+            </button>
+          </div>
+        )}
+
+
+        {/* Question card */}
+        {current ? (
+          <div key={stats.total} className="fade-in">
+            {/* Source metadata */}
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <span
+                className="font-mono text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded"
+                style={{
+                  background: CHAPTER_META[current.q.ch].accent,
+                  color: "#fff",
+                }}
+              >
+                Ch {current.q.ch} · LO {current.q.lo}
+              </span>
+              <span className="font-mono text-xs text-stone-500">
+                § {current.q.section}
+              </span>
+              <span
+                className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] px-2 py-0.5 rounded border"
+                style={{
+                  borderColor: current.q.type === "application" ? "#d97706" : "#a8a29e",
+                  color: current.q.type === "application" ? "#b45309" : "#78716c",
+                  background: current.q.type === "application" ? "#fef3c7" : "transparent",
+                }}
+              >
+                {current.q.type}
+              </span>
+            </div>
+
+            {/* Question */}
+            <div className="relative mb-7">
+              <div className="absolute -left-3 top-0 bottom-0 w-0.5" style={{ background: CHAPTER_META[current.q.ch].accent, opacity: 0.3 }}/>
+              <h2 className="font-serif-display text-2xl sm:text-[28px] leading-[1.25] text-stone-900 font-semibold pl-3">
+                {current.q.q}
+              </h2>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-2.5 mb-6">
+              {current.shuffledOptions.map((opt, i) => {
+                const isCorrect = i === current.correctShuffledIndex;
+                const isSelected = i === selected;
+                let bg = "#fff";
+                let border = "#e7e5e4";
+                let textColor = "#1c1917";
+                let letterBg = "#f5f5f4";
+                let letterColor = "#78716c";
+
+                if (revealed) {
+                  if (isCorrect) {
+                    bg = "#f0fdf4";
+                    border = "#16a34a";
+                    letterBg = "#16a34a";
+                    letterColor = "#fff";
+                  } else if (isSelected) {
+                    bg = "#fef2f2";
+                    border = "#dc2626";
+                    letterBg = "#dc2626";
+                    letterColor = "#fff";
+                  } else {
+                    textColor = "#a8a29e";
+                  }
+                } else if (isSelected) {
+                  border = "#1c1917";
+                }
+
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(i)}
+                    disabled={revealed}
+                    className="option-btn w-full text-left px-4 py-3.5 rounded-lg border flex items-start gap-4 disabled:cursor-default"
+                    style={{ background: bg, borderColor: border, color: textColor }}
+                  >
+                    <span
+                      className="font-mono text-xs font-bold w-6 h-6 flex items-center justify-center rounded shrink-0 mt-0.5"
+                      style={{ background: letterBg, color: letterColor }}
+                    >
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    <span className="text-[15px] leading-snug flex-1">{opt}</span>
+                    {revealed && isCorrect && (
+                      <span className="text-green-600 font-bold text-lg">✓</span>
+                    )}
+                    {revealed && isSelected && !isCorrect && (
+                      <span className="text-red-600 font-bold text-lg">✕</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Explanation + next */}
+            {revealed && (
+              <div className="fade-in">
+                <div className="border-t-2 border-dashed border-stone-300 pt-5 mb-5">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mb-2">
+                    {selected === current.correctShuffledIndex ? "Correct" : "Answer"}
+                  </div>
+                  <p className="font-serif-display text-[17px] leading-relaxed text-stone-800 italic">
+                    {current.q.explain}
+                  </p>
+                </div>
+                <button
+                  onClick={loadNext}
+                  className="option-btn w-full sm:w-auto px-8 py-3 rounded-lg font-medium text-sm text-white"
+                  style={{ background: "#1c1917" }}
+                >
+                  Next question →
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-stone-500 font-serif-display italic">
+            No questions in the selected scope.
+          </div>
+        )}
+
+        {/* Footer */}
+        <footer className="mt-16 pt-6 border-t border-stone-200 font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 flex flex-wrap justify-between gap-2">
+          <span>{BANK.length} questions · {filteredPool.length} in scope</span>
+          <span>Continuous review mode</span>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AISQuiz />);
+  </script>
+</body>
+</html>

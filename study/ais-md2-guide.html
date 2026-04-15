@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS MD2 Exam Guide — Bleifer Study</title>
+  <meta name="description" content="Exam guide for AIS Midterm 2 with Prof. Lanz — topics, priorities, and COBIT breakdown" />
+  <meta name="theme-color" content="#fbf9f4" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #fbf9f4;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1c1917;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 640px;
+      width: 100%;
+      padding: 64px 24px 64px;
+    }
+    .back {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #78716c;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: #1c1917; }
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .tagline {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #78716c;
+      font-size: 0.95rem;
+      margin-bottom: 40px;
+    }
+
+    /* Exam logistics banner */
+    .logistics {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .logistic-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .logistic-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #a8a29e;
+    }
+    .logistic-value {
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1c1917;
+    }
+
+    /* Section */
+    .section-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #a8a29e;
+      margin-bottom: 12px;
+      margin-top: 40px;
+    }
+
+    /* Topic card */
+    .topic-card {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 12px;
+    }
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .topic-title {
+      font-family: Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1c1917;
+      line-height: 1.3;
+    }
+    .pill {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .pill-default { background: #f5f5f4; color: #78716c; }
+    .pill-hot { background: #fef2f2; color: #b91c1c; }
+    .pill-warn { background: #fffbeb; color: #92400e; }
+    .pill-muted { background: #f5f5f4; color: #a8a29e; }
+
+    /* Bullet list inside cards */
+    .notes {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .notes li {
+      font-size: 0.875rem;
+      color: #44403c;
+      line-height: 1.55;
+      padding-left: 16px;
+      position: relative;
+    }
+    .notes li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      color: #a8a29e;
+    }
+    .notes li strong {
+      color: #1c1917;
+      font-weight: 600;
+    }
+
+    /* COBIT hierarchy */
+    .cobit-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 4px;
+    }
+    .cobit-level {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 12px 0;
+      border-bottom: 1px solid #f5f5f4;
+    }
+    .cobit-level:last-child { border-bottom: none; }
+    .cobit-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 2px;
+      flex-shrink: 0;
+      width: 20px;
+    }
+    .cobit-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #d6d3d1;
+      flex-shrink: 0;
+    }
+    .cobit-dot.top { background: #1c1917; }
+    .cobit-line {
+      width: 1px;
+      flex: 1;
+      background: #e7e5e4;
+      min-height: 24px;
+    }
+    .cobit-body { flex: 1; }
+    .cobit-role {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #a8a29e;
+      margin-bottom: 3px;
+    }
+    .cobit-domain {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #1c1917;
+      margin-bottom: 3px;
+    }
+    .cobit-desc {
+      font-size: 0.8rem;
+      color: #78716c;
+      line-height: 1.5;
+    }
+    .cobit-tag {
+      display: inline-block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      background: #f5f5f4;
+      color: #78716c;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 5px;
+    }
+    .cobit-tag.governance { background: #1c1917; color: #fff; }
+
+    /* Skip box */
+    .skip-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 12px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .skip-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .skip-title {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #991b1b;
+      margin-bottom: 5px;
+    }
+    .skip-body {
+      font-size: 0.85rem;
+      color: #7f1d1d;
+      line-height: 1.55;
+    }
+
+    /* Strategy box */
+    .strategy-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-top: 40px;
+    }
+    .strategy-title {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1c1917;
+      margin-bottom: 10px;
+    }
+
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid #e7e5e4;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #a8a29e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="ais.html">← AIS Review</a>
+    <h1>MD2 Exam Guide</h1>
+    <div class="tagline">AIS · Prof. Lanz · What to know and how to prepare</div>
+
+    <!-- Logistics -->
+    <div class="logistics">
+      <div class="logistic-item">
+        <span class="logistic-label">Format</span>
+        <span class="logistic-value">40 MC Questions</span>
+      </div>
+      <div class="logistic-item">
+        <span class="logistic-label">Time Limit</span>
+        <span class="logistic-value">1 Hour</span>
+      </div>
+      <div class="logistic-item">
+        <span class="logistic-label">Primary Focus</span>
+        <span class="logistic-value">Ch 19 + Ch 14 / 7</span>
+      </div>
+      <div class="logistic-item">
+        <span class="logistic-label">Skip entirely</span>
+        <span class="logistic-value">Ch 16 (Cybersecurity)</span>
+      </div>
+    </div>
+
+    <!-- What to skip -->
+    <div class="skip-box">
+      <div class="skip-icon">✕</div>
+      <div>
+        <div class="skip-title">Do not study Chapter 16</div>
+        <div class="skip-body">Anything related to Ch 16 (cybersecurity reading material) is <strong>only on the final</strong>. Don't waste time on it for this exam.</div>
+      </div>
+    </div>
+
+    <div class="section-label">High-Priority Topics</div>
+
+    <!-- Ch 19 -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Chapter 19 — How to Audit</div>
+        <span class="pill pill-hot">Primary Focus</span>
+      </div>
+      <ul class="notes">
+        <li>The exam is about <strong>how to audit controls</strong>, building on Ch 7 & 14 from the first half of the semester — not nitpicking small details.</li>
+        <li>Think of it as the natural progression: <strong>designing controls → auditing controls</strong>.</li>
+        <li>You may be asked about using Excel for analysis — focus on the <strong>approach and logic</strong>, not specific function names.</li>
+        <li>Sample question: <em>"How would you audit blockchain?"</em> — answer: the same way you audit any technology resource, using <strong>General Controls (GCs) and pervasive controls</strong> from Ch 14.</li>
+        <li>Blockchain audit touchpoints: <strong>access/authorization, validation, objective transactions, completeness/accuracy</strong>.</li>
+      </ul>
+    </div>
+
+    <!-- COBIT -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">COBIT — Know the Domains</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <ul class="notes" style="margin-bottom: 18px;">
+        <li>Know the <strong>differences between frameworks</strong> (COBIT vs. COSO, etc.) and their synonyms.</li>
+        <li>Given a specific control, identify <strong>which of the five COBIT domains</strong> it belongs to (ref: Pg 14-5 in textbook).</li>
+      </ul>
+
+      <div class="cobit-flow">
+        <div class="cobit-level">
+          <div class="cobit-connector">
+            <div class="cobit-dot top"></div>
+            <div class="cobit-line"></div>
+          </div>
+          <div class="cobit-body">
+            <div class="cobit-role">Board / CEO Level</div>
+            <div class="cobit-domain">EDM — Evaluate, Direct, and Monitor</div>
+            <div class="cobit-desc">The board sets direction before doing anything. Aligns technology with the business mission. Does not execute — it directs.</div>
+            <span class="cobit-tag governance">Keyword: Governance</span>
+          </div>
+        </div>
+        <div class="cobit-level">
+          <div class="cobit-connector">
+            <div class="cobit-dot"></div>
+            <div class="cobit-line"></div>
+          </div>
+          <div class="cobit-body">
+            <div class="cobit-role">CIO Level — Management</div>
+            <div class="cobit-domain">APO — Align, Plan, and Organize</div>
+            <div class="cobit-desc">Board has set the vision. CIO turns it into action — planning the IT function to match business goals.</div>
+            <span class="cobit-tag">Keyword: Planning</span>
+          </div>
+        </div>
+        <div class="cobit-level">
+          <div class="cobit-connector">
+            <div class="cobit-dot"></div>
+            <div class="cobit-line"></div>
+          </div>
+          <div class="cobit-body">
+            <div class="cobit-role">CIO Level — Management</div>
+            <div class="cobit-domain">BAI — Build, Acquire, and Implement</div>
+            <div class="cobit-desc">Building or acquiring new systems. New technology is being developed or brought in.</div>
+            <span class="cobit-tag">Keyword: Building</span>
+          </div>
+        </div>
+        <div class="cobit-level">
+          <div class="cobit-connector">
+            <div class="cobit-dot"></div>
+            <div class="cobit-line"></div>
+          </div>
+          <div class="cobit-body">
+            <div class="cobit-role">CIO Level — Management</div>
+            <div class="cobit-domain">DSS — Deliver, Service, and Support</div>
+            <div class="cobit-desc">System is live — is it working as intended? Ongoing operations, service delivery, day-to-day support.</div>
+            <span class="cobit-tag">Keyword: Operating</span>
+          </div>
+        </div>
+        <div class="cobit-level">
+          <div class="cobit-connector">
+            <div class="cobit-dot"></div>
+          </div>
+          <div class="cobit-body">
+            <div class="cobit-role">CIO Level — Management</div>
+            <div class="cobit-domain">MEA — Monitor, Evaluate, and Assess</div>
+            <div class="cobit-desc">Monitoring everything that's running. Are controls effective? Are we meeting targets?</div>
+            <span class="cobit-tag">Keyword: Monitoring</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roger's -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Roger's Adoption Curve</div>
+        <span class="pill pill-hot">Definitely a Question</span>
+      </div>
+      <ul class="notes">
+        <li>Know the <strong>five adopter categories</strong> and their approximate percentages — at a high level, not deep detail.</li>
+        <li>Innovators (~2.5%), Early Adopters (~13.5%), Early Majority (34%), Late Majority (34%), Laggards (~16%).</li>
+        <li>Understand the <strong>mindset</strong> of each group — who absorbs risk, who waits for proof, who resists change.</li>
+      </ul>
+    </div>
+
+    <div class="section-label">Supporting Topics</div>
+
+    <!-- Access Roles -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Access Roles</div>
+        <span class="pill pill-warn">Read the Question Carefully</span>
+      </div>
+      <ul class="notes">
+        <li>Know all roles: <strong>User, Read-Only, Administrator</strong>, and any others from Ch 14.</li>
+        <li><strong>Pay close attention to business size</strong> — the appropriate role setup differs for a small business vs. a large enterprise.</li>
+        <li>Strategy: read the question fully and think of your answer <em>before</em> looking at the choices. Then find it.</li>
+      </ul>
+    </div>
+
+    <!-- SOC Reports -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">SOC Reports</div>
+        <span class="pill pill-default">High Level</span>
+      </div>
+      <ul class="notes">
+        <li>Know <strong>what each SOC report type is</strong> and the key differences between them (SOC 1, SOC 2, SOC 3).</li>
+        <li>Know <strong>when you would use each type</strong> — what situation calls for a SOC 1 vs. SOC 2, etc.</li>
+        <li>No deep dive required — keep it at a conceptual level.</li>
+      </ul>
+    </div>
+
+    <!-- Blockchain -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Blockchain</div>
+        <span class="pill pill-default">Don't Overthink It</span>
+      </div>
+      <ul class="notes">
+        <li>Don't need deep blockchain expertise — focus on it as a <strong>database with encryption</strong>.</li>
+        <li>The <strong>risks remain the same</strong> as any other technology resource. Audit it the same way.</li>
+        <li>If the word "blockchain" appears in a question, apply standard IT audit thinking: GCs, access controls, completeness, accuracy.</li>
+      </ul>
+    </div>
+
+    <!-- Strategy box -->
+    <div class="strategy-box">
+      <div class="strategy-title">Test-Taking Strategy (from Lanz)</div>
+      <ul class="notes">
+        <li>Read the question fully and <strong>form your answer in your head first</strong> — then look at the choices.</li>
+        <li>Pay attention to <strong>business size context</strong> in any access/role question — it changes the right answer.</li>
+        <li>The exam is not trying to trick you on small details. Focus on <strong>understanding how to audit</strong>, not memorizing specifics.</li>
+        <li>Blockchain questions: don't be intimidated by the terminology — <strong>same risks, same audit approach</strong>.</li>
+      </ul>
+    </div>
+
+    <footer>
+      &copy; 2026 Steven Bleifer
+    </footer>
+  </div>
+</body>
+</html>
