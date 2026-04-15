@@ -41,7 +41,8 @@ page = f'''<!DOCTYPE html>
         <a href="blog.html">Blog</a> <span class="sep">|</span>
         <a href="contact.html">Contact</a> <span class="sep">|</span>
         <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
-        <a href="awards.html">Awards</a>
+        <a href="awards.html">Awards</a> <span class="sep">|</span>
+        <a href="study/">Study</a>
         <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
     </div>
 

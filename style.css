@@ -589,6 +589,181 @@ hr {
   border-style: inset;
 }
 
+/* --- SECTIONS (used on homepage) --- */
+.section {
+  background: #000000;
+  border: 3px inset #808080;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.section h2 {
+  font-family: 'Times New Roman', serif;
+  color: #00ffff;
+  border-bottom: 2px dashed #00ffff;
+  padding-bottom: 5px;
+  font-size: 1.5em;
+  margin-bottom: 12px;
+}
+
+/* --- SUBTITLE --- */
+.subtitle {
+  color: #00ff00;
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+/* --- PILLS --- */
+.pill {
+  display: inline-block;
+  background: #000080;
+  color: #00ff00;
+  border: 2px outset #808080;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+  margin: 2px;
+}
+
+/* --- SEARCH BOX --- */
+.search-box {
+  background: #c0c0c0;
+  border: 3px outset #fff;
+  padding: 10px;
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+.search-box input[type="text"] {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  padding: 6px 10px;
+  border: 2px inset #808080;
+  width: 60%;
+  max-width: 350px;
+  background: #fff;
+}
+
+.search-box button {
+  font-family: 'Times New Roman', serif;
+  font-size: 13px;
+  padding: 6px 14px;
+  background: #c0c0c0;
+  border: 2px outset #fff;
+  cursor: pointer;
+  margin-left: 4px;
+  font-weight: bold;
+}
+
+.search-box button:hover {
+  background: #a0a0a0;
+}
+
+.search-box button:active {
+  border-style: inset;
+}
+
+/* --- CARD GRID --- */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 10px;
+}
+
+.card {
+  display: block;
+  background: #000080;
+  border: 3px outset #808080;
+  padding: 14px;
+  color: #00ff00;
+  text-decoration: none;
+  font-family: 'Comic Sans MS', cursive;
+  transition: background 0.15s;
+}
+
+.card:hover {
+  background: #0000b0;
+}
+
+.card:visited {
+  color: #00ff00;
+}
+
+.card h3 {
+  color: #ffff00;
+  font-family: 'Times New Roman', serif;
+  margin: 0 0 6px 0;
+  font-size: 1.1em;
+}
+
+.card p {
+  margin: 0;
+  font-size: 0.85em;
+  color: #00ff00;
+}
+
+/* --- TEAMS ROW --- */
+.teams-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
+
+.team-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  color: #ffff00;
+}
+
+.team-item img {
+  height: 70px;
+  width: auto;
+  border: 2px outset #808080;
+  background: #fff;
+  padding: 4px;
+}
+
+/* --- TIMELINE LIST --- */
+.timeline {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.timeline li {
+  padding: 6px 0;
+  border-bottom: 1px dashed #404040;
+  font-size: 0.95em;
+}
+
+.timeline .date {
+  color: #ffff00;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.timeline .desc {
+  color: #00ff00;
+}
+
+/* --- SPOTIFY EMBED --- */
+.spotify-wrap {
+  border: 3px inset #808080;
+  background: #000;
+  padding: 4px;
+}
+
+.spotify-wrap iframe {
+  display: block;
+  width: 100%;
+}
+
 /* --- RESPONSIVE (even the 90's would want this... maybe) --- */
 @media (max-width: 600px) {
   .main-container {
