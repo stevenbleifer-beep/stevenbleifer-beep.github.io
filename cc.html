@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Card Dashboard</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; padding: 0; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        function CardDashboard() {
+          const [selectedCategory, setSelectedCategory] = useState('dining');
+          const [expandedCard, setExpandedCard] = useState(null);
+          const [view, setView] = useState('category');
+
+          const cards = {
+            'amex-plat': {
+              name: 'Amex Platinum',
+              short: 'Platinum',
+              issuer: 'American Express',
+              currency: 'MR',
+              fee: 895,
+              status: 'reevaluate',
+              color: '#1a1a1a',
+              accent: '#d4b888',
+              earning: [
+                { cat: 'Flights (booked direct)', rate: '5x MR', note: 'up to $500k/yr' },
+                { cat: 'Prepaid hotels (amextravel)', rate: '5x MR' },
+                { cat: 'Everything else', rate: '1x MR' },
+              ],
+              credits: [
+                '$600 hotel ($300 semi-annually, FHR/THR prepaid)',
+                '$400 Resy dining',
+                '$300 digital entertainment ($25/mo)',
+                '$200 Uber Cash + $120 Uber One',
+                '$209 CLEAR Plus',
+                '$155 Walmart+',
+                '$120 Global Entry or TSA PreCheck',
+                'Centurion Lounge + Priority Pass access',
+                'Hilton Gold + Marriott Gold status',
+              ],
+              verdict: 'Only keeps its math if you use 70%+ of the credits. $895 is three months of your current rent territory. If you\'re not actively booking FHR hotels, flying 4+ times a year, and using streaming + Uber credits monthly, this is the card to put on trial for a year.',
+            },
+            'amex-gold': {
+              name: 'Amex Gold',
+              short: 'Gold',
+              issuer: 'American Express',
+              currency: 'MR',
+              fee: 325,
+              status: 'keep',
+              color: '#c9a44a',
+              accent: '#f5e6c0',
+              earning: [
+                { cat: 'Restaurants worldwide', rate: '4x MR', note: 'up to $50k/yr' },
+                { cat: 'US supermarkets', rate: '4x MR', note: 'up to $25k/yr' },
+                { cat: 'Flights (booked direct)', rate: '3x MR' },
+                { cat: 'Prepaid hotels (amextravel)', rate: '2x MR' },
+              ],
+              credits: [
+                '$120 dining ($10/mo: Grubhub, Cheesecake Factory, Goldbelly, Wine.com, Five Guys)',
+                '$120 Uber Cash ($10/mo)',
+                '$100 Resy ($50 semi-annually)',
+                '$84 Dunkin ($7/mo)',
+                '$100 property credit at The Hotel Collection (2+ night stay)',
+              ],
+              verdict: 'The workhorse. Dining and groceries are the two categories you\'ll spend on for life. 4x MR at ~1.8-2 cents/point puts this card at effectively 7-8% value on the categories you spend on weekly. Keep and use heavily.',
+            },
+            'chase-fu': {
+              name: 'Chase Freedom Unlimited',
+              short: 'CFU',
+              issuer: 'Chase',
+              currency: 'UR',
+              fee: 0,
+              status: 'keep',
+              color: '#004785',
+              accent: '#8ba7c4',
+              earning: [
+                { cat: 'Chase Travel portal', rate: '5% back' },
+                { cat: 'Dining + drugstores', rate: '3% back' },
+                { cat: 'Everything else', rate: '1.5% back' },
+              ],
+              credits: [],
+              verdict: 'Your best 1.5% catch-all and a critical UR feeder for your new CSP. Every point you earn here now transfers to Hyatt, United, Southwest and other partners via CSP at 1.5-2+ cents each. Keep using for all non-Apple-Pay, non-category spending. One note: pool your UR balances into CSP periodically (via the Chase app) so everything is in one account for transfers.',
+            },
+            'united-gateway': {
+              name: 'United Gateway',
+              short: 'United',
+              issuer: 'Chase',
+              currency: 'United miles',
+              fee: 0,
+              status: 'cancel',
+              color: '#002244',
+              accent: '#7394b8',
+              earning: [
+                { cat: 'United purchases', rate: '2x miles' },
+                { cat: 'Gas + local transit + streaming', rate: '2x miles' },
+                { cat: 'Everything else', rate: '1x miles' },
+              ],
+              credits: [],
+              verdict: 'Now clearly the weakest card in your wallet. Every category it earns on is beaten by something else: 2x United is inferior to Platinum\'s 5x MR or Club\'s 4x United miles, 2x on gas is beaten by Costco\'s 4%. No unique value remaining. Close it after a billing cycle or two to avoid the impression of churning, and ask Chase to reallocate the credit line to your CSP to preserve total Chase credit availability.',
+            },
+            'chase-prime': {
+              name: 'Chase Prime Visa',
+              short: 'Prime',
+              issuer: 'Chase',
+              currency: 'Cash back',
+              fee: 0,
+              status: 'keep',
+              color: '#ff9900',
+              accent: '#ffd699',
+              earning: [
+                { cat: 'Amazon + Whole Foods', rate: '5% back', note: 'requires Prime' },
+                { cat: 'Gas + restaurants + drugstores', rate: '2% back' },
+                { cat: 'Everything else', rate: '1% back' },
+              ],
+              credits: [],
+              verdict: 'Free for Prime members and nothing else beats 5% on Amazon. Keep as long as you have Prime. Do not use it for gas (Costco wins) or restaurants (Gold wins). Pro tip: the UR points it earns can now be pooled into your CSP account for transfer to travel partners.',
+            },
+            'apple-card': {
+              name: 'Apple Card',
+              short: 'Apple',
+              issuer: 'Goldman Sachs',
+              currency: 'Daily Cash',
+              fee: 0,
+              status: 'keep',
+              color: '#555555',
+              accent: '#c0c0c0',
+              earning: [
+                { cat: 'Apple + select merchants (Uber, Walgreens, T-Mobile, Nike, Panera)', rate: '3% back' },
+                { cat: 'Apple Pay anywhere', rate: '2% back' },
+                { cat: 'Everything else (physical card)', rate: '1% back' },
+              ],
+              credits: [],
+              verdict: 'Best card in NYC for any merchant that takes Apple Pay but isn\'t a dining/grocery/Amazon/Costco play. That includes the subway (OMNY), NJ Transit tap-to-pay, and tons of small retailers. 2% cash back via Apple Pay beats CFU\'s 1.5% flat rate. Keep.',
+            },
+            'amex-bce': {
+              name: 'Amex Blue Cash Everyday',
+              short: 'BCE',
+              issuer: 'American Express',
+              currency: 'Cash back',
+              fee: 0,
+              status: 'cancel',
+              color: '#1e5aa8',
+              accent: '#a7c0e0',
+              earning: [
+                { cat: 'US supermarkets', rate: '3% back', note: 'up to $6k/yr' },
+                { cat: 'US gas', rate: '3% back', note: 'up to $6k/yr' },
+                { cat: 'US online retail', rate: '3% back', note: 'up to $6k/yr' },
+                { cat: 'Everything else', rate: '1% back' },
+              ],
+              credits: [],
+              verdict: 'Cancel candidate. Gold beats it on groceries (4x MR), Costco beats it on gas (4%), Prime beats it on Amazon (5%). The only sliver of unique value is 3% on non-Amazon online retail, and that\'s capped at $6k which ceilings at $180/year. Not worth the mental overhead or the Amex slot.',
+            },
+            'discover-it': {
+              name: 'Discover It',
+              short: 'Discover',
+              issuer: 'Discover',
+              currency: 'Cash back',
+              fee: 0,
+              status: 'keep-conditional',
+              color: '#ff6b35',
+              accent: '#ffb896',
+              earning: [
+                { cat: 'Rotating 5% category', rate: '5% back', note: 'up to $1,500/qtr, must activate' },
+                { cat: 'Everything else', rate: '1% back' },
+              ],
+              credits: [],
+              verdict: 'Free, so no urgency to cancel. But only useful if you actually check the quarterly category and activate it. If you haven\'t in the last year, you\'re not using it. Set a calendar reminder for the 1st of each quarter or consider letting it go (being mindful of credit age).',
+            },
+            'citi-costco': {
+              name: 'Citi Costco Anywhere',
+              short: 'Costco',
+              issuer: 'Citibank',
+              currency: 'Cash back',
+              fee: 0,
+              status: 'keep',
+              color: '#e22630',
+              accent: '#f5a3a8',
+              earning: [
+                { cat: 'Gas (incl. Costco gas)', rate: '4% back', note: 'up to $7k/yr' },
+                { cat: 'Restaurants + travel', rate: '3% back' },
+                { cat: 'Costco purchases', rate: '2% back' },
+                { cat: 'Everything else', rate: '1% back' },
+              ],
+              credits: [],
+              verdict: 'Free with Costco membership and it\'s the only Visa accepted at Costco. Gas earning beats everything else in your wallet. Only quirk: rewards pay out once a year as a Costco certificate. Keep.',
+            },
+            'united-club': {
+              name: 'United Club Infinite',
+              short: 'Club',
+              issuer: 'Chase',
+              currency: 'United miles',
+              fee: 695,
+              status: 'consider-add',
+              color: '#1d3557',
+              accent: '#c9a44a',
+              earning: [
+                { cat: 'United purchases', rate: '4x miles' },
+                { cat: 'Dining + hotel stays', rate: '2x miles' },
+                { cat: 'Everything else', rate: '1x miles' },
+              ],
+              credits: [
+                'United Club lounge membership (sold standalone at $750/yr)',
+                '1st + 2nd checked bag free for you and a companion',
+                '25% back on inflight food, beverages, Wi-Fi',
+                '$120 Global Entry or TSA PreCheck',
+                'Priority check-in, security, boarding, baggage handling',
+                'Premier Upgrades on award tickets',
+                'IHG One Rewards Platinum Elite status',
+                '$100 annual United travel credit (after 7 United purchases of $100+)',
+              ],
+              verdict: 'Silver already covers your 1st checked bag and Group 2 boarding, so the Club card\'s unique value becomes narrower than it looks on paper: free 2nd bag for you, both bags free for a companion, and lounge access. The lounge piece is the real driver. If you\'re flying United 6+ times a year with connections through EWR, ORD, IAD, IAH, or SFO, the Club pays for itself through bags + lounge + 4x earning. Below that threshold, United Explorer at $150/yr is the honest answer: 1st bag free for a companion, 2 Club one-time passes per year, 2x United, and it stacks PQP toward Gold. The bigger strategic call: stacking Club on top of Platinum is $1,590/yr in premium fees for overlapping travel value. If United becomes your primary airline in the Morristown phase, Club probably replaces Platinum rather than joining it.',
+            },
+            'chase-sp': {
+              name: 'Chase Sapphire Preferred',
+              short: 'CSP',
+              issuer: 'Chase',
+              currency: 'UR',
+              fee: 95,
+              status: 'keep',
+              color: '#0a3d62',
+              accent: '#8bc6ec',
+              earning: [
+                { cat: 'Chase Travel portal', rate: '5x UR' },
+                { cat: 'Dining + select streaming + online groceries', rate: '3x UR' },
+                { cat: 'Other travel', rate: '2x UR' },
+                { cat: 'Everything else', rate: '1x UR' },
+              ],
+              credits: [
+                '$50 annual Chase Travel hotel credit (effective fee: $45)',
+                '10% anniversary points bonus on prior-year spend',
+                'Trip cancellation + interruption insurance (up to $10k/person)',
+                'Primary auto rental collision damage waiver (up to $60k)',
+                'Lost luggage insurance',
+                '1:1 transfer to Hyatt, United, Southwest, Aeroplan, British Airways, etc.',
+                'Points Boost: up to 1.75¢/pt on select Chase Travel bookings',
+              ],
+              verdict: 'Now the anchor of your UR ecosystem. Every point earned on CFU and Prime Visa now transfers 1:1 to Hyatt, United, Aeroplan, Southwest and other partners at significantly higher value than the 1¢ statement credit floor. Use CSP directly for: travel booked outside Chase Travel (2x), dining when Gold isn\'t optimal or when you want UR instead of MR, and any flight not booked direct (where Platinum\'s 5x doesn\'t apply). The $50 hotel credit posts automatically on any Chase Travel hotel booking. Primary rental CDW is the hidden gem: decline the rental counter\'s insurance every time from now on.',
+            },
+            'chase-sr': {
+              name: 'Chase Sapphire Reserve',
+              short: 'CSR',
+              issuer: 'Chase',
+              currency: 'UR',
+              fee: 795,
+              status: 'consider-add',
+              color: '#1a2332',
+              accent: '#c5d4e0',
+              earning: [
+                { cat: 'Chase Travel (incl. The Edit)', rate: '8x UR' },
+                { cat: 'Flights + hotels booked direct', rate: '4x UR' },
+                { cat: 'Dining worldwide', rate: '3x UR' },
+                { cat: 'Everything else', rate: '1x UR' },
+              ],
+              credits: [
+                '$300 annual travel credit (easy, auto-applied)',
+                '$500 The Edit hotel credit ($250 semi-annual, 2-night min)',
+                '$300 Exclusive Tables dining credit ($150 semi-annual)',
+                '$300 StubHub + viagogo credit ($150 semi-annual)',
+                '$250 IHG/Montage/Omni/Virgin credit (through 12/31/26)',
+                '$288 Apple TV+ and Apple Music (through 6/22/27)',
+                '$120 Peloton membership credit',
+                '$120 Global Entry or TSA PreCheck',
+                'Priority Pass + Chase Sapphire Lounges access',
+                'IHG Platinum Elite status',
+                'Points Boost: up to 2¢/pt on select Chase Travel',
+                'Authorized users: $195 each',
+              ],
+              verdict: 'Only enter this conversation if you\'re replacing Platinum, not adding to it. $795 CSR + $895 Platinum = $1,690/yr of largely duplicative premium benefits. That math almost never works. Against Platinum head-to-head: CSR\'s $300 travel credit is easier to use than Platinum\'s $200 airline credit. CSR\'s $500 Edit credit is narrower than Platinum\'s $600 FHR credit. Lounge access is comparable (Priority Pass on both, plus Sapphire Lounges vs Centurion Lounges). The real differentiator is the point ecosystem: UR transfers to Hyatt (best hotel partner in the industry), Amex MR doesn\'t. If you\'re a Hyatt-heavy hotel stayer, CSR plus keeping Gold for dining = $1,120/yr, which undercuts your current Platinum + Gold at $1,220. If you don\'t value Hyatt specifically, CSP at $95 gets you 80% of the UR ecosystem value for 12% of the CSR cost. That\'s usually the smarter play.',
+            },
+          };
+
+          const categories = [
+            { id: 'dining', label: 'Restaurants', best: 'amex-gold', detail: '4x MR, no cap under $50k', value: '~7-8%' },
+            { id: 'groceries', label: 'US supermarkets', best: 'amex-gold', detail: '4x MR up to $25k, then switch to cash-back card', value: '~7-8%' },
+            { id: 'costco', label: 'Costco', best: 'citi-costco', detail: 'Only Visa accepted there', value: '2%' },
+            { id: 'gas', label: 'Gas', best: 'citi-costco', detail: '4% up to $7k/yr beats everything', value: '4%' },
+            { id: 'amazon', label: 'Amazon / Whole Foods', best: 'chase-prime', detail: 'Nothing else gets close', value: '5%' },
+            { id: 'flights', label: 'Flights (booked direct)', best: 'amex-plat', detail: 'Gold drops to 3x here', value: '~9-10%' },
+            { id: 'hotels', label: 'Luxury hotels', best: 'amex-plat', detail: 'Use $600 FHR credit + 5x on prepaid', value: 'Credit offset' },
+            { id: 'transit', label: 'NYC subway / NJ Transit', best: 'apple-card', detail: 'Tap with Apple Pay on OMNY', value: '2%' },
+            { id: 'uber', label: 'Uber / Uber Eats', best: 'amex-plat', detail: 'Stack Plat credit ($200) then Gold credit ($120), then pay with Apple Card 3%', value: 'Credit first' },
+            { id: 'apple', label: 'Apple / select merchants', best: 'apple-card', detail: 'Nike, Panera, Walgreens, T-Mobile all 3%', value: '3%' },
+            { id: 'streaming', label: 'Streaming', best: 'amex-plat', detail: '$300 digital credit covers Hulu, Disney+, NYT, WSJ, YouTube TV', value: 'Credit' },
+            { id: 'dunkin', label: 'Dunkin', best: 'amex-gold', detail: '$7/mo credit + 4x MR', value: 'Credit + 4x' },
+            { id: 'chase-travel', label: 'Travel (via Chase portal)', best: 'chase-sp', detail: '5x UR on CSP, and now worth up to 2¢/pt via Points Boost or transfers', value: '~7.5-10%' },
+            { id: 'car-rental', label: 'Rental cars', best: 'chase-sp', detail: 'Only card with primary CDW. Decline the counter insurance.', value: 'Primary coverage' },
+            { id: 'other-travel', label: 'Other travel (non-portal, non-airline direct)', best: 'chase-sp', detail: '2x UR on things like tolls, parking, rideshare, train. CSP is the only card that earns 2x on generic travel.', value: '~3-4%' },
+            { id: 'tap-everywhere', label: 'Apple Pay anywhere else', best: 'apple-card', detail: '2% beats CFU\'s 1.5% when Apple Pay is accepted', value: '2%' },
+            { id: 'other', label: 'Everything else (swipe)', best: 'chase-fu', detail: 'UR points are your only transferable-points bridge', value: '1.5%' },
+          ];
+
+          const selected = categories.find(c => c.id === selectedCategory);
+          const recommendedCard = cards[selected.best];
+
+          const totals = useMemo(() => {
+            const heldCards = Object.values(cards).filter(c => c.status !== 'consider-add');
+            const keeperFees = heldCards.filter(c => c.status === 'keep').reduce((s, c) => s + c.fee, 0);
+            const totalFees = heldCards.reduce((s, c) => s + c.fee, 0);
+            const mrCards = heldCards.filter(c => c.currency === 'MR').length;
+            const urCards = heldCards.filter(c => c.currency === 'UR').length;
+            const heldCount = heldCards.length;
+            return { keeperFees, totalFees, mrCards, urCards, heldCount };
+          }, []);
+
+          const statusConfig = {
+            keep: { label: 'Keep', bg: '#1f3a1f', fg: '#a8d4a0' },
+            'keep-conditional': { label: 'Keep with caveat', bg: '#3a3820', fg: '#d4c87a' },
+            reevaluate: { label: 'Re-evaluate', bg: '#3a2e1f', fg: '#d4a87a' },
+            'cancel-maybe': { label: 'Consider closing', bg: '#3a281f', fg: '#d48f7a' },
+            cancel: { label: 'Cancel', bg: '#3a1f1f', fg: '#d47a7a' },
+            'consider-add': { label: 'Consider adding', bg: '#2a2448', fg: '#b4a4e0' },
+          };
+
+          const fontStack = `'Fraunces', 'Iowan Old Style', 'Palatino', Georgia, serif`;
+          const bodyFont = `'IBM Plex Sans', -apple-system, 'Helvetica Neue', sans-serif`;
+          const monoFont = `'JetBrains Mono', 'SF Mono', Menlo, monospace`;
+
+          return (
+            <div className="min-h-screen w-full" style={{ backgroundColor: '#f4efe6', fontFamily: bodyFont, color: '#1a1814' }}>
+              <style>{`
+                * { -webkit-font-smoothing: antialiased; }
+                .grain::before {
+                  content: '';
+                  position: absolute;
+                  inset: 0;
+                  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
+                  opacity: 0.04;
+                  pointer-events: none;
+                  mix-blend-mode: multiply;
+                }
+              `}</style>
+
+              <div className="max-w-5xl mx-auto px-5 py-8 relative grain">
+                {/* Header */}
+                <div className="mb-10 pb-6 border-b border-stone-400/30">
+                  <div className="flex items-baseline justify-between mb-2">
+                    <div className="text-xs uppercase tracking-[0.25em] text-stone-500">Portfolio Audit</div>
+                    <div style={{ fontFamily: monoFont }} className="text-xs text-stone-500">10 HELD · 02 CONSIDERED</div>
+                  </div>
+                  <h1 style={{ fontFamily: fontStack, fontWeight: 400, letterSpacing: '-0.02em', lineHeight: 1 }} className="text-4xl md:text-6xl mb-3">
+                    What to use <em style={{ fontStyle: 'italic', color: '#8a6d3b' }}>for what</em>
+                  </h1>
+                  <p className="text-sm text-stone-600 max-w-xl leading-relaxed">
+                    Ten cards held, <span style={{ fontFamily: monoFont }}>${totals.totalFees}</span> in annual fees. CSP just joined the lineup and unlocks your UR ecosystem. Two cards still under consideration: United Club and Sapphire Reserve. Tap a category for the best play.
+                  </p>
+                </div>
+
+                {/* View toggle */}
+                <div className="flex gap-1 mb-6 p-1 rounded-full bg-stone-900/5 w-fit">
+                  {[
+                    { id: 'category', label: 'By category' },
+                    { id: 'cards', label: 'By card' },
+                    { id: 'verdict', label: 'Verdicts' },
+                  ].map(v => (
+                    <button
+                      key={v.id}
+                      onClick={() => setView(v.id)}
+                      className="px-4 py-1.5 rounded-full text-sm transition-all"
+                      style={{
+                        backgroundColor: view === v.id ? '#1a1814' : 'transparent',
+                        color: view === v.id ? '#f4efe6' : '#1a1814',
+                      }}
+                    >
+                      {v.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* BY CATEGORY VIEW */}
+                {view === 'category' && (
+                  <div className="space-y-4">
+                    <div className="flex flex-wrap gap-2">
+                      {categories.map(cat => (
+                        <button
+                          key={cat.id}
+                          onClick={() => setSelectedCategory(cat.id)}
+                          className="px-3 py-1.5 rounded-full text-sm transition-all border"
+                          style={{
+                            backgroundColor: selectedCategory === cat.id ? '#1a1814' : 'transparent',
+                            color: selectedCategory === cat.id ? '#f4efe6' : '#1a1814',
+                            borderColor: selectedCategory === cat.id ? '#1a1814' : 'rgba(26, 24, 20, 0.2)',
+                          }}
+                        >
+                          {cat.label}
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="mt-8 rounded-lg overflow-hidden" style={{ backgroundColor: recommendedCard.color, color: '#f4efe6' }}>
+                      <div className="p-6 md:p-8">
+                        <div className="flex items-start justify-between mb-1">
+                          <div className="text-xs uppercase tracking-widest opacity-60">Use this card</div>
+                          <div style={{ fontFamily: monoFont, color: recommendedCard.accent }} className="text-xs">
+                            {selected.value}
+                          </div>
+                        </div>
+                        <div style={{ fontFamily: fontStack, fontWeight: 500, letterSpacing: '-0.02em' }} className="text-4xl md:text-5xl mb-3">
+                          {recommendedCard.name}
+                        </div>
+                        <div className="text-sm opacity-80 mb-4 leading-relaxed">
+                          For <strong>{selected.label}</strong>: {selected.detail}
+                        </div>
+                        <div className="pt-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.15)' }}>
+                          <div className="text-xs uppercase tracking-widest opacity-60 mb-2">Why</div>
+                          <div className="text-sm opacity-90 leading-relaxed">{recommendedCard.verdict}</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* BY CARD VIEW */}
+                {view === 'cards' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {Object.entries(cards).map(([id, card]) => {
+                      const isOpen = expandedCard === id;
+                      const statusColors = statusConfig[card.status];
+                      return (
+                        <div
+                          key={id}
+                          onClick={() => setExpandedCard(isOpen ? null : id)}
+                          className="rounded-lg cursor-pointer transition-all overflow-hidden"
+                          style={{
+                            backgroundColor: card.status === 'consider-add' ? '#f0ebe0' : '#fbf7ee',
+                            border: card.status === 'consider-add' ? '1px dashed rgba(42, 36, 72, 0.5)' : '1px solid rgba(26, 24, 20, 0.15)',
+                          }}
+                        >
+                          <div className="p-4">
+                            <div className="flex items-start justify-between mb-2">
+                              <div>
+                                <div className="text-xs uppercase tracking-wider text-stone-500 mb-0.5">{card.issuer}</div>
+                                <div style={{ fontFamily: fontStack, fontWeight: 500 }} className="text-xl">{card.name}</div>
+                              </div>
+                              <div className="flex flex-col items-end gap-1">
+                                <div
+                                  className="px-2 py-0.5 rounded-full text-xs"
+                                  style={{ backgroundColor: statusColors.bg, color: statusColors.fg }}
+                                >
+                                  {statusColors.label}
+                                </div>
+                                <div style={{ fontFamily: monoFont }} className="text-xs text-stone-500">
+                                  {card.fee === 0 ? '$0 AF' : `$${card.fee}/yr`}
+                                </div>
+                              </div>
+                            </div>
+
+                            {isOpen && (
+                              <div className="mt-4 pt-4 border-t border-stone-300/50 space-y-4">
+                                <div>
+                                  <div className="text-xs uppercase tracking-widest text-stone-500 mb-2">Earning</div>
+                                  {card.earning.map((e, i) => (
+                                    <div key={i} className="flex justify-between items-baseline py-1 text-sm">
+                                      <span className="text-stone-700">{e.cat}</span>
+                                      <span style={{ fontFamily: monoFont }} className="text-stone-900">
+                                        {e.rate}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                                {card.credits.length > 0 && (
+                                  <div>
+                                    <div className="text-xs uppercase tracking-widest text-stone-500 mb-2">Credits + perks</div>
+                                    <ul className="text-sm text-stone-700 space-y-1">
+                                      {card.credits.map((c, i) => <li key={i}>{c}</li>)}
+                                    </ul>
+                                  </div>
+                                )}
+                                <div className="pt-3 border-t border-stone-300/50">
+                                  <div className="text-xs uppercase tracking-widest text-stone-500 mb-2">Verdict</div>
+                                  <div className="text-sm text-stone-800 leading-relaxed italic" style={{ fontFamily: fontStack }}>{card.verdict}</div>
+                                </div>
+                              </div>
+                            )}
+
+                            {!isOpen && (
+                              <div className="text-xs text-stone-500 mt-2">
+                                {card.earning[0].cat} · {card.earning[0].rate}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* VERDICTS VIEW */}
+                {view === 'verdict' && (
+                  <div className="space-y-6">
+                    <div className="rounded-lg p-5" style={{ backgroundColor: '#0a3d62', color: '#f4efe6' }}>
+                      <div className="text-xs uppercase tracking-[0.25em] opacity-70 mb-2">Just added</div>
+                      <div style={{ fontFamily: fontStack, fontWeight: 500 }} className="text-2xl mb-2">Chase Sapphire Preferred is now your UR anchor</div>
+                      <p className="text-sm opacity-90 leading-relaxed">
+                        First thing to do: open the Chase app and enable point pooling. Any UR points you've earned on CFU and Prime Visa can now be moved into CSP for transfer to Hyatt, United, Aeroplan, Southwest and others. Your existing balance doesn't retroactively become more valuable on its own, but any redemption from now on uses the higher-value paths.
+                        Next: hit the welcome bonus spend threshold deliberately (typically $5k in 3 months for 60-75k UR). Don't rush unnecessary spending, but route any planned large purchases through CSP during the window. If 75k UR, that's worth roughly $1,100+ via transfer partners.
+                      </p>
+                    </div>
+
+                    {[
+                      {
+                        tag: 'Conditional add · specific use case',
+                        color: '#6a5aa4',
+                        cards: [cards['united-club']],
+                        rationale: 'With Silver status, bag value shrinks because Silver already waives your first checked bag. Club\'s unique value becomes: free 2nd bag for you, both bags free for a companion, full United Club lounge access, and 4x United. Breakeven sits around 6 United round trips per year with connections. Below that, United Explorer at $150/yr is smarter. Strategic caveat: stacking Club on Platinum is $1,590/yr in premium fees for overlapping value. Club makes sense as a Platinum replacement, not addition, if KPMG travel lands you on United consistently.',
+                      },
+                      {
+                        tag: 'Only as a Platinum replacement · not addition',
+                        color: '#8a5aa4',
+                        cards: [cards['chase-sr']],
+                        rationale: 'Now that you have CSP, the case for CSR is even narrower. CSP already gives you UR transfer access. CSR adds: 8x on Chase Travel (vs CSP\'s 5x), lounge access, bigger credits, 4x on direct flight/hotel bookings (vs CSP\'s 2x). The $700 fee difference between CSP ($95) and CSR ($795) is roughly what you\'d pay for premium lounge access and the beefier credit stack. Don\'t stack CSR on Platinum. If you ever drop Platinum, CSR becomes a real option, but you can also just keep CSP and save $700/yr.',
+                      },
+                      {
+                        tag: 'Cancel now',
+                        color: '#b54a4a',
+                        cards: [cards['amex-bce'], cards['united-gateway']],
+                        rationale: 'BCE is redundant on every category it earns in (Gold beats groceries, Costco beats gas, Prime beats Amazon). Gateway is now fully superseded by CSP, which earns 2x UR on generic travel vs Gateway\'s 2x United miles, and unlocks transfer value that Gateway never could. When you call Chase to close Gateway, ask to reallocate its credit limit to your CSP so you don\'t lose total Chase credit availability. Space out the two closures by 60-90 days to avoid looking like you\'re churning.',
+                      },
+                      {
+                        tag: 'Re-evaluate annually',
+                        color: '#b59b4a',
+                        cards: [cards['amex-plat']],
+                        rationale: 'Now that CSP is live, Platinum\'s unique value is narrower: Centurion Lounges (not available at EWR), FHR hotel benefits, Hilton/Marriott Gold status, and 5x MR on flights direct. Before each anniversary, tally actual credits used: hotel, Resy, digital, Uber, CLEAR, Walmart+, lounge visits. If under $895, downgrade or cancel. The question to actively monitor: once you start KPMG travel, does your Amex MR balance keep growing meaningfully via Gold + Plat spending, or does most of your travel-partner transferring happen through UR/CSP?',
+                      },
+                      {
+                        tag: 'Keep conditional',
+                        color: '#8a7a3a',
+                        cards: [cards['discover-it']],
+                        rationale: 'Free, so no financial reason to close. But useful only if you activate quarterly categories. Add to your Q1/Q2/Q3/Q4 planning ritual or admit you\'re not going to and close it.',
+                      },
+                      {
+                        tag: 'Keep · active daily drivers',
+                        color: '#4a7a4a',
+                        cards: [cards['amex-gold'], cards['chase-sp'], cards['chase-fu'], cards['chase-prime'], cards['apple-card'], cards['citi-costco']],
+                        rationale: 'These six now form your functional core. Gold for dining/groceries (MR ecosystem). CSP for non-direct travel, rental cars, dining backup, and UR transfer access. CFU as UR catch-all. Prime for Amazon. Apple for Apple Pay. Costco for gas and warehouse. Clean division of labor with minimal overlap.',
+                      },
+                    ].map((group, i) => (
+                      <div key={i} className="border-l-4 pl-5 py-1" style={{ borderColor: group.color }}>
+                        <div className="text-xs uppercase tracking-widest mb-2" style={{ color: group.color }}>
+                          {group.tag}
+                        </div>
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {group.cards.map(c => (
+                            <span
+                              key={c.name}
+                              className="px-2.5 py-1 rounded text-sm"
+                              style={{ backgroundColor: '#fbf7ee', border: '1px solid rgba(26,24,20,0.15)', fontFamily: fontStack }}
+                            >
+                              {c.name}
+                            </span>
+                          ))}
+                        </div>
+                        <p className="text-sm text-stone-700 leading-relaxed max-w-2xl">{group.rationale}</p>
+                      </div>
+                    ))}
+
+                    <div className="mt-8 pt-8 border-t border-stone-400/30">
+                      <div className="text-xs uppercase tracking-[0.25em] text-stone-500 mb-3">Three paths from here</div>
+                      <div className="space-y-4 max-w-2xl">
+                        <div>
+                          <div style={{ fontFamily: fontStack }} className="text-base mb-1"><em>Path A: Trim and hold</em></div>
+                          <p className="text-sm text-stone-700 leading-relaxed">
+                            Close BCE and Gateway. Keep Platinum on watch. Annual fees: <span style={{ fontFamily: monoFont }}>$1,315</span> (Plat $895 + Gold $325 + CSP $95). Simplest move. Preserves optionality while you figure out the KPMG travel pattern.
+                          </p>
+                        </div>
+                        <div>
+                          <div style={{ fontFamily: fontStack }} className="text-base mb-1"><em>Path B: Drop Platinum at renewal</em></div>
+                          <p className="text-sm text-stone-700 leading-relaxed">
+                            Close BCE, Gateway, and Platinum at next renewal date. Annual fees drop to <span style={{ fontFamily: monoFont }}>$420</span> ($325 + $95). You lose lounge access and FHR benefits entirely. Best if your Platinum credit audit shows under $700 in real use last year and you're fine with paid lounge passes for occasional flights.
+                          </p>
+                        </div>
+                        <div>
+                          <div style={{ fontFamily: fontStack }} className="text-base mb-1"><em>Path C: Swap Platinum for United Club</em></div>
+                          <p className="text-sm text-stone-700 leading-relaxed">
+                            Close BCE, Gateway, and Platinum. Add Club. Annual fees: <span style={{ fontFamily: monoFont }}>$1,115</span> ($695 + $325 + $95). Only right if post-KPMG travel confirms 6+ United round trips/yr through EWR or a United hub. Club pays for itself via lounges at your home airport and bag waivers when traveling with companions.
+                          </p>
+                        </div>
+                      </div>
+                      <p className="text-xs text-stone-500 mt-6 max-w-2xl leading-relaxed">
+                        The single strategic question driving all three paths: how does your actual travel look once KPMG starts? Path A preserves optionality while you get real data. I'd recommend Path A for the next 6-9 months, then make the Platinum decision with actual usage numbers in hand.
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-12 pt-6 border-t border-stone-400/20 text-xs text-stone-500 flex justify-between">
+                  <div>Valuations assume 1.8-2¢/MR point. Caps and rates accurate as of April 2026.</div>
+                  <div style={{ fontFamily: monoFont }}>v1</div>
+                </div>
+              </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<CardDashboard />);
+    </script>
+</body>
+</html>
