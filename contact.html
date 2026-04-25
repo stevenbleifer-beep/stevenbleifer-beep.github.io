@@ -3,159 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~* Contact Steven / Guestbook *~</title>
+    <title>Contact — Steven Bleifer</title>
+    <meta name="description" content="Get in touch with Steven Bleifer.">
+    <meta name="theme-color" content="#fbfbfd">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main-container">
-
-    <div class="navbar">
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
-        <a href="index.html">Home</a> <span class="sep">|</span>
-        <a href="activity.html">What I'm Into</a> <span class="sep">|</span>
-        <a href="resume.html">Resume</a> <span class="sep">|</span>
-        <a href="links.html">Links</a> <span class="sep">|</span>
-        <a href="blog.html">Blog</a> <span class="sep">|</span>
-        <a href="contact.html">Contact</a> <span class="sep">|</span>
-        <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
-        <a href="awards.html">Awards</a> <span class="sep">|</span>
-        <a href="study/">Study</a>
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="blog.html">Writing</a>
+            <a href="activity.html">Library</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="contact.html" class="active">Contact</a>
+            <a href="study/">Study</a>
+        </nav>
     </div>
+</header>
 
-    <div class="content-panel" style="text-align: center;">
-        <h1>
-            <img src="gifs/email.gif" alt="email" style="height: 30px; vertical-align: middle;">
-            Contact Me
-            <img src="gifs/email.gif" alt="email" style="height: 30px; vertical-align: middle;">
-        </h1>
-        <p>Drop me a line! I'd love to hear from you.</p>
-        <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
+<main>
+    <div class="container-narrow">
+
+        <section class="hero">
+            <p class="eyebrow">Contact</p>
+            <h1>Say hello.</h1>
+            <p class="lead">Email is best. I'd love to hear from you — whether about audit, accounting, school, or anything in between.</p>
+            <div class="btn-row mt-24">
+                <a href="mailto:steven.bleifer@stern.nyu.edu" class="btn">steven.bleifer@stern.nyu.edu</a>
+                <a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener" class="btn secondary">LinkedIn</a>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="card-block">
+                <p class="display-name">Steven Bleifer</p>
+                <p class="display-role">Incoming Commercial Audit Associate, KPMG · MS Accounting, NYU Stern '26</p>
+                <dl>
+                    <dt>Email</dt>
+                    <dd><a href="mailto:steven.bleifer@stern.nyu.edu">steven.bleifer@stern.nyu.edu</a></dd>
+                    <dt>Location</dt>
+                    <dd>Florham Park, NJ</dd>
+                    <dt>Web</dt>
+                    <dd><a href="https://www.stevenbleifer.com">stevenbleifer.com</a></dd>
+                    <dt>LinkedIn</dt>
+                    <dd><a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">linkedin.com/in/stevenbleifer</a></dd>
+                    <dt>Instagram</dt>
+                    <dd><a href="https://www.instagram.com/steven_bleifer/" target="_blank" rel="noopener">@steven_bleifer</a></dd>
+                </dl>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Guestbook</h2>
+                <p>Leave a note — entries are public and shared across all visitors.</p>
+            </div>
+
+            <div class="field">
+                <label for="gb-name">Name</label>
+                <input type="text" id="gb-name" maxlength="30" autocomplete="off">
+            </div>
+
+            <div class="field">
+                <label for="gb-message">Message</label>
+                <textarea id="gb-message" maxlength="200"></textarea>
+            </div>
+
+            <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;" aria-hidden="true">
+                <label>Website: <input type="text" id="gb-website" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <p class="field-error" id="gb-error"></p>
+
+            <div class="btn-row">
+                <button class="btn" id="gb-submit" onclick="submitGuestbook()">Sign guestbook</button>
+            </div>
+
+            <div class="mt-32">
+                <h3 style="font-size: 13px; text-transform: uppercase; letter-spacing: 0.18em; color: var(--text-faint); font-weight: 600; margin-bottom: 8px;">Recent entries</h3>
+                <div id="gb-entries"><p class="feed-loading">Loading entries…</p></div>
+                <p id="gb-empty" class="muted" style="display:none;">No entries yet. Be the first to sign.</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="changelog.html">Changelog</a>
+                <a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+        </footer>
+
     </div>
-
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
-
-    <!-- DIGITAL BUSINESS CARD -->
-    <div class="content-panel gray" style="text-align: center;">
-        <h2 style="color: #000080; border-color: #000080;">&#128195; Digital Business Card</h2>
-        <table width="100%" cellpadding="10" style="color: #000;">
-            <tr>
-                <td style="text-align: center;">
-                    <p style="font-size: 1.8em; font-family: 'Times New Roman', serif;"><b>Steven Bleifer</b></p>
-                    <p style="font-size: 1.1em; color: #333;">Incoming Commercial Audit Associate @ KPMG</p>
-                    <p style="color: #555;">Graduate Student Ambassador | MS Accounting, NYU Stern '26</p>
-                    <p style="color: #555;">BS Business Admin, Pitt '25 | Summa Cum Laude</p>
-                    <div style="margin: 12px 0;">
-                        <img src="images/nyu-stern.png" alt="NYU Stern" style="height: 40px; margin: 0 6px; vertical-align: middle;">
-                        <img src="images/pitt.png" alt="Pitt" style="height: 50px; background: white; padding: 4px; border: 2px outset #808080; vertical-align: middle;">
-                    </div>
-                    <hr style="border-color: #000080;">
-                    <p>
-                        <img src="gifs/email.gif" alt="email" style="height: 20px; vertical-align: middle;">
-                        Email: <a href="mailto:steven.bleifer@stern.nyu.edu" style="color: #0000ff;">steven.bleifer@stern.nyu.edu</a>
-                    </p>
-                    <p>&#128205; Location: Florham Park, NJ</p>
-                    <p>
-                        <img src="gifs/globe.gif" alt="globe" style="height: 20px; vertical-align: middle;">
-                        Web: <a href="https://www.stevenbleifer.com" style="color: #0000ff;">www.stevenbleifer.com</a>
-                    </p>
-                    <hr style="border-color: #000080;">
-                    <p>
-                        <a href="https://www.linkedin.com/in/stevenbleifer/" class="retro-btn">LinkedIn</a>
-
-                        <a href="https://www.instagram.com/steven_bleifer/" class="retro-btn">Instagram</a>
-                    </p>
-                    <hr style="border-color: #000080;">
-                    <p style="color: #333; font-size: 0.9em;">Fan of:</p>
-                    <div style="margin: 8px 0; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 8px;">
-                        <img src="images/knicks.svg" alt="Knicks" style="height: 35px;">
-                        <img src="images/steelers.svg" alt="Steelers" style="height: 35px;">
-                        <img src="images/yankees.gif" alt="Yankees" style="height: 40px; background: white; padding: 2px; border: 2px outset #808080;">
-                        <img src="images/devils.svg" alt="Devils" style="height: 35px; background: white; padding: 2px; border: 2px outset #808080;">
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-
-    <!-- EMAIL ME -->
-    <div class="content-panel" style="text-align: center;">
-        <h2>
-            <img src="gifs/email.gif" alt="email" style="height: 30px; vertical-align: middle;">
-            Send Me an Email!
-        </h2>
-        <p>The best way to reach me is by email:</p>
-        <p style="font-size: 1.3em;">
-            <a href="mailto:steven.bleifer@stern.nyu.edu" style="color: #ffff00; font-family: 'Courier New', monospace;">
-                steven.bleifer@stern.nyu.edu
-            </a>
-        </p>
-        <p style="color: #808080;">You've got mail! ...Well, you will once you email me.</p>
-    </div>
-
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
-
-    <!-- GUESTBOOK -->
-    <div class="content-panel">
-        <h2>
-            <img src="gifs/guestbook.gif" alt="Guestbook" style="height: 24px; vertical-align: middle;">
-            Guestbook
-        </h2>
-        <p>Sign my guestbook! Let me know you stopped by.</p>
-        <p style="color: #00ff00; font-size: 0.9em;">&#127760; Entries are shared with ALL visitors via the cloud!</p>
-
-        <hr>
-
-        <table width="100%" cellpadding="5">
-            <tr>
-                <td>
-                    <p><b>Your Name:</b></p>
-                    <input type="text" id="gb-name" class="retro-input" placeholder="CoolSurfer99" maxlength="30" style="width: 80%;">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <p><b>Your Message:</b></p>
-                    <textarea id="gb-message" class="retro-textarea" placeholder="Cool site dude! Keep up the good work!" maxlength="200"></textarea>
-                </td>
-            </tr>
-            <tr>
-                <td style="text-align: center; padding-top: 10px;">
-                    <span id="gb-error" style="color: #ff0000; display: none; font-size: 0.9em;"></span>
-                    <br>
-                    <button class="retro-btn" onclick="submitGuestbook()" id="gb-submit">
-                        &#9997; Sign Guestbook!
-                    </button>
-                </td>
-            </tr>
-        </table>
-
-        <hr>
-
-        <h3 style="color: #00ffff;">Recent Entries:</h3>
-        <div id="gb-entries"><p style="color: #808080; text-align: center;">Loading entries from the cloud...</p></div>
-        <p id="gb-empty" style="color: #808080; text-align: center; display: none;">No entries yet. Be the first to sign!</p>
-    </div>
-
-    <div class="badges" style="margin: 15px 0;">
-        <img src="https://cyber.dabamos.de/88x31/netscape_now.gif" alt="Netscape Now!" style="margin: 3px;">
-        <img src="https://cyber.dabamos.de/88x31/anybestviewed.gif" alt="Best Viewed With Any Browser" style="margin: 3px;">
-    </div>
-
-    <div class="footer">
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-        <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
-        <p>&copy; 2026 Steven Bleifer</p>
-        <p><a href="changelog.html">View Site Changelog</a></p>
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-    </div>
-
-</div>
+</main>
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -163,13 +109,9 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
 
 <script>
-// Everything wrapped in an IIFE to prevent console access to internals
 (function() {
     'use strict';
 
-    // ============================================================
-    // FIREBASE CONFIG + APP CHECK
-    // ============================================================
     var firebaseConfig = {
         apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
         authDomain: "stevenbleifer-site.firebaseapp.com",
@@ -186,42 +128,19 @@
 
     var db = firebase.database();
 
-    // ============================================================
-    // ZERO-WIDTH & INVISIBLE CHARACTER STRIPPING
-    // ============================================================
-    var INVISIBLE_RE = /[\u0300-\u036F\u200B\u200C\u200D\u200E\u200F\u2060\u2061\u2062\u2063\u2064\uFEFF\u00AD\u034F\u061C\u180E\u2028\u2029\u202A-\u202E\u2066-\u2069\uFFF9-\uFFFB]/g;
+    var INVISIBLE_RE = /[̀-ͯ​‌‍‎‏⁠⁡⁢⁣⁤﻿­͏؜᠎  ‪-‮⁦-⁩￹-￻]/g;
+    function stripInvisible(s) { return s.replace(INVISIBLE_RE, ''); }
 
-    function stripInvisible(s) {
-        return s.replace(INVISIBLE_RE, '');
-    }
-
-    // ============================================================
-    // LEET SPEAK / UNICODE NORMALIZATION
-    // ============================================================
     var LEET_MAP = {
-        '@': 'a', '4': 'a', '^': 'a', '\u00e0': 'a', '\u00e1': 'a', '\u00e2': 'a', '\u00e3': 'a', '\u00e4': 'a',
-        '8': 'b',
-        '(': 'c', '\u00e7': 'c',
-        '\u00f0': 'd',
-        '3': 'e', '\u00e8': 'e', '\u00e9': 'e', '\u00ea': 'e', '\u00eb': 'e',
-        '6': 'g',
-        '#': 'h',
-        '1': 'i', '!': 'i', '|': 'i', '\u00ec': 'i', '\u00ed': 'i', '\u00ee': 'i', '\u00ef': 'i',
-        '0': 'o', '\u00f2': 'o', '\u00f3': 'o', '\u00f4': 'o', '\u00f5': 'o', '\u00f6': 'o',
-        '5': 's', '$': 's',
-        '7': 't', '+': 't',
-        '\u00f9': 'u', '\u00fa': 'u', '\u00fb': 'u', '\u00fc': 'u',
-        '2': 'z',
-        // Cyrillic homoglyphs (look-alike Latin letters)
-        '\u0430': 'a', '\u0435': 'e', '\u0456': 'i', '\u043e': 'o', '\u0440': 'p',
-        '\u0441': 'c', '\u0443': 'y', '\u0445': 'x', '\u042c': 'b', '\u044a': 'b',
-        '\u0412': 'b', '\u041d': 'h', '\u041c': 'm', '\u0422': 't', '\u043d': 'h',
-        '\u043c': 'm', '\u0442': 't', '\u0432': 'b', '\u043a': 'k', '\u041a': 'k',
-        // Greek homoglyphs
-        '\u03b1': 'a', '\u03b5': 'e', '\u03b9': 'i', '\u03bf': 'o', '\u03c1': 'p',
-        '\u03ba': 'k', '\u03bd': 'v', '\u03c4': 't', '\u03c5': 'u', '\u03c9': 'w'
+        '@':'a','4':'a','^':'a','à':'a','á':'a','â':'a','ã':'a','ä':'a',
+        '8':'b','(':'c','ç':'c','ð':'d','3':'e','è':'e','é':'e','ê':'e','ë':'e',
+        '6':'g','#':'h','1':'i','!':'i','|':'i','ì':'i','í':'i','î':'i','ï':'i',
+        '0':'o','ò':'o','ó':'o','ô':'o','õ':'o','ö':'o','5':'s','$':'s',
+        '7':'t','+':'t','ù':'u','ú':'u','û':'u','ü':'u','2':'z',
+        'а':'a','е':'e','і':'i','о':'o','р':'p','с':'c','у':'y','х':'x','Ь':'b','ъ':'b',
+        'В':'b','Н':'h','М':'m','Т':'t','н':'h','м':'m','т':'t','в':'b','к':'k','К':'k',
+        'α':'a','ε':'e','ι':'i','ο':'o','ρ':'p','κ':'k','ν':'v','τ':'t','υ':'u','ω':'w'
     };
-
     function normalizeLeet(text) {
         var result = '';
         for (var i = 0; i < text.length; i++) {
@@ -230,118 +149,61 @@
         }
         return result;
     }
+    function collapseRepeats(text) { return text.replace(/(.)\1{1,}/g, '$1'); }
 
-    // Collapse repeated characters: "fuuuuck" -> "fuck"
-    function collapseRepeats(text) {
-        return text.replace(/(.)\1{1,}/g, '$1');
-    }
-
-    // ============================================================
-    // BAD WORDS FILTER (comprehensive)
-    // ============================================================
     var BLOCKED = ['fuck','shit','ass','damn','bitch','bastard','dick','cock','pussy','cunt','nigger','nigga','faggot','fag','retard','retarded','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','asshole','dumbass','jackass','motherfucker','bullshit','goddamn','dildo','porn','rape','nazi','hitler','kkk','stfu','gtfo','lmfao','piss','twat','wanker','tosser','bellend','bollocks','arse','arsehole','shag','bugger','sodoff','prick','tit','tits','boob','boobs','penis','vagina','scrotum','nutsack','cumshot','cum','jizz','fellatio','blowjob','handjob','rimjob','anal','anus','orgy','hentai','milf','gilf','bdsm','bondage','fetish','orgasm','erection','ejaculate','masturbat','pedophil','paedophil','molest','incest','bestiality','necrophil','genocide','terrorist','jihad','supremacist','antisemit'];
-
-    // Root stems to catch variations like "fucking", "fucked", "fucker", etc.
     var BLOCKED_STEMS = ['fuck','shit','bitch','cunt','nigger','nigga','faggot','retard','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','wank','piss','twat','cock','dick','bastard','damn','prick','bollock','arsehole','asshole','dumbass','jackass','bullshit','goddamn','motherfuck','pedophil','paedophil','molest','masturb','ejaculat','terrorist'];
 
     function hasBadWords(text) {
         var t = text.toLowerCase();
-
-        // Step 1: Strip all non-letter characters for obfuscation bypass
         var lettersOnly = t.replace(/[^a-z]/g, '');
-
-        // Step 2: Normalize leet speak and unicode
         var leetNorm = normalizeLeet(t);
         var leetLetters = leetNorm.replace(/[^a-z]/g, '');
-
-        // Step 3: Collapse repeated chars
         var collapsed = collapseRepeats(lettersOnly);
         var collapsedLeet = collapseRepeats(leetLetters);
-
-        // Check all variations
         var variants = [t, lettersOnly, leetLetters, collapsed, collapsedLeet];
-
         for (var i = 0; i < BLOCKED.length; i++) {
             var w = BLOCKED[i];
-            // Exact word boundary match on original text
             var re = new RegExp('\\b' + w + '\\b', 'i');
             if (re.test(t) || re.test(leetNorm)) return true;
-            // Substring match on stripped variants
-            for (var j = 0; j < variants.length; j++) {
-                if (variants[j].indexOf(w) !== -1) return true;
-            }
+            for (var j = 0; j < variants.length; j++) if (variants[j].indexOf(w) !== -1) return true;
         }
-
-        // Stem matching to catch "fucking", "shitting", "bitches", etc.
         for (var i = 0; i < BLOCKED_STEMS.length; i++) {
             var stem = BLOCKED_STEMS[i];
-            for (var j = 0; j < variants.length; j++) {
-                if (variants[j].indexOf(stem) !== -1) return true;
-            }
+            for (var j = 0; j < variants.length; j++) if (variants[j].indexOf(stem) !== -1) return true;
         }
-
-        // Block URLs/links (anti-spam)
         if (/https?:\/\/|www\.|\.com|\.net|\.org|\.io|\.xyz|\.ru|\.tk|\.ml|\.ga|\.cf|\.gq|bit\.ly|tinyurl|t\.co/i.test(t)) return true;
-        // Block email addresses
         if (/\S+@\S+\.\S+/.test(t)) return true;
-        // Block HTML/script injection attempts
         if (/<\s*script|<\s*img|<\s*iframe|<\s*object|<\s*embed|javascript:|onerror|onload|onclick/i.test(t)) return true;
-
         return false;
     }
 
-    // ============================================================
-    // HTML ESCAPING & SANITIZATION
-    // ============================================================
-    function esc(s) {
-        var d = document.createElement('div');
-        d.textContent = s;
-        return d.innerHTML;
-    }
-
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
     function sanitize(s) {
         return s.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, function(c) {
-            return {'<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;', '&':'&amp;'}[c];
+            return {'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c];
         });
     }
 
-    // ============================================================
-    // RATE LIMITING - max 3 entries per 10 minutes per browser
-    // ============================================================
     var RATE_LIMIT = 3;
     var RATE_WINDOW = 10 * 60 * 1000;
-
     function checkRateLimit() {
         try {
-            var submissions = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
+            var subs = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
             var now = Date.now();
-            submissions = submissions.filter(function(t) { return now - t < RATE_WINDOW; });
-            sessionStorage.setItem('gb_submissions', JSON.stringify(submissions));
-            return submissions.length < RATE_LIMIT;
+            subs = subs.filter(function(t){ return now - t < RATE_WINDOW; });
+            sessionStorage.setItem('gb_submissions', JSON.stringify(subs));
+            return subs.length < RATE_LIMIT;
         } catch(e) { return true; }
     }
-
     function recordSubmission() {
         try {
-            var submissions = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
-            submissions.push(Date.now());
-            sessionStorage.setItem('gb_submissions', JSON.stringify(submissions));
+            var subs = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
+            subs.push(Date.now());
+            sessionStorage.setItem('gb_submissions', JSON.stringify(subs));
         } catch(e) {}
     }
 
-    // ============================================================
-    // HONEYPOT - hidden field that bots will fill out
-    // ============================================================
-    (function() {
-        var form = document.querySelector('#gb-name').closest('table');
-        var row = document.createElement('tr');
-        row.innerHTML = '<td style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;"><label>Website: <input type="text" id="gb-website" tabindex="-1" autocomplete="off"></label></td>';
-        form.appendChild(row);
-    })();
-
-    // ============================================================
-    // GUESTBOOK DISPLAY
-    // ============================================================
     function renderEntries(entries) {
         var c = document.getElementById('gb-entries');
         var empty = document.getElementById('gb-empty');
@@ -355,27 +217,21 @@
         var show = entries.slice(-20).reverse();
         for (var i = 0; i < show.length; i++) {
             var e = show[i];
-            html += '<div style="border:1px dashed #333;padding:10px;margin:8px 0;">';
-            html += '<p><b style="color:#ffff00;">' + esc(e.name) + '</b> ';
-            html += '<span style="color:#808080;">- ' + esc(e.date) + '</span></p>';
-            html += '<p>' + esc(e.message) + '</p></div>';
+            html += '<div class="gb-entry">';
+            html += '<span class="gb-name">' + esc(e.name) + '</span>';
+            html += '<span class="gb-date">' + esc(e.date) + '</span>';
+            html += '<p class="gb-message">' + esc(e.message) + '</p>';
+            html += '</div>';
         }
         c.innerHTML = html;
     }
 
-    // ============================================================
-    // DISPLAY-SIDE FILTERING
-    // Malicious users can write directly to the DB, bypassing
-    // client-side validation. So we filter on READ, not just WRITE.
-    // ============================================================
     function isCleanEntry(e) {
         if (!e || typeof e.name !== 'string' || typeof e.message !== 'string' || typeof e.date !== 'string') return false;
         if (e.name.length > 30 || e.message.length > 200) return false;
         if (hasBadWords(e.name) || hasBadWords(e.message)) return false;
-        // Block entries with HTML tags or script injection
         if (/<[^>]*>/i.test(e.name) || /<[^>]*>/i.test(e.message)) return false;
         if (/javascript:|onerror|onload|onclick/i.test(e.name) || /javascript:|onerror|onload|onclick/i.test(e.message)) return false;
-        // Must have at least one visible character
         if (!/[a-zA-Z0-9]/.test(e.name) || !/[a-zA-Z0-9]/.test(e.message)) return false;
         return true;
     }
@@ -384,16 +240,11 @@
         var entries = [];
         snapshot.forEach(function(child) {
             var e = child.val();
-            if (isCleanEntry(e)) {
-                entries.push(e);
-            }
+            if (isCleanEntry(e)) entries.push(e);
         });
         renderEntries(entries);
     });
 
-    // ============================================================
-    // SUBMISSION HANDLER (protected inside IIFE)
-    // ============================================================
     function doSubmit() {
         var n = document.getElementById('gb-name');
         var m = document.getElementById('gb-message');
@@ -401,56 +252,46 @@
         var btn = document.getElementById('gb-submit');
         var honeypot = document.getElementById('gb-website');
 
-        // Strip invisible characters and trim
         var name = stripInvisible(n.value).trim();
         var msg = stripInvisible(m.value).trim();
         err.style.display = 'none';
 
-        // Honeypot check
         if (honeypot && honeypot.value) {
             n.value = ''; m.value = '';
-            alert('Thanks for signing my guestbook!');
+            alert('Thanks for signing the guestbook.');
             return;
         }
 
-        // Rate limit check
         if (!checkRateLimit()) {
-            err.textContent = 'Slow down! You can only sign 3 times per 10 minutes.';
-            err.style.display = 'inline'; return;
+            err.textContent = 'Slow down — three signatures per ten minutes.';
+            err.style.display = 'block'; return;
         }
-
-        // Blank/whitespace-only check (catches invisible-char-only submissions)
         if (!name || !msg || !/\S/.test(name) || !/\S/.test(msg)) {
-            err.textContent = 'Please fill in both your name and message!';
-            err.style.display = 'inline'; return;
+            err.textContent = 'Please fill in both your name and message.';
+            err.style.display = 'block'; return;
         }
-
-        // Must contain at least one visible letter or number
         if (!/[a-zA-Z0-9]/.test(name) || !/[a-zA-Z0-9]/.test(msg)) {
-            err.textContent = 'Name and message must contain at least one letter or number!';
-            err.style.display = 'inline'; return;
+            err.textContent = 'Name and message must contain at least one letter or number.';
+            err.style.display = 'block'; return;
         }
-
         if (name.length > 30 || msg.length > 200) {
-            err.textContent = 'Name max 30 chars, message max 200 chars!';
-            err.style.display = 'inline'; return;
+            err.textContent = 'Name max 30 chars, message max 200.';
+            err.style.display = 'block'; return;
         }
         if (hasBadWords(name) || hasBadWords(msg)) {
-            err.textContent = 'Keep it clean! No inappropriate language or links allowed.';
-            err.style.display = 'inline'; return;
+            err.textContent = 'Please keep it clean — no inappropriate language or links.';
+            err.style.display = 'block'; return;
         }
-        // Block if name or message is just repeated characters
         if (/^(.)\1{4,}$/.test(name.replace(/\s/g,'')) || /^(.)\1{9,}$/.test(msg.replace(/\s/g,''))) {
-            err.textContent = 'Please write a real message!';
-            err.style.display = 'inline'; return;
+            err.textContent = 'Please write a real message.';
+            err.style.display = 'block'; return;
         }
 
         btn.disabled = true;
-        btn.textContent = 'Signing...';
+        btn.textContent = 'Signing…';
 
         var cleanName = sanitize(name).substring(0, 30);
         var cleanMsg = sanitize(msg).substring(0, 200);
-
         var d = new Date();
         var entry = {
             name: cleanName,
@@ -460,46 +301,20 @@
         };
 
         db.ref('guestbook').push(entry).then(function() {
-            n.value = '';
-            m.value = '';
+            n.value = ''; m.value = '';
             btn.disabled = false;
-            btn.innerHTML = '&#9997; Sign Guestbook!';
+            btn.textContent = 'Sign guestbook';
             recordSubmission();
-            alert('Thanks for signing my guestbook!');
-        }).catch(function(error) {
-            err.textContent = 'Error saving entry. Please try again!';
-            err.style.display = 'inline';
+            alert('Thanks for signing the guestbook.');
+        }).catch(function() {
+            err.textContent = 'Couldn\'t save your entry. Please try again.';
+            err.style.display = 'block';
             btn.disabled = false;
-            btn.innerHTML = '&#9997; Sign Guestbook!';
+            btn.textContent = 'Sign guestbook';
         });
     }
 
-    // Expose submitGuestbook as a frozen, non-overridable function
-    Object.defineProperty(window, 'submitGuestbook', {
-        value: doSubmit,
-        writable: false,
-        configurable: false
-    });
-
-})();
-</script>
-
-<!-- CURSOR SPARKLE TRAIL -->
-<script>
-(function() {
-    var sparkles = ['*', '+', '.', '*'];
-    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
-    document.addEventListener('mousemove', function(e) {
-        var s = document.createElement('div');
-        s.className = 'cursor-sparkle';
-        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
-        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
-        s.style.color = colors[Math.floor(Math.random() * colors.length)];
-        s.style.fontSize = (10 + Math.random() * 14) + 'px';
-        document.body.appendChild(s);
-        setTimeout(function() { s.remove(); }, 600);
-    });
+    Object.defineProperty(window, 'submitGuestbook', { value: doSubmit, writable: false, configurable: false });
 })();
 </script>
 

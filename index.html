@@ -4,214 +4,187 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steven Bleifer</title>
+    <meta name="description" content="Steven Bleifer — MS Accounting at NYU Stern '26. Incoming Commercial Audit Associate at KPMG.">
+    <meta name="theme-color" content="#fbfbfd">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main-container">
-
-    <nav class="navbar">
-        <a href="index.html">Home</a>
-        <a href="resume.html">Resume</a>
-        <a href="blog.html">Blog</a>
-        <a href="activity.html">Activity</a>
-        <a href="bookmarks.html">Bookmarks</a>
-        <a href="links.html">Links</a>
-        <a href="contact.html">Contact</a>
-        <a href="awards.html">Awards</a>
-        <a href="study/">Study</a>
-    </nav>
-
-    <!-- HERO -->
-    <div style="margin-bottom: 48px;">
-        <h1>Steven Bleifer</h1>
-        <p class="subtitle">Accountant by day. Internet surfer by night.</p>
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-            <span class="pill">NYU Stern '26</span>
-            <span class="pill">Pitt '25</span>
-            <span class="pill">KPMG Incoming</span>
-        </div>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html" class="active">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="blog.html">Writing</a>
+            <a href="activity.html">Library</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+        </nav>
     </div>
+</header>
 
-    <!-- SEARCH -->
-    <div class="search-box">
-        <input type="text" id="site-search-input" placeholder="Search this site..." onkeydown="if(event.key==='Enter')siteSearch()">
-        <button type="button" onclick="siteSearch()">Search</button>
-    </div>
-    <div id="site-search-results" style="display: none; margin-bottom: 32px; font-size: 0.9rem;"></div>
-    <script>
-    (function() {
-        var pages = [
-            { url: 'index.html', title: 'Home', keywords: 'home welcome about me steven bleifer nyu stern pitt kpmg accounting audit knicks steelers yankees devils sports teams guitar bass trombone starbucks sneaker' },
-            { url: 'resume.html', title: 'Resume', keywords: 'resume education work experience skills awards kpmg ey ernst young nyu stern pitt accounting audit intern scholarship' },
-            { url: 'blog.html', title: 'Blog', keywords: 'blog web diary posts journal website' },
-            { url: 'contact.html', title: 'Contact', keywords: 'contact email guestbook sign message business card linkedin instagram' },
-            { url: 'bookmarks.html', title: 'Bookmarks', keywords: 'bookmarks links news music ai games shopping photography cool sites' },
-            { url: 'links.html', title: 'Links', keywords: 'links linkedin instagram email social media' },
-            { url: 'awards.html', title: 'Awards', keywords: 'awards honors cool site webby top 5 percent trophies' },
-            { url: 'activity.html', title: 'Activity', keywords: 'activity movies books letterboxd goodreads film reading watching' },
-            { url: 'study/', title: 'Study', keywords: 'study ais accounting information systems flashcards practice test exam review nyu stern notes guides' }
-        ];
-        window.siteSearch = function() {
-            var query = document.getElementById('site-search-input').value.trim().toLowerCase();
-            var resultsDiv = document.getElementById('site-search-results');
-            if (!query) { resultsDiv.style.display = 'none'; return; }
-            var results = [];
-            for (var i = 0; i < pages.length; i++) {
-                var p = pages[i];
-                if (p.title.toLowerCase().indexOf(query) !== -1 || p.keywords.indexOf(query) !== -1) results.push(p);
-            }
-            if (results.length === 0) {
-                resultsDiv.innerHTML = '<p style="color: #555;">No results found for "' + query + '"</p>';
-            } else {
-                var html = '';
-                for (var j = 0; j < results.length; j++) {
-                    html += '<p style="margin: 8px 0;"><a href="' + results[j].url + '">' + results[j].title + '</a> <span style="color: #333;">/' + results[j].url + '</span></p>';
-                }
-                resultsDiv.innerHTML = html;
-            }
-            resultsDiv.style.display = 'block';
-        };
-    })();
-    </script>
+<main>
+    <div class="container">
 
-    <!-- ABOUT -->
-    <div class="section">
-        <h2>About</h2>
-        <div style="color: #999; font-size: 0.95rem;">
-            <p style="margin-bottom: 12px;">I'm finishing my <strong style="color: #fff;">MS in Accounting</strong> at <strong style="color: #fff;">NYU Stern</strong> (Class of 2026), where I serve as a <strong style="color: #fff;">Graduate Student Ambassador</strong>. Before that, I graduated <strong style="color: #fff;">Summa Cum Laude</strong> from the <strong style="color: #fff;">University of Pittsburgh</strong>.</p>
-            <p style="margin-bottom: 12px;">This fall, I'll be joining <strong style="color: #fff;">KPMG</strong> as a Commercial Audit Associate. I've interned at both KPMG and EY.</p>
-            <p>Outside of work: guitar, bass, NYT crossword, and cheering for my teams.</p>
-        </div>
-    </div>
-
-    <!-- TEAMS -->
-    <div class="section">
-        <h2>My Teams</h2>
-        <div class="teams-row">
-            <div class="team-item">
-                <img src="images/knicks.svg" alt="Knicks">
-                <span>Knicks</span>
+        <section class="hero">
+            <p class="eyebrow">Florham Park, NJ</p>
+            <h1>Steven Bleifer.</h1>
+            <p class="lead">MS in Accounting at NYU Stern. Incoming Commercial Audit Associate at KPMG. Curious about audit, AI, and the small things in between.</p>
+            <div class="pill-row">
+                <span class="pill">NYU Stern '26</span>
+                <span class="pill">Pitt '25 — Summa Cum Laude</span>
+                <span class="pill">KPMG, Fall 2026</span>
             </div>
-            <div class="team-item">
-                <img src="images/steelers.svg" alt="Steelers">
-                <span>Steelers</span>
+
+            <div class="search">
+                <input type="text" id="site-search-input" placeholder="Search the site" onkeydown="if(event.key==='Enter')siteSearch()">
+                <button type="button" class="btn" onclick="siteSearch()">Search</button>
             </div>
-            <div class="team-item">
-                <img src="images/yankees.gif" alt="Yankees">
-                <span>Yankees</span>
+            <div id="site-search-results" style="display: none; margin-top: 16px;"></div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>About</h2>
             </div>
-            <div class="team-item">
-                <img src="images/devils.svg" alt="Devils">
-                <span>Devils</span>
+            <p>I'm finishing my <strong>MS in Accounting</strong> at <strong>NYU Stern</strong>, where I serve as a Graduate Student Ambassador. Before Stern I graduated <strong>Summa Cum Laude</strong> from the University of Pittsburgh.</p>
+            <p>This fall I'll be joining <strong>KPMG</strong> as a Commercial Audit Associate. I've interned at both KPMG and EY, and spent a year teaching financial accounting as a TA at Pitt.</p>
+            <p class="muted">Off the clock: guitar, bass, NYT crossword, and a quiet rotation of Knicks, Steelers, Yankees, and Devils games.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Recently</h2>
             </div>
-        </div>
-    </div>
+            <ul class="timeline">
+                <li><span class="date">Fall 2026</span><span class="desc">Joining KPMG as Commercial Audit Associate</span></li>
+                <li><span class="date">May 2026</span><span class="desc">Graduating from NYU Stern</span></li>
+                <li><span class="date">Sep 2025</span><span class="desc">NYU Stern MS in Accounting Merit Scholarship</span></li>
+                <li><span class="date">Summer 2025</span><span class="desc">Commercial Audit Intern at KPMG</span></li>
+                <li><span class="date">Apr 2025</span><span class="desc">Graduated Pitt — Summa Cum Laude</span></li>
+            </ul>
+        </section>
 
-    <!-- WHAT'S NEW -->
-    <div class="section">
-        <h2>What's New</h2>
-        <ul class="timeline">
-            <li><span class="date">Mar 2026</span><span class="desc">Site launched</span></li>
-            <li><span class="date">Fall 2026</span><span class="desc">Starting at KPMG as Commercial Audit Associate</span></li>
-            <li><span class="date">May 2026</span><span class="desc">Graduating from NYU Stern</span></li>
-            <li><span class="date">Sep 2025</span><span class="desc">NYU Stern MS in Accounting Merit Scholarship</span></li>
-        </ul>
-    </div>
+        <section class="section">
+            <div class="section-header">
+                <h2>Explore</h2>
+            </div>
+            <div class="grid">
+                <a href="resume.html" class="card">
+                    <h3>Resume <span class="arrow">→</span></h3>
+                    <p>Education, experience, awards.</p>
+                </a>
+                <a href="blog.html" class="card">
+                    <h3>Writing <span class="arrow">→</span></h3>
+                    <p>Notes and short essays.</p>
+                </a>
+                <a href="activity.html" class="card">
+                    <h3>Library <span class="arrow">→</span></h3>
+                    <p>What I'm reading and watching.</p>
+                </a>
+                <a href="bookmarks.html" class="card">
+                    <h3>Bookmarks <span class="arrow">→</span></h3>
+                    <p>Sites I keep going back to.</p>
+                </a>
+                <a href="contact.html" class="card">
+                    <h3>Contact <span class="arrow">→</span></h3>
+                    <p>Get in touch — and sign the guestbook.</p>
+                </a>
+                <a href="study/" class="card">
+                    <h3>Study <span class="arrow">→</span></h3>
+                    <p>Notes from the MS program.</p>
+                </a>
+            </div>
+        </section>
 
-    <!-- EXPLORE -->
-    <div class="section">
-        <h2>Explore</h2>
-        <div class="card-grid">
-            <a href="resume.html" class="card" style="text-decoration: none;">
-                <h3>Resume</h3>
-                <p style="color: #555; font-size: 0.85rem;">Education, experience, skills</p>
-            </a>
-            <a href="blog.html" class="card" style="text-decoration: none;">
-                <h3>Blog</h3>
-                <p style="color: #555; font-size: 0.85rem;">Thoughts and ramblings</p>
-            </a>
-            <a href="activity.html" class="card" style="text-decoration: none;">
-                <h3>Activity</h3>
-                <p style="color: #555; font-size: 0.85rem;">Movies & books</p>
-            </a>
-            <a href="contact.html" class="card" style="text-decoration: none;">
-                <h3>Contact</h3>
-                <p style="color: #555; font-size: 0.85rem;">Get in touch / guestbook</p>
-            </a>
-            <a href="bookmarks.html" class="card" style="text-decoration: none;">
-                <h3>Bookmarks</h3>
-                <p style="color: #555; font-size: 0.85rem;">Cool sites</p>
-            </a>
-            <a href="links.html" class="card" style="text-decoration: none;">
-                <h3>Links</h3>
-                <p style="color: #555; font-size: 0.85rem;">LinkedIn, Instagram & more</p>
-            </a>
-            <a href="study/" class="card" style="text-decoration: none;">
-                <h3>Study</h3>
-                <p style="color: #555; font-size: 0.85rem;">Study guides & practice</p>
-            </a>
-        </div>
-    </div>
+        <section class="section">
+            <div class="section-header">
+                <h2>Listening to</h2>
+                <p>A rolling Spotify mix.</p>
+            </div>
+            <div class="spotify-wrap">
+                <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1Epp61KMa9zoEP?utm_source=generator&theme=0" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+            </div>
+            <p class="mt-16"><a href="https://open.spotify.com/user/stevenbleifer" target="_blank" rel="noopener">Follow on Spotify →</a></p>
+        </section>
 
-    <!-- SPOTIFY -->
-    <div class="section">
-        <h2>Listening To</h2>
-        <div class="spotify-wrap">
-            <iframe src="https://open.spotify.com/embed/playlist/37i9dQZF1Epp61KMa9zoEP?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
-        </div>
-        <p style="margin-top: 8px; font-size: 0.82rem; color: #333;">
-            <a href="https://open.spotify.com/user/stevenbleifer" target="_blank" style="color: #555;">Follow on Spotify</a>
-        </p>
-    </div>
+        <p class="counter">Visitor № <span id="visitor-count">000000</span></p>
 
-    <!-- HIT COUNTER -->
-    <div class="hit-counter">
-        Visitor #<span class="counter-display" id="visitor-count">...</span>
-    </div>
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="changelog.html">Changelog</a>
+                <a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">LinkedIn</a>
+                <a href="mailto:steven.bleifer@stern.nyu.edu">Email</a>
+            </div>
+        </footer>
 
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
-    <script>
-    (function() {
-        var firebaseConfig = {
-            apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
-            authDomain: "stevenbleifer-site.firebaseapp.com",
-            databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
-            projectId: "stevenbleifer-site",
-            storageBucket: "stevenbleifer-site.firebasestorage.app",
-            messagingSenderId: "905082036677",
-            appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
-        };
-        firebase.initializeApp(firebaseConfig);
-        var appCheck = firebase.appCheck();
-        appCheck.activate('6Lf27JYsAAAAAEyCo8IuD5cIQ5qOE6zWJ72my6kQ', true);
-        var db = firebase.database();
-        var alreadyCounted = sessionStorage.getItem('sb_counted');
-        var counterRef = db.ref('visitorCount');
-        if (!alreadyCounted) {
-            counterRef.transaction(function(current) {
-                return (current || 8241) + 1;
-            }).then(function(result) {
-                document.getElementById('visitor-count').textContent = String(result.snapshot.val() - 8241).padStart(6, '0');
-                sessionStorage.setItem('sb_counted', 'true');
-            });
+    </div>
+</main>
+
+<script>
+(function() {
+    var pages = [
+        { url: 'index.html', title: 'Home', keywords: 'home about steven bleifer nyu stern pitt kpmg accounting audit' },
+        { url: 'resume.html', title: 'Resume', keywords: 'resume education work experience skills awards kpmg ey ernst young nyu stern pitt accounting audit intern scholarship' },
+        { url: 'blog.html', title: 'Writing', keywords: 'blog writing posts journal notes essays' },
+        { url: 'contact.html', title: 'Contact', keywords: 'contact email guestbook message linkedin instagram' },
+        { url: 'bookmarks.html', title: 'Bookmarks', keywords: 'bookmarks links news music ai games shopping' },
+        { url: 'activity.html', title: 'Library', keywords: 'library activity movies books letterboxd goodreads film reading watching' },
+        { url: 'study/', title: 'Study', keywords: 'study ais accounting information systems flashcards practice test exam review nyu stern notes guides' }
+    ];
+    window.siteSearch = function() {
+        var q = document.getElementById('site-search-input').value.trim().toLowerCase();
+        var out = document.getElementById('site-search-results');
+        if (!q) { out.style.display = 'none'; return; }
+        var hits = pages.filter(function(p){ return p.title.toLowerCase().indexOf(q)!==-1 || p.keywords.indexOf(q)!==-1; });
+        if (!hits.length) {
+            out.innerHTML = '<p class="muted" style="margin:0;">No results for "' + q + '".</p>';
         } else {
-            counterRef.once('value').then(function(snapshot) {
-                document.getElementById('visitor-count').textContent = String((snapshot.val() || 8241) - 8241).padStart(6, '0');
-            });
+            out.innerHTML = hits.map(function(p){
+                return '<p style="margin:6px 0;"><a href="'+p.url+'" style="font-weight:500;">'+p.title+'</a> <span class="faint" style="font-size:13px;">/'+p.url+'</span></p>';
+            }).join('');
         }
-    })();
-    </script>
+        out.style.display = 'block';
+    };
+})();
+</script>
 
-    <div class="footer">
-        <p>&copy; 2026 Steven Bleifer</p>
-        <p><a href="changelog.html">Changelog</a></p>
-    </div>
-
-</div>
+<!-- Firebase visitor counter -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
+<script>
+(function() {
+    var firebaseConfig = {
+        apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
+        authDomain: "stevenbleifer-site.firebaseapp.com",
+        databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
+        projectId: "stevenbleifer-site",
+        storageBucket: "stevenbleifer-site.firebasestorage.app",
+        messagingSenderId: "905082036677",
+        appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
+    };
+    firebase.initializeApp(firebaseConfig);
+    var appCheck = firebase.appCheck();
+    appCheck.activate('6Lf27JYsAAAAAEyCo8IuD5cIQ5qOE6zWJ72my6kQ', true);
+    var db = firebase.database();
+    var alreadyCounted = sessionStorage.getItem('sb_counted');
+    var counterRef = db.ref('visitorCount');
+    function render(v) {
+        document.getElementById('visitor-count').textContent = String((v || 8241) - 8241).padStart(6, '0');
+    }
+    if (!alreadyCounted) {
+        counterRef.transaction(function(current) { return (current || 8241) + 1; })
+            .then(function(result) { render(result.snapshot.val()); sessionStorage.setItem('sb_counted', 'true'); });
+    } else {
+        counterRef.once('value').then(function(snapshot) { render(snapshot.val()); });
+    }
+})();
+</script>
 
 </body>
 </html>

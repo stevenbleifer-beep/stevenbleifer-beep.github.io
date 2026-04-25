@@ -1,51 +1,18 @@
 <!DOCTYPE html>
-<html>
-<head><title>Options</title></head>
-<body bgcolor="#FFFFFF" text="#000000">
-    <h2>Search Options</h2>
-    <p>Please configure your search preferences:</p>
-    <form onsubmit="event.preventDefault(); alert('Settings saved! (Just kidding, this is a retro Easter egg.)');">
-        <input type="checkbox" checked> Enable Java Applets<br>
-        <input type="checkbox" checked> Show Images<br>
-        <input type="checkbox"> Play MIDI Background Music<br>
-        <br>
-        <input type="submit" value="Save Settings">
-    </form>
-    <hr>
-    <a href="index.html">&lt;&lt; Back to Home</a>
-
-<p style="text-align: center; margin: 20px 0;"><a href="changelog.html">View Site Changelog</a></p>
-<!-- CURSOR SPARKLE TRAIL -->
-<style>
-.cursor-sparkle {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  font-size: 16px;
-  animation: sparkle-fade 0.6s ease-out forwards;
-}
-@keyframes sparkle-fade {
-  0% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-30px) scale(0.5); }
-}
-</style>
-<script>
-(function() {
-    var sparkles = ['*', '+', '.', '*'];
-    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
-    document.addEventListener('mousemove', function(e) {
-        var s = document.createElement('div');
-        s.className = 'cursor-sparkle';
-        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
-        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
-        s.style.color = colors[Math.floor(Math.random() * colors.length)];
-        s.style.fontSize = (10 + Math.random() * 14) + 'px';
-        document.body.appendChild(s);
-        setTimeout(function() { s.remove(); }, 600);
-    });
-})();
-</script>
-
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="refresh" content="0; url=index.html">
+    <link rel="canonical" href="index.html">
+    <title>Redirecting…</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+    <div class="container stub">
+        <h1>Moved.</h1>
+        <p><a href="index.html">Continue to home →</a></p>
+    </div>
+</main>
 </body>
 </html>

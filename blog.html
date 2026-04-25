@@ -3,154 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~* Steven's Web Diary *~</title>
+    <title>Writing — Steven Bleifer</title>
+    <meta name="description" content="Notes and short essays from Steven Bleifer.">
+    <meta name="theme-color" content="#fbfbfd">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main-container">
-
-    <div class="navbar">
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
-        <a href="index.html">Home</a> <span class="sep">|</span>
-        <a href="activity.html">What I'm Into</a> <span class="sep">|</span>
-        <a href="resume.html">Resume</a> <span class="sep">|</span>
-        <a href="links.html">Links</a> <span class="sep">|</span>
-        <a href="blog.html">Blog</a> <span class="sep">|</span>
-        <a href="contact.html">Contact</a> <span class="sep">|</span>
-        <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
-        <a href="awards.html">Awards</a> <span class="sep">|</span>
-        <a href="study/">Study</a>
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="blog.html" class="active">Writing</a>
+            <a href="activity.html">Library</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+        </nav>
     </div>
+</header>
 
-    <div class="content-panel" style="text-align: center;">
-        <h1>
-            <img src="gifs/star.gif" alt="*" style="height: 24px; vertical-align: middle;">
-            Steven's Web Diary
-            <img src="gifs/star.gif" alt="*" style="height: 24px; vertical-align: middle;">
-        </h1>
-        <p>My thoughts, ramblings, and adventures on the information superhighway.</p>
-        <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
-    </div>
+<main>
+    <div class="container-narrow">
 
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
+        <section class="hero">
+            <p class="eyebrow">Writing</p>
+            <h1>Notes & essays.</h1>
+            <p class="lead">A small, slow-moving collection. Mostly accounting, audit, and the parts of life around them.</p>
+        </section>
 
-    <!-- BLOG POST 1 -->
-    <div class="content-panel">
-        <h2>Hello World! Welcome to My Site <img src="gifs/new.gif" alt="NEW!" style="height: 20px; vertical-align: middle;"></h2>
-        <p style="color: #808080; font-size: 0.85em;">
-            &#128197; Posted: March 2026 &nbsp; | &nbsp; &#128100; By: Steven
-        </p>
-        <hr>
-        <p>Welcome to my blog! Or as we called it in the 90's... my <b style="color: #ffff00;">Web Diary</b>.</p>
+        <section class="section">
+            <article class="post">
+                <p class="post-meta">March 2026</p>
+                <h2>Hello, world.</h2>
+                <p>This is the first post on a corner of the internet I've been meaning to build for a while. The plan is simple — write occasionally, keep it honest, and avoid the temptation to overdesign.</p>
+                <p>A bit of context. I'm finishing my <strong>MS in Accounting at NYU Stern</strong>, where I'm a Graduate Student Ambassador for the program. This fall I'll start as a <strong>Commercial Audit Associate at KPMG</strong> in Morristown.</p>
+                <p>The route here was: Pitt Summa Cum Laude, an EY summer in Pittsburgh, a year teaching financial accounting as a TA, then a KPMG internship in Short Hills last summer. Stern wraps in May.</p>
+                <p>I want to use this space to write about audit and accounting as I learn them — not as polished thinkpieces, but as honest notes. The kinds of things I wish I'd read when I was choosing between firms, picking electives, or trying to make sense of a new client. I'll also occasionally write about things outside the day job: guitar, photography, records, the New York Times crossword.</p>
+                <p>If you're reading this, thanks for stopping by. You can <a href="contact.html">leave a note in the guestbook</a>, send me an <a href="mailto:steven.bleifer@stern.nyu.edu">email</a>, or find me on <a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">LinkedIn</a>.</p>
+                <p class="muted">— Steven</p>
+            </article>
 
-        <p>So, a little about me: I'm about to wrap up my <b style="color: #00ffff;">MS in Accounting at NYU Stern</b>, where I also serve as a <b style="color: #ff00ff;">Graduate Student Ambassador</b> for the program. This fall I'll be starting as a <b style="color: #00ffff;">Commercial Audit Associate at KPMG</b> in Morristown, NJ.</p>
+            <article class="post">
+                <p class="post-meta">More soon</p>
+                <h2>In the drafts folder.</h2>
+                <p class="muted">A few longer pieces are in progress. Check back later.</p>
+            </article>
+        </section>
 
-        <p>It's been a wild ride getting here - from graduating Summa Cum Laude at Pitt, to interning at both EY and KPMG, to teaching financial accounting to 120 students as a TA. Now I'm wrapping up at Stern and getting ready for the real world.</p>
-
-        <p>I decided to build this site because everyone needs a corner of the internet to call their own. And I went with the 90's aesthetic because, honestly, the internet peaked when websites looked like this. Fight me.
-        <img src="gifs/sparkle.gif" alt="sparkle" style="height: 16px; vertical-align: middle;">
-        </p>
-
-        <p>Things I'm into outside of accounting:</p>
-        <ul>
-            <li>&#127928; Playing guitar and bass (shoutout to <a href="https://www.justinguitar.com/">JustinGuitar</a> and <a href="https://www.bassbuzz.com/">BassBuzz</a>)</li>
-            <li>&#127918; Pokemon Showdown battles and NYT crossword puzzles</li>
-            <li>&#128247; Film photography (check out <a href="https://thedarkroom.com/">The Darkroom</a>)</li>
-            <li>&#127926; Collecting vinyl records on <a href="https://www.discogs.com/">Discogs</a></li>
-            <li>&#127944; Watching my teams:</li>
-        </ul>
-
-        <!-- SPORTS TEAMS IN BLOG -->
-        <div style="text-align: center; margin: 15px 0;">
-            <div style="display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <img src="images/knicks.svg" alt="Knicks" style="height: 50px; background: white; padding: 4px; border: 2px outset #808080;">
-                <img src="images/steelers.svg" alt="Steelers" style="height: 50px; background: white; padding: 4px; border: 2px outset #808080;">
-                <img src="images/yankees.gif" alt="Yankees" style="height: 70px; background: white; padding: 4px; border: 2px outset #808080;">
-                <img src="images/devils.svg" alt="Devils" style="height: 55px; background: white; padding: 4px; border: 2px outset #808080;">
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="changelog.html">Changelog</a>
+                <a href="contact.html">Contact</a>
             </div>
-            <div style="margin: 6px 0;">
-                <img src="gifs/knicks.png" alt="Knicks" style="height: 30px; margin: 0 4px;">
-                <img src="gifs/steelers.png" alt="Steelers" style="height: 30px; margin: 0 4px;">
-                <img src="gifs/yankees.png" alt="Yankees" style="height: 30px; margin: 0 4px;">
-                <img src="gifs/devils.png" alt="Devils" style="height: 30px; margin: 0 4px;">
-            </div>
-        </div>
+        </footer>
 
-        <p>If you made it this far, thanks for reading. Feel free to <a href="contact.html">sign my guestbook</a> or shoot me an <a href="mailto:steven.bleifer@stern.nyu.edu">email</a>. You can also find me on <a href="https://www.instagram.com/steven_bleifer/">Instagram</a>.</p>
-
-        <p style="color: #ff00ff;">- Steven &#9996;</p>
-        <p style="color: #808080; font-size: 0.8em;">P.S. Yes, I know accountants aren't supposed to be fun. I'm working on changing that stereotype, one blinking HTML tag at a time.</p>
     </div>
-
-    <!-- PLACEHOLDER FOR FUTURE POSTS -->
-    <div class="content-panel" style="text-align: center;">
-        <h2>Coming Soon...</h2>
-        <p style="color: #808080;">More posts are on the way! Check back later.</p>
-        <div class="under-construction">
-            <span>
-                <img src="gifs/construction.gif" alt="Under Construction" style="height: 28px; vertical-align: middle;">
-                Blog under construction!
-                <img src="gifs/construction.gif" alt="Under Construction" style="height: 28px; vertical-align: middle;">
-            </span>
-        </div>
-    </div>
-
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
-
-    <!-- WEBRING -->
-    <div class="webring">
-        <p style="color: #00ffff;">
-            <img src="gifs/globe.gif" alt="globe" style="height: 24px; vertical-align: middle;">
-            <b>The Cool Personal Sites Webring</b>
-            <img src="gifs/globe.gif" alt="globe" style="height: 24px; vertical-align: middle;">
-        </p>
-        <p>
-            <a href="#" style="color: #ffff00;">&lt;&lt; Previous</a>
-            &nbsp; | &nbsp;
-            <a href="#" style="color: #00ff00;">Random</a>
-            &nbsp; | &nbsp;
-            <a href="#" style="color: #ffff00;">Next &gt;&gt;</a>
-        </p>
-        <p style="color: #808080; font-size: 0.8em;">This site is part of the Cool Personal Sites Webring</p>
-    </div>
-
-    <div class="badges" style="margin: 15px 0;">
-        <img src="https://cyber.dabamos.de/88x31/netscape_now.gif" alt="Netscape Now!" style="margin: 3px;">
-        <img src="https://cyber.dabamos.de/88x31/anybestviewed.gif" alt="Best Viewed With Any Browser" style="margin: 3px;">
-    </div>
-
-    <div class="footer">
-        <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
-        <p>&copy; 2026 Steven Bleifer</p>
-        <p><a href="changelog.html">View Site Changelog</a></p>
-    </div>
-
-</div>
-
-<!-- CURSOR SPARKLE TRAIL -->
-<script>
-(function() {
-    var sparkles = ['*', '+', '.', '*'];
-    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
-    document.addEventListener('mousemove', function(e) {
-        var s = document.createElement('div');
-        s.className = 'cursor-sparkle';
-        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
-        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
-        s.style.color = colors[Math.floor(Math.random() * colors.length)];
-        s.style.fontSize = (10 + Math.random() * 14) + 'px';
-        document.body.appendChild(s);
-        setTimeout(function() { s.remove(); }, 600);
-    });
-})();
-</script>
+</main>
 
 </body>
 </html>

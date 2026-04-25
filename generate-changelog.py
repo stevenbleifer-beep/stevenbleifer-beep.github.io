@@ -10,13 +10,12 @@ result = subprocess.run(
 rows = ""
 for line in result.stdout.strip().split('\n'):
     date, msg = line.split('|', 1)
-    # Skip automated daily commits (feed updates, etc.)
     if '[skip ci]' in msg:
         continue
     rows += (
-        f'        <tr>'
-        f'<td style="white-space: nowrap; padding: 4px 12px 4px 4px; color: #00ffff;">{html.escape(date)}</td>'
-        f'<td style="padding: 4px;">{html.escape(msg)}</td>'
+        f'                <tr>'
+        f'<td class="date">{html.escape(date)}</td>'
+        f'<td>{html.escape(msg)}</td>'
         f'</tr>\n'
     )
 
@@ -25,76 +24,62 @@ page = f'''<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~* Changelog *~ Steven Bleifer's Homepage</title>
+    <title>Changelog — Steven Bleifer</title>
+    <meta name="description" content="Site changelog, generated from git history.">
+    <meta name="theme-color" content="#fbfbfd">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main-container">
-
-    <div class="navbar">
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
-        <a href="index.html">Home</a> <span class="sep">|</span>
-        <a href="activity.html">What I'm Into</a> <span class="sep">|</span>
-        <a href="resume.html">Resume</a> <span class="sep">|</span>
-        <a href="links.html">Links</a> <span class="sep">|</span>
-        <a href="blog.html">Blog</a> <span class="sep">|</span>
-        <a href="contact.html">Contact</a> <span class="sep">|</span>
-        <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
-        <a href="awards.html">Awards</a> <span class="sep">|</span>
-        <a href="study/">Study</a>
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="blog.html">Writing</a>
+            <a href="activity.html">Library</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+        </nav>
     </div>
+</header>
 
-    <div class="content-panel" style="text-align: center;">
-        <h1>
-            <img src="gifs/new.gif" alt="NEW!" style="height: 30px; vertical-align: middle;">
-            Site Changelog
-            <img src="gifs/new.gif" alt="NEW!" style="height: 30px; vertical-align: middle;">
-        </h1>
-        <p>Big changes to this site, logged for posterity!</p>
-        <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow">Changelog</p>
+            <h1>Site changelog.</h1>
+            <p class="lead">Generated from git history. Automated daily updates are filtered out.</p>
+        </section>
+
+        <section class="section">
+            <table class="simple-table">
+                <thead>
+                    <tr><th>Date</th><th>Change</th></tr>
+                </thead>
+                <tbody>
+{rows}                </tbody>
+            </table>
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </footer>
+
     </div>
-
-    <div class="content-panel">
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.95em;">
-        <tr style="border-bottom: 1px solid #444;">
-            <th style="text-align: left; padding: 6px 12px 6px 4px; color: #ffff00;">Date</th>
-            <th style="text-align: left; padding: 6px; color: #ffff00;">Change</th>
-        </tr>
-{rows}        </table>
-    </div>
-
-    <div class="footer">
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-        <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
-        <p>&copy; 2026 Steven Bleifer</p>
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-    </div>
-
-</div>
-
-<!-- CURSOR SPARKLE TRAIL -->
-<script>
-(function() {{
-    var sparkles = ['*', '+', '.', '*'];
-    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
-    document.addEventListener('mousemove', function(e) {{
-        var s = document.createElement('div');
-        s.className = 'cursor-sparkle';
-        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
-        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
-        s.style.color = colors[Math.floor(Math.random() * colors.length)];
-        s.style.fontSize = (10 + Math.random() * 14) + 'px';
-        document.body.appendChild(s);
-        setTimeout(function() {{ s.remove(); }}, 600);
-    }});
-}})();
-</script>
+</main>
 
 </body>
-</html>'''
+</html>
+'''
 
 with open('changelog.html', 'w') as f:
     f.write(page)

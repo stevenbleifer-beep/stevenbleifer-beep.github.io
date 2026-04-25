@@ -3,178 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~* Steven's Cool Bookmarks *~</title>
+    <title>Bookmarks — Steven Bleifer</title>
+    <meta name="description" content="A small collection of sites Steven Bleifer keeps going back to.">
+    <meta name="theme-color" content="#fbfbfd">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main-container">
-
-    <div class="navbar">
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
-        <a href="index.html">Home</a> <span class="sep">|</span>
-        <a href="activity.html">What I'm Into</a> <span class="sep">|</span>
-        <a href="resume.html">Resume</a> <span class="sep">|</span>
-        <a href="links.html">Links</a> <span class="sep">|</span>
-        <a href="blog.html">Blog</a> <span class="sep">|</span>
-        <a href="contact.html">Contact</a> <span class="sep">|</span>
-        <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
-        <a href="awards.html">Awards</a> <span class="sep">|</span>
-        <a href="study/">Study</a>
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="blog.html">Writing</a>
+            <a href="activity.html">Library</a>
+            <a href="bookmarks.html" class="active">Bookmarks</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+        </nav>
     </div>
+</header>
 
-    <div class="content-panel" style="text-align: center;">
-        <h1>
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 28px; vertical-align: middle;">
-            Steven's Bookmarks
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 28px; vertical-align: middle;">
-        </h1>
-        <p>My actual bookmarks! This is what my browser bar looks like.</p>
-        <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
+<main>
+    <div class="container-narrow">
+
+        <section class="hero">
+            <p class="eyebrow">Bookmarks</p>
+            <h1>Sites I keep open.</h1>
+            <p class="lead">A small, curated set of links — the things actually pinned in my browser.</p>
+        </section>
+
+        <section class="section">
+
+            <div class="bookmark-group">
+                <h3>News & Reading</h3>
+                <ul class="bookmark-list">
+                    <li><a href="https://www.nytimes.com/" target="_blank" rel="noopener">The New York Times</a><span class="desc">All the news that's fit to print</span></li>
+                    <li><a href="https://www.wsj.com/" target="_blank" rel="noopener">The Wall Street Journal</a><span class="desc">Business and financial news</span></li>
+                    <li><a href="https://www.ft.com/" target="_blank" rel="noopener">Financial Times</a><span class="desc">Global business news</span></li>
+                    <li><a href="https://www.economist.com/" target="_blank" rel="noopener">The Economist</a><span class="desc">Analysis and opinion</span></li>
+                    <li><a href="https://www.wikipedia.org/" target="_blank" rel="noopener">Wikipedia</a><span class="desc">Where the rabbit hole starts</span></li>
+                </ul>
+            </div>
+
+            <div class="bookmark-group">
+                <h3>Music & Guitar</h3>
+                <ul class="bookmark-list">
+                    <li><a href="https://www.justinguitar.com/classes/beginner-guitar-course-grade-one" target="_blank" rel="noopener">JustinGuitar</a><span class="desc">Beginner guitar course</span></li>
+                    <li><a href="https://www.justinguitar.com/classes/ear-training" target="_blank" rel="noopener">JustinGuitar — Ear Training</a><span class="desc">Train your ear</span></li>
+                    <li><a href="https://www.bassbuzz.com/" target="_blank" rel="noopener">BassBuzz</a><span class="desc">Bass guitar lessons</span></li>
+                    <li><a href="https://www.ultimate-guitar.com/" target="_blank" rel="noopener">Ultimate Guitar</a><span class="desc">Tabs and chords</span></li>
+                    <li><a href="https://www.discogs.com/" target="_blank" rel="noopener">Discogs</a><span class="desc">Music database & vinyl marketplace</span></li>
+                </ul>
+            </div>
+
+            <div class="bookmark-group">
+                <h3>AI</h3>
+                <ul class="bookmark-list">
+                    <li><a href="https://claude.ai/" target="_blank" rel="noopener">Claude</a><span class="desc">Anthropic's assistant</span></li>
+                    <li><a href="https://gemini.google.com/app" target="_blank" rel="noopener">Google Gemini</a><span class="desc">Google's assistant</span></li>
+                </ul>
+            </div>
+
+            <div class="bookmark-group">
+                <h3>CPA & Accounting</h3>
+                <ul class="bookmark-list">
+                    <li><a href="https://dashboard.nasba.org/" target="_blank" rel="noopener">NASBA</a><span class="desc">National Association of State Boards of Accountancy</span></li>
+                    <li><a href="https://cpa.becker.com/home" target="_blank" rel="noopener">Becker CPA</a><span class="desc">CPA exam prep</span></li>
+                    <li><a href="https://www.prometric.com/exams/cpa" target="_blank" rel="noopener">Prometric</a><span class="desc">CPA exam scheduling</span></li>
+                </ul>
+            </div>
+
+            <div class="bookmark-group">
+                <h3>Games & Fun</h3>
+                <ul class="bookmark-list">
+                    <li><a href="https://www.nytimes.com/crosswords" target="_blank" rel="noopener">NYT Games</a><span class="desc">Crossword, Wordle, and more</span></li>
+                    <li><a href="https://play.pokemonshowdown.com/" target="_blank" rel="noopener">Pokemon Showdown</a><span class="desc">Competitive Pokemon battles</span></li>
+                    <li><a href="https://www.youtube.com/" target="_blank" rel="noopener">YouTube</a><span class="desc">You already know</span></li>
+                </ul>
+            </div>
+
+            <div class="bookmark-group">
+                <h3>Photography</h3>
+                <ul class="bookmark-list">
+                    <li><a href="https://thedarkroom.com/" target="_blank" rel="noopener">The Darkroom</a><span class="desc">Film developing & scanning</span></li>
+                </ul>
+            </div>
+
+            <div class="bookmark-group">
+                <h3>Social</h3>
+                <ul class="bookmark-list">
+                    <li><a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">LinkedIn</a><span class="desc">Professional</span></li>
+                    <li><a href="https://www.instagram.com/steven_bleifer/" target="_blank" rel="noopener">Instagram</a><span class="desc">Photos and stories</span></li>
+                    <li><a href="https://www.reddit.com/" target="_blank" rel="noopener">Reddit</a><span class="desc">Front page of the internet</span></li>
+                </ul>
+            </div>
+
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="changelog.html">Changelog</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </footer>
+
     </div>
-
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
-
-    <!-- NEWS & READING -->
-    <div class="content-panel">
-        <h2><img src="gifs/globe.gif" alt="globe" style="height: 24px; vertical-align: middle;"> News &amp; Reading</h2>
-        <ul>
-            <li><a href="https://www.nytimes.com/">The New York Times</a> - All the news that's fit to print</li>
-            <li><a href="https://www.wsj.com/">The Wall Street Journal</a> - Business and financial news</li>
-            <li><a href="https://www.ft.com/">Financial Times</a> - Global business news</li>
-            <li><a href="https://www.economist.com/">The Economist</a> - Analysis and opinion</li>
-            <li><a href="https://www.wikipedia.org/">Wikipedia</a> - The rabbit hole starts here</li>
-        </ul>
-    </div>
-
-    <!-- MUSIC -->
-    <div class="content-panel">
-        <h2><img src="gifs/star.gif" alt="*" style="height: 20px; vertical-align: middle;"> Music &amp; Guitar <img src="gifs/new.gif" alt="NEW!" style="height: 16px; vertical-align: middle;"></h2>
-        <ul>
-            <li><a href="https://www.justinguitar.com/classes/beginner-guitar-course-grade-one">JustinGuitar</a> - Beginner guitar course</li>
-            <li><a href="https://www.justinguitar.com/modules/notes-sharps-flats-octaves">JustinGuitar - Notes &amp; Theory</a> - Notes, sharps, flats &amp; octaves</li>
-            <li><a href="https://www.justinguitar.com/classes/ear-training">JustinGuitar - Ear Training</a> - Train your ear!</li>
-            <li><a href="https://www.bassbuzz.com/">BassBuzz</a> - Bass guitar lessons</li>
-            <li><a href="https://www.ultimate-guitar.com/">Ultimate Guitar Tabs</a> - Guitar tabs and chords</li>
-            <li><a href="https://www.discogs.com/">Discogs</a> - Music database &amp; vinyl marketplace</li>
-        </ul>
-    </div>
-
-    <!-- AI TOOLS -->
-    <div class="content-panel">
-        <h2><img src="gifs/sparkle.gif" alt="sparkle" style="height: 20px; vertical-align: middle;"> AI Tools</h2>
-        <ul>
-            <li><a href="https://claude.ai/">Claude</a> - Anthropic's AI assistant</li>
-            <li><a href="https://gemini.google.com/app">Google Gemini</a> - Google's AI</li>
-        </ul>
-    </div>
-
-    <!-- CPA & ACCOUNTING -->
-    <div class="content-panel">
-        <h2><img src="gifs/globe.gif" alt="globe" style="height: 24px; vertical-align: middle;"> CPA &amp; Accounting</h2>
-        <ul>
-            <li><a href="https://dashboard.nasba.org/">NASBA</a> - National Association of State Boards of Accountancy</li>
-            <li><a href="https://cpa.becker.com/home">Becker CPA</a> - CPA exam prep</li>
-            <li><a href="https://www.prometric.com/exams/cpa">Prometric CPA</a> - CPA exam scheduling</li>
-        </ul>
-    </div>
-
-    <!-- GAMES & FUN -->
-    <div class="content-panel">
-        <h2><img src="gifs/star.gif" alt="*" style="height: 20px; vertical-align: middle;"> Games &amp; Fun</h2>
-        <ul>
-            <li><a href="https://www.nytimes.com/crosswords">NYT Games</a> - Crossword, Wordle, and more <img src="gifs/new.gif" alt="NEW!" style="height: 14px; vertical-align: middle;"></li>
-            <li><a href="https://play.pokemonshowdown.com/">Pokemon Showdown</a> - Competitive Pokemon battles</li>
-            <li><a href="https://www.youtube.com/">YouTube</a> - You already know</li>
-        </ul>
-    </div>
-
-    <!-- SHOPPING & FINANCE -->
-    <div class="content-panel">
-        <h2><img src="gifs/sparkle.gif" alt="sparkle" style="height: 20px; vertical-align: middle;"> Shopping &amp; Finance</h2>
-        <ul>
-            <li><a href="https://www.amazon.com/">Amazon</a> - Everything store</li>
-            <li><a href="https://www.ebay.com/">eBay</a> - Auctions and deals</li>
-            <li><a href="https://www.rakuten.com/">Rakuten</a> - Cash back on shopping</li>
-        </ul>
-    </div>
-
-    <!-- PHOTOGRAPHY -->
-    <div class="content-panel">
-        <h2><img src="gifs/star.gif" alt="*" style="height: 20px; vertical-align: middle;"> Photography</h2>
-        <ul>
-            <li><a href="https://thedarkroom.com/">The Darkroom</a> - Film developing and scanning</li>
-        </ul>
-    </div>
-
-    <!-- SOCIALS -->
-    <div class="content-panel">
-        <h2><img src="gifs/globe.gif" alt="globe" style="height: 24px; vertical-align: middle;"> My Socials</h2>
-        <ul>
-
-            <li><a href="https://www.reddit.com/">Reddit</a> - The front page of the internet</li>
-            <li><a href="https://www.instagram.com/steven_bleifer/">Instagram</a> - Photos and stories</li>
-            <li><a href="https://www.linkedin.com/in/stevenbleifer/">LinkedIn</a> - Professional network</li>
-        </ul>
-    </div>
-
-    <!-- 90'S NOSTALGIA -->
-    <div class="content-panel">
-        <h2>
-            <img src="gifs/construction.gif" alt="construction" style="height: 22px; vertical-align: middle;">
-            90's Internet Nostalgia
-        </h2>
-        <ul>
-            <li><a href="https://www.cameronsworld.net/">Cameron's World</a> - GeoCities tribute <img src="gifs/new.gif" alt="NEW!" style="height: 14px; vertical-align: middle;"></li>
-            <li><a href="https://gifcities.org/">GifCities</a> - Search engine for GeoCities GIFs</li>
-            <li><a href="https://theoldnet.com/">The Old Net</a> - Browse the old web</li>
-            <li><a href="https://poolsuite.net/">Poolsuite</a> - Retro internet vibes</li>
-            <li><a href="https://www.windows93.net/">Windows 93</a> - A wild OS in your browser</li>
-            <li><a href="https://cyber.dabamos.de/88x31/">88x31 Button Collection</a> - Classic web buttons archive</li>
-        </ul>
-    </div>
-
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
-
-    <div class="badges" style="margin: 15px 0;">
-        <img src="https://cyber.dabamos.de/88x31/netscape_now.gif" alt="Netscape Now!" style="margin: 3px;">
-        <img src="https://cyber.dabamos.de/88x31/anybestviewed.gif" alt="Best Viewed With Any Browser" style="margin: 3px;">
-        <img src="https://cyber.dabamos.de/88x31/best800x600.gif" alt="Best at 800x600" style="margin: 3px;">
-    </div>
-
-    <div class="footer">
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-        <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
-        <p>&copy; 2026 Steven Bleifer</p>
-        <p><a href="changelog.html">View Site Changelog</a></p>
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-    </div>
-
-</div>
-
-<!-- CURSOR SPARKLE TRAIL -->
-<script>
-(function() {
-    var sparkles = ['*', '+', '.', '*'];
-    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
-    document.addEventListener('mousemove', function(e) {
-        var s = document.createElement('div');
-        s.className = 'cursor-sparkle';
-        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
-        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
-        s.style.color = colors[Math.floor(Math.random() * colors.length)];
-        s.style.fontSize = (10 + Math.random() * 14) + 'px';
-        document.body.appendChild(s);
-        setTimeout(function() { s.remove(); }, 600);
-    });
-})();
-</script>
+</main>
 
 </body>
 </html>

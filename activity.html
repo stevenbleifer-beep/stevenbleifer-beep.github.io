@@ -3,88 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>~* What I'm Into *~ Steven Bleifer's Homepage</title>
+    <title>Library — Steven Bleifer</title>
+    <meta name="description" content="What Steven Bleifer is reading and watching, pulled live from Letterboxd and Goodreads.">
+    <meta name="theme-color" content="#fbfbfd">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="main-container">
-
-    <div class="navbar">
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
-        <a href="index.html">Home</a> <span class="sep">|</span>
-        <a href="activity.html">What I'm Into</a> <span class="sep">|</span>
-        <a href="resume.html">Resume</a> <span class="sep">|</span>
-        <a href="links.html">Links</a> <span class="sep">|</span>
-        <a href="blog.html">Blog</a> <span class="sep">|</span>
-        <a href="contact.html">Contact</a> <span class="sep">|</span>
-        <a href="bookmarks.html">Bookmarks</a> <span class="sep">|</span>
-        <a href="awards.html">Awards</a> <span class="sep">|</span>
-        <a href="study/">Study</a>
-        <img src="https://cyber.dabamos.de/88x31/netscape.gif" alt="">
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="blog.html">Writing</a>
+            <a href="activity.html" class="active">Library</a>
+            <a href="bookmarks.html">Bookmarks</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+        </nav>
     </div>
+</header>
 
-    <div class="content-panel" style="text-align: center;">
-        <h1>
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 30px; vertical-align: middle;">
-            What I'm Into
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 30px; vertical-align: middle;">
-        </h1>
-        <p>My recent watches and reads, pulled fresh from the web!</p>
-        <div class="divider">* ~ * ~ * ~ * ~ * ~ * ~ *</div>
+<main>
+    <div class="container-narrow">
+
+        <section class="hero">
+            <p class="eyebrow">Library</p>
+            <h1>What I'm into.</h1>
+            <p class="lead">A live feed of recent watches and reads, pulled from Letterboxd and Goodreads.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Recent films</h2>
+                <p>From my <a href="https://letterboxd.com/stevenfred/" target="_blank" rel="noopener">Letterboxd</a> diary.</p>
+            </div>
+            <div id="letterboxd-feed">
+                <p class="feed-loading">Loading films…</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Recent reads</h2>
+                <p>From my <a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" rel="noopener">Goodreads</a> shelf.</p>
+            </div>
+            <div id="goodreads-feed">
+                <p class="feed-loading">Loading books…</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="changelog.html">Changelog</a>
+                <a href="contact.html">Contact</a>
+            </div>
+        </footer>
+
     </div>
+</main>
 
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
-
-    <!-- LETTERBOXD SECTION -->
-    <div class="content-panel">
-        <h2>
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
-            Recent Movies
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
-        </h2>
-        <p style="color: #808080; font-size: 0.85em;">From my <a href="https://letterboxd.com/stevenfred/" target="_blank" style="color: #00e054;">Letterboxd</a> diary</p>
-        <div id="letterboxd-feed" style="margin-top: 10px;">
-            <p style="color: #ffff00;" class="blink">Loading movies...</p>
-        </div>
-    </div>
-
-    <!-- GOODREADS SECTION -->
-    <div class="content-panel">
-        <h2>
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
-            Recent Books
-            <img src="gifs/sparkle.gif" alt="sparkle" style="height: 22px; vertical-align: middle;">
-        </h2>
-        <p style="color: #808080; font-size: 0.85em;">From my <a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" style="color: #7b4f24;">Goodreads</a> shelf</p>
-        <div id="goodreads-feed" style="margin-top: 10px;">
-            <p style="color: #ffff00;" class="blink">Loading books...</p>
-        </div>
-    </div>
-
-    <div style="text-align: center; line-height: 0;">
-        <img src="gifs/flames.gif" alt="~*flames*~" style="width: 100%; max-width: 800px; height: 20px;">
-    </div>
-
-    <div class="badges" style="margin: 15px 0;">
-        <img src="https://cyber.dabamos.de/88x31/netscape_now.gif" alt="Netscape Now!" style="margin: 3px;">
-        <img src="https://cyber.dabamos.de/88x31/anybestviewed.gif" alt="Best Viewed With Any Browser" style="margin: 3px;">
-        <img src="https://cyber.dabamos.de/88x31/best800x600.gif" alt="Best at 800x600" style="margin: 3px;">
-    </div>
-
-    <div class="footer">
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-        <p><a href="index.html">&lt;&lt; Back to Homepage</a></p>
-        <p>&copy; 2026 Steven Bleifer</p>
-        <p><a href="changelog.html">View Site Changelog</a></p>
-        <img src="gifs/star.gif" alt="*" style="height: 14px; vertical-align: middle;">
-    </div>
-
-</div>
-
-<!-- RSS FEED FETCHER -->
 <script>
 (function() {
     var CORS_PROXIES = [
@@ -98,47 +80,40 @@
         var half = (num % 1 >= 0.5) ? 1 : 0;
         var empty = 5 - full - half;
         var s = '';
-        for (var i = 0; i < full; i++) s += '\u2605';
-        if (half) s += '\u00BD';
-        for (var i = 0; i < empty; i++) s += '\u2606';
+        for (var i = 0; i < full; i++) s += '★';
+        if (half) s += '½';
+        for (var i = 0; i < empty; i++) s += '☆';
         return s;
     }
 
-    function parseXML(text) {
-        return new DOMParser().parseFromString(text, 'text/xml');
-    }
+    function parseXML(text) { return new DOMParser().parseFromString(text, 'text/xml'); }
 
     function fetchWithFallback(url, proxyIndex) {
         proxyIndex = proxyIndex || 0;
-        if (proxyIndex >= CORS_PROXIES.length) {
-            return Promise.reject(new Error('All proxies failed'));
-        }
+        if (proxyIndex >= CORS_PROXIES.length) return Promise.reject(new Error('All proxies failed'));
         var proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(url);
         return fetch(proxyUrl).then(function(r) {
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.text();
         }).then(function(text) {
             var doc = parseXML(text);
-            if (doc.querySelector('parsererror') || !doc.querySelector('item')) {
-                throw new Error('Invalid XML or no items');
-            }
+            if (doc.querySelector('parsererror') || !doc.querySelector('item')) throw new Error('Invalid XML');
             return text;
-        }).catch(function() {
-            return fetchWithFallback(url, proxyIndex + 1);
-        });
+        }).catch(function() { return fetchWithFallback(url, proxyIndex + 1); });
     }
 
-    // LETTERBOXD
+    function escapeHTML(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
     fetchWithFallback('https://letterboxd.com/stevenfred/rss/')
         .then(function(text) {
             var doc = parseXML(text);
             var items = doc.querySelectorAll('item');
             var container = document.getElementById('letterboxd-feed');
             if (!items.length) {
-                container.innerHTML = '<p style="color: #ff0000;">No movies found. Check back later!</p>';
+                container.innerHTML = '<p class="feed-error">No films found yet.</p>';
                 return;
             }
-            var html = '<table style="width: 100%; border-collapse: collapse;">';
+            var html = '<ul class="media-list">';
             var count = Math.min(items.length, 10);
             for (var i = 0; i < count; i++) {
                 var item = items[i];
@@ -155,75 +130,52 @@
                     var d = new Date(dateEl.textContent);
                     dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 }
-
-                html += '<tr style="border-bottom: 1px solid #333;">';
-                if (poster) {
-                    html += '<td style="padding: 6px; width: 45px;"><img src="' + poster + '" alt="" style="height: 55px; border: 1px solid #444;"></td>';
-                }
-                html += '<td style="padding: 6px;">';
-                html += '<a href="' + link + '" target="_blank" style="color: #00ffff; font-weight: bold;">' + title + '</a><br>';
-                if (rating) html += '<span style="color: #00e054;">' + starRating(rating) + '</span> ';
-                if (dateStr) html += '<span style="color: #808080; font-size: 0.85em;">' + dateStr + '</span>';
-                html += '</td></tr>';
+                html += '<li>';
+                if (poster) html += '<div class="cover"><img src="' + poster + '" alt=""></div>';
+                else html += '<div class="cover"></div>';
+                html += '<div class="body">';
+                html += '<a class="title" href="' + link + '" target="_blank" rel="noopener">' + escapeHTML(title) + '</a>';
+                if (rating) html += '<p class="meta"><span class="stars">' + starRating(rating) + '</span></p>';
+                if (dateStr) html += '<p class="meta">' + dateStr + '</p>';
+                html += '</div></li>';
             }
-            html += '</table>';
-            html += '<p style="margin-top: 10px; text-align: center;"><a href="https://letterboxd.com/stevenfred/" target="_blank" style="color: #00e054;">View all on Letterboxd &raquo;</a></p>';
+            html += '</ul>';
+            html += '<p class="mt-24"><a href="https://letterboxd.com/stevenfred/" target="_blank" rel="noopener">View all on Letterboxd →</a></p>';
             container.innerHTML = html;
         })
         .catch(function() {
-            document.getElementById('letterboxd-feed').innerHTML = '<p style="color: #ff8800;">Could not load Letterboxd feed. <a href="https://letterboxd.com/stevenfred/" target="_blank" style="color: #00e054;">Visit my profile directly &raquo;</a></p>';
+            document.getElementById('letterboxd-feed').innerHTML = '<p class="feed-error">Couldn\'t load Letterboxd feed. <a href="https://letterboxd.com/stevenfred/" target="_blank" rel="noopener">Visit profile →</a></p>';
         });
 
-    // GOODREADS (loaded from static JSON built by GitHub Action)
     fetch('goodreads-feed.json?v=' + Date.now())
         .then(function(r) { return r.json(); })
         .then(function(data) {
             var container = document.getElementById('goodreads-feed');
             if (!data.ok || !data.books || !data.books.length) {
-                container.innerHTML = '<p style="color: #ff0000;">No books found. Check back later!</p>';
+                container.innerHTML = '<p class="feed-error">No books found yet.</p>';
                 return;
             }
-            var html = '<table style="width: 100%; border-collapse: collapse;">';
+            var html = '<ul class="media-list">';
             var books = data.books;
             for (var i = 0; i < books.length; i++) {
                 var b = books[i];
                 var rating = parseInt(b.rating) || 0;
-                html += '<tr style="border-bottom: 1px solid #333;">';
-                if (b.cover) {
-                    html += '<td style="padding: 6px; width: 45px;"><img src="' + b.cover + '" alt="" style="height: 55px; border: 1px solid #444;"></td>';
-                }
-                html += '<td style="padding: 6px;">';
-                html += '<a href="' + b.link + '" target="_blank" style="color: #00ffff; font-weight: bold;">' + b.title + '</a><br>';
-                if (b.author) html += '<span style="color: #ff00ff; font-size: 0.9em;">by ' + b.author + '</span><br>';
-                if (rating) html += '<span style="color: #ffff00;">' + starRating(rating) + '</span>';
-                html += '</td></tr>';
+                html += '<li>';
+                if (b.cover) html += '<div class="cover"><img src="' + b.cover + '" alt=""></div>';
+                else html += '<div class="cover"></div>';
+                html += '<div class="body">';
+                html += '<a class="title" href="' + b.link + '" target="_blank" rel="noopener">' + escapeHTML(b.title) + '</a>';
+                if (b.author) html += '<p class="author">' + escapeHTML(b.author) + '</p>';
+                if (rating) html += '<p class="meta"><span class="stars">' + starRating(rating) + '</span></p>';
+                html += '</div></li>';
             }
-            html += '</table>';
-            html += '<p style="margin-top: 10px; text-align: center;"><a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" style="color: #7b4f24;">View all on Goodreads &raquo;</a></p>';
+            html += '</ul>';
+            html += '<p class="mt-24"><a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" rel="noopener">View all on Goodreads →</a></p>';
             container.innerHTML = html;
         })
         .catch(function() {
-            document.getElementById('goodreads-feed').innerHTML = '<p style="color: #ff8800;">Could not load Goodreads feed. <a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" style="color: #7b4f24;">Visit my profile directly &raquo;</a></p>';
+            document.getElementById('goodreads-feed').innerHTML = '<p class="feed-error">Couldn\'t load Goodreads feed. <a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" rel="noopener">Visit profile →</a></p>';
         });
-})();
-</script>
-
-<!-- CURSOR SPARKLE TRAIL -->
-<script>
-(function() {
-    var sparkles = ['*', '+', '.', '*'];
-    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
-    document.addEventListener('mousemove', function(e) {
-        var s = document.createElement('div');
-        s.className = 'cursor-sparkle';
-        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
-        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
-        s.style.color = colors[Math.floor(Math.random() * colors.length)];
-        s.style.fontSize = (10 + Math.random() * 14) + 'px';
-        document.body.appendChild(s);
-        setTimeout(function() { s.remove(); }, 600);
-    });
 })();
 </script>
 

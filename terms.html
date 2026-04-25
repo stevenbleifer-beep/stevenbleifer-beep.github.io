@@ -1,50 +1,43 @@
 <!DOCTYPE html>
-<html>
-<head><title>Terms of Service</title></head>
-<body bgcolor="#FFFFFF">
-    <h2>Terms of Service</h2>
-    <p>By accessing <b>StevenBleifer.com</b>, you agree to the following terms:</p>
-    <ol>
-        <li>You will not use this site for illegal activities.</li>
-        <li>You acknowledge that this site is constructed with hand-written HTML.</li>
-        <li>We are not responsible for broken links on external sites.</li>
-        <li>Please do not hotlink our images.</li>
-    </ol>
-    <hr>
-    <a href="index.html">&lt;&lt; Back to Home</a>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms — Steven Bleifer</title>
+    <meta name="theme-color" content="#fbfbfd">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
 
-<p style="text-align: center; margin: 20px 0;"><a href="changelog.html">View Site Changelog</a></p>
-<!-- CURSOR SPARKLE TRAIL -->
-<style>
-.cursor-sparkle {
-  position: fixed;
-  pointer-events: none;
-  z-index: 9999;
-  font-size: 16px;
-  animation: sparkle-fade 0.6s ease-out forwards;
-}
-@keyframes sparkle-fade {
-  0% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-30px) scale(0.5); }
-}
-</style>
-<script>
-(function() {
-    var sparkles = ['*', '+', '.', '*'];
-    var colors = ['#ffff00', '#00ffff', '#ff00ff', '#00ff00', '#ff8800', '#ffffff'];
-    document.addEventListener('mousemove', function(e) {
-        var s = document.createElement('div');
-        s.className = 'cursor-sparkle';
-        s.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
-        s.style.left = (e.clientX + (Math.random() * 20 - 10)) + 'px';
-        s.style.top = (e.clientY + (Math.random() * 20 - 10)) + 'px';
-        s.style.color = colors[Math.floor(Math.random() * colors.length)];
-        s.style.fontSize = (10 + Math.random() * 14) + 'px';
-        document.body.appendChild(s);
-        setTimeout(function() { s.remove(); }, 600);
-    });
-})();
-</script>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <nav class="nav">
+            <a href="index.html">Home</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container-narrow">
+        <section class="hero">
+            <p class="eyebrow">Terms of use</p>
+            <h1>Terms.</h1>
+        </section>
+        <section class="section">
+            <p>By using stevenbleifer.com you agree to the following:</p>
+            <ul>
+                <li>Don't use this site for illegal activity.</li>
+                <li>External links are provided as-is. I'm not responsible if they break or change.</li>
+                <li>Please don't hotlink images hosted here.</li>
+            </ul>
+        </section>
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links"><a href="index.html">Home</a><a href="privacy.html">Privacy</a></div>
+        </footer>
+    </div>
+</main>
 
 </body>
 </html>
