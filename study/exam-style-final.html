@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Final Exam-Style Questions — Bleifer Study</title>
+  <meta name="description" content="Multiple-choice questions in Lanz exam format for the AIS Final — Ch 16 cybersecurity, CIS Controls, SOC reports, regulations, and the Equifax case." />
+  <meta name="theme-color" content="#fbf9f4" />
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React + ReactDOM + Babel standalone for in-browser JSX -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body { background: #fbf9f4; }
+    /* Hide un-hydrated content flash */
+    #root:empty::before {
+      content: "Loading…";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+    <div id="devtools-shield" style="display:none;position:fixed;inset:0;z-index:99999;background:#fbf9f4;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;color:#a8a29e;font-size:1.2rem;">
+    Please close developer tools to continue studying.
+  </div>
+
+  <!-- Anti-tampering -->
+  <script>
+  (function(){
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='F12') { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && (e.key==='u'||e.key==='s')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e){
+      var t = e.target;
+      if (t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+    var shield = document.getElementById('devtools-shield');
+    var root = document.getElementById('root');
+    function checkDevTools(){
+      var w = window.outerWidth - window.innerWidth > 160;
+      var h = window.outerHeight - window.innerHeight > 160;
+      var isOpen = w || h;
+      if(!isOpen){ var s=performance.now(); (function(){}).constructor('debugger')(); if(performance.now()-s>100) isOpen=true; }
+      if(isOpen){ shield.style.display='flex'; root.style.display='none'; }
+      else { shield.style.display='none'; root.style.display=''; }
+    }
+    setInterval(checkDevTools, 1000);
+    checkDevTools();
+    console.clear();
+    console.log('%cStop!','color:red;font-size:48px;font-weight:bold;');
+    console.log('%cThis is a study tool. Inspecting answers defeats the purpose of learning.','font-size:16px;');
+  })();
+  </script>
+
+  <script type="text/babel" data-type="module">
+const { useState, useMemo, useEffect } = React;
+
+
+// ===== QUESTION BANK =====
+// Each: { ch, lo, section, type, q, options[4], explain }
+// Lanz-style scenarios with named characters and companies.
+// Correct answer is ALWAYS at options[0].
+const BANK = [
+  // ===== Ch 16 — Cybersecurity =====
+  { ch: 16, lo: "16.EXAM", section: "Phishing", type: "application",
+    q: "Marcus, the AP manager at Vortrix Industries, receives an email from \"@vortrlx.com\" telling him a wire transfer must be approved \"immediately.\" The link in the email goes to a credential page. This is BEST classified as:",
+    options: [
+      "Email phishing — physical reconnaissance",
+      "On-path attack — logical access",
+      "IP spoofing — logical access",
+      "DDoS — disruptive"],
+    explain: "Deceptive email targeting a person = phishing (social engineering = physical recon)." },
+  { ch: 16, lo: "16.EXAM", section: "Tailgating", type: "application",
+    q: "On Monday morning at Zanathru, Catherine and Molly arrive at the elevator together. Catherine scans her badge and presses Molly's floor for her, even though she has never seen Molly before. Catherine's behavior BEST illustrates:",
+    options: [
+      "Polite tailgating — Catherine is aware and accommodates the unknown person",
+      "Accidental tailgating — Catherine is unaware",
+      "Brute-force entry — Catherine forced the lock",
+      "An on-path attack on the elevator system"],
+    explain: "Polite: aware of the other person and helping them through anyway." },
+  { ch: 16, lo: "16.EXAM", section: "DDoS", type: "application",
+    q: "Korenix Bank's website goes dark after receiving 4 million HTTP requests per minute from 14,000 distinct IPs across 22 countries. This is BEST classified as:",
+    options: ["DDoS", "DoS", "Brute-force", "Phishing"],
+    explain: "Multiple distinct sources flooding the target = DDoS." },
+  { ch: 16, lo: "16.EXAM", section: "Ransomware", type: "application",
+    q: "FlexterPharm pays $2.8M after attackers encrypt its production systems and demand payment for the decryption key. The attack type is:",
+    options: ["Ransomware", "Logic bomb", "Trojan", "Eavesdropping"],
+    explain: "Encrypting systems and demanding payment = ransomware." },
+  { ch: 16, lo: "16.EXAM", section: "Worm vs Virus", type: "application",
+    q: "Eko Vax, a junior IT analyst at Halgon Logistics, finds malware that has spread itself across 800 endpoints overnight without anyone clicking anything. This is MOST likely:",
+    options: ["A worm", "A virus", "A Trojan horse", "A logic bomb"],
+    explain: "Self-spreading without human interaction = worm. Viruses need user clicks." },
+  { ch: 16, lo: "16.EXAM", section: "Trojan", type: "application",
+    q: "An employee at Carthex Energy installs what looks like a free PDF reader. The reader works fine, but quietly opens a back door for an attacker. The malware does not replicate. This is BEST classified as:",
+    options: ["Trojan horse", "Worm", "Virus", "Botnet"],
+    explain: "Disguised + non-replicating + back door = Trojan." },
+  { ch: 16, lo: "16.EXAM", section: "Logic Bomb", type: "application",
+    q: "A disgruntled developer at Pilarist Software Co. plants code that wipes the customer database the day after she is removed from the payroll. This is BEST classified as:",
+    options: ["Logic bomb", "Worm", "Phishing", "Ransomware"],
+    explain: "Dormant code triggered by a condition (payroll removal) = logic bomb." },
+  { ch: 16, lo: "16.EXAM", section: "On-Path", type: "application",
+    q: "Sienna Park, an auditor at Kibane & Co., uses public coffee-shop Wi-Fi. An attacker on the same network sets up a fake access point that mimics the real one, then impersonates her bank to her laptop and her laptop to her bank. This is BEST classified as:",
+    options: ["On-path attack (formerly man-in-the-middle)", "Eavesdropping", "IP spoofing", "Brute force"],
+    explain: "Active impersonation of both endpoints = on-path." },
+  { ch: 16, lo: "16.EXAM", section: "Eavesdropping", type: "application",
+    q: "An attacker quietly captures unencrypted Wi-Fi traffic at a Glentaur Coffee location and never modifies, injects, or impersonates anything. This is BEST classified as:",
+    options: ["Eavesdropping", "On-path", "IP spoofing", "Brute-force"],
+    explain: "Passive interception only = eavesdropping. Active impersonation would make it on-path." },
+  { ch: 16, lo: "16.EXAM", section: "IP Spoofing", type: "application",
+    q: "An attacker forges packets with Marisha Reyes's IP address as the source so that millions of reply packets from web servers flood Marisha's machine. This is BEST classified as:",
+    options: ["IP spoofing", "On-path attack", "Phishing", "Worm"],
+    explain: "Forged source addresses redirecting reply traffic = IP spoofing." },
+  { ch: 16, lo: "16.EXAM", section: "Brute-Force", type: "application",
+    q: "An attacker runs the 1 million most-common passwords against Hugo Manfred's email account at Aviore Insurance. This is BEST classified as:",
+    options: ["Dictionary attack — a brute-force subtype", "On-path", "IP spoofing", "Phishing"],
+    explain: "Trying common passwords = dictionary attack, a brute-force subtype." },
+  { ch: 16, lo: "16.EXAM", section: "Recon Sequence", type: "application",
+    q: "Cyril Halmer's team at Vyronix Networks first pings every IP in the company's range, then probes responding hosts for open ports. The two techniques in order are:",
+    options: ["Ping sweep, then port scan", "Port scan, then ping sweep", "Phishing, then dumpster diving", "Brute force, then on-path"],
+    explain: "Ping sweep finds active hosts; port scans then narrow to open ports." },
+  { ch: 16, lo: "16.EXAM", section: "Dumpster Diving", type: "application",
+    q: "An intruder sifts through Roxalon Pharma's curbside trash and finds an old org chart, a network diagram, and a sticky note with what looks like a password. This is BEST classified as:",
+    options: ["Dumpster diving — physical reconnaissance", "Logical reconnaissance", "Brute-force", "Phishing"],
+    explain: "Physically searching trash for sensitive info = dumpster diving (physical recon)." },
+  { ch: 16, lo: "16.EXAM", section: "MFA Scope", type: "application",
+    q: "After a breach assessment, Wesnar Capital's CISO orders MFA on its externally-exposed customer portal, the corporate VPN, and all admin AD accounts. The internal-only printer-management console is exempted. Which of the following is TRUE?",
+    options: [
+      "The exemption is consistent with cybersecurity best practice — MFA is required for externally-exposed apps, remote access, and admin access; not internal-only printers/copiers",
+      "The exemption is non-compliant — MFA must apply to every device on the network",
+      "The exemption violates HIPAA",
+      "The exemption is required by FISMA"],
+    explain: "Internal-only printers/copiers are not in the standard MFA-required list." },
+
+  // ===== CIS Controls =====
+  { ch: "CIS", lo: "CIS.EXAM", section: "Asset Inventory", type: "application",
+    q: "An external pen test at Halberston Tech finds three publicly accessible servers no one inside IT remembers commissioning. Which CIS Control would have prevented this exposure?",
+    options: ["Control 1 — Inventory and Control of Enterprise Assets", "Control 5 — Account Management", "Control 11 — Data Recovery", "Control 17 — Incident Response"],
+    explain: "You can't protect what you don't know you have. Asset inventory (Control 1)." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Software Support", type: "application",
+    q: "The ops team at Solivex Energy still runs an analytics tool whose vendor stopped issuing security updates three years ago. Which CIS Control does this MOST directly violate?",
+    options: ["Control 2 — Inventory and Control of Software Assets (must be currently supported)", "Control 8 — Audit Log Management", "Control 11 — Data Recovery", "Control 14 — Awareness Training"],
+    explain: "Unsupported software = no patches = exposed. Control 2 SG 2.2." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "DLP", type: "application",
+    q: "Trentaria Bio's CISO is concerned that the firewall can't see whether sensitive data is leaving the company because the outbound traffic is encrypted. Which control addresses this?",
+    options: [
+      "Control 3 — Data Protection (DLP examines content at the host before encryption)",
+      "Control 13 — increase firewall throughput",
+      "Control 10 — anti-malware will catch it",
+      "Control 18 — penetration testing will find it"],
+    explain: "DLP addresses the encryption-firewall paradox by inspecting content at the host." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Hardening", type: "application",
+    q: "A new server arrives at Glaviron Industries with the default admin password printed in the manual. The IT team leaves the default in place \"to simplify support.\" This MOST directly violates:",
+    options: [
+      "Control 4 — Secure Configuration (hardening; default accounts must be changed/disabled)",
+      "Control 1 — Asset Inventory",
+      "Control 7 — Continuous Vulnerability Management",
+      "Control 11 — Data Recovery"],
+    explain: "Default accounts are a hardening (Control 4) issue." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Account Mgmt", type: "application",
+    q: "An admin at Ferrence Logistics, Davian Whitlock, uses a single account for everything: email, web browsing, and Active Directory administration. The BEST control rationale for splitting his usage into two accounts is:",
+    options: [
+      "If malware is encountered while logged in as admin, it inherits admin privileges. Separate accounts contain blast radius.",
+      "It reduces software licensing costs",
+      "It satisfies HIPAA's licensing rules",
+      "It enables Davian to work on weekends"],
+    explain: "Account separation contains the impact of malware encountered as admin." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "RBAC", type: "application",
+    q: "After a SOX issue, Mizpatch Holdings implements predefined roles for AP clerks, AR clerks, and Treasury — each with strictly scoped permissions. This is BEST classified as:",
+    options: ["Role-Based Access Control (RBAC) — CIS Safeguard 6.8", "Multifactor authentication", "Continuous vulnerability management", "Penetration testing"],
+    explain: "Predefined roles with scoped permissions = RBAC." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Equifax → Control 7", type: "application",
+    q: "Klairex Insurance suffers a data breach because a known patch wasn't applied to its public-facing application. The MOST directly responsible control is:",
+    options: ["Control 7 — Continuous Vulnerability Management", "Control 1 — Asset Inventory", "Control 14 — Awareness Training", "Control 17 — Incident Response"],
+    explain: "Failure to patch maps directly to Continuous Vulnerability Management — the Equifax pattern." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "AV Cadence", type: "application",
+    q: "An IT manager at Veshorn Capital proposes monthly anti-malware signature updates to reduce admin overhead. Per CIS Control 10, this is:",
+    options: [
+      "Insufficient — signatures must update automatically and daily",
+      "Adequate — most threats are quarterly",
+      "Required to be quarterly",
+      "Excessive; annual updates suffice"],
+    explain: "Daily automatic updates required (SG 10.2)." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Backup Testing", type: "application",
+    q: "Jorinex Manufacturing performs nightly backups but has never restored from them. Per Control 11, this is:",
+    options: [
+      "Insufficient — recovery must be tested quarterly to be considered effective",
+      "Sufficient — taking the backup is enough",
+      "Sufficient if backups are encrypted",
+      "Required only after an incident"],
+    explain: "Untested backups are unproven — quarterly testing required." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Alternate Comms", type: "application",
+    q: "During a major incident at Brevax Foods, the IR lead, Ophelia Yan, insists the team continue coordinating in the corporate Slack and email. Which CIS safeguard does this risk violating?",
+    options: [
+      "SG 17.6 — alternate communications, because attackers inside primary channels can read coordination",
+      "SG 17.1 — incident response plan documentation",
+      "SG 17.7 — IR exercises",
+      "SG 17.4 — IR policy"],
+    explain: "17.6 requires alternate channels precisely so attackers inside primary channels can't see the response." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Pen Test vs Vuln Assess", type: "application",
+    q: "Two engagements are proposed at Yvarna Bank: (A) a contractor identifies all vulnerabilities in a web app without breaking in; (B) a contractor actively breaks into a single demo account. Which is the pen test?",
+    options: [
+      "(B) — pen tests EXPLOIT vulnerabilities to demonstrate impact",
+      "(A) — pen tests identify weaknesses",
+      "Both are pen tests",
+      "Neither — both are vulnerability assessments"],
+    explain: "Exploit is the defining feature of a pen test." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Pen Test Independence", type: "application",
+    q: "An IT director at Mortrex Group argues the company's own security team can perform the annual penetration test to save money. Which safeguard does this conflict with?",
+    options: [
+      "SG 18.2 — pen tests should be performed by external testers not involved in operating the systems",
+      "SG 18.1 — pen test program must exist",
+      "SG 18.3 — findings must be remediated",
+      "SG 18.4 — validate measures after remediation"],
+    explain: "18.2 requires external independence." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Threat Intel", type: "application",
+    q: "Talia Brennan, a risk analyst at Quenmar Re, wants to model what tactics nation-state adversaries are LIKELY to use against her firm in the next 12 months. Which resource is MOST appropriate?",
+    options: [
+      "MITRE ATT&CK — predictive enumeration of TTPs",
+      "Verizon DBIR — retrospective real-world breaches",
+      "CIS Benchmarks — configuration standards",
+      "SANS historical archive"],
+    explain: "MITRE ATT&CK is predictive (TTPs); DBIR is retrospective." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Threat Intel", type: "application",
+    q: "Vorbex Capital's CISO is preparing a year-over-year industry-attack-trend chart for the board, using real-world data from breaches that already occurred. Which resource is MOST appropriate?",
+    options: [
+      "Verizon DBIR — annual real-world breach analysis",
+      "MITRE ATT&CK — predictive techniques",
+      "PCI DSS — credit card standard",
+      "FISMA — federal law"],
+    explain: "DBIR provides retrospective real-world breach data with industry trends." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "CIS Benchmarks", type: "application",
+    q: "Yumara Health's CISO must show the audit committee a comparison of the company's actual configurations against an industry-standard benchmark. Which framework BEST fits?",
+    options: ["CIS Benchmarks — measurable configuration standards", "MITRE ATT&CK — adversary techniques", "Verizon DBIR — breach data", "SOC 1 Type 2 — ICFR"],
+    explain: "CIS Benchmarks are the configuration-standard framework brought to the audit committee." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "IG Selection", type: "application",
+    q: "A 25-person regional accounting firm with no compliance obligations is implementing the CIS Controls for the first time. Which Implementation Group should they prioritize?",
+    options: ["IG1 — essential cyber hygiene applicable to every enterprise", "IG2 — for larger / more regulated enterprises", "IG3 — for sophisticated-adversary defense", "IG4 — small business specific"],
+    explain: "IG1 is the baseline. IG4 doesn't exist." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Asset Class Trap", type: "application",
+    q: "At a CIS workshop, Donovan Hayes argues Hardware should be added as a seventh asset class. Why is this incorrect?",
+    options: [
+      "Hardware is part of Devices — it is not a separate class",
+      "Hardware is part of Network",
+      "Hardware is part of Data",
+      "Hardware is excluded from CIS entirely"],
+    explain: "Six classes: Documentation, Network, Users, Devices, Software, Data. Hardware = part of Devices." },
+
+  // ===== SOC & TSC =====
+  { ch: "SOC", lo: "SOC.EXAM", section: "SOC Type Selection", type: "application",
+    q: "A startup, Linafora Cloud, wants to demonstrate to a prospect that its controls work over time, not just on paper. Which SOC report is BEST?",
+    options: ["SOC 2 Type 2 — operating effectiveness over a period", "SOC 2 Type 1 — design at a point in time", "SOC 1 Type 2 — financial reporting only", "SOC for Cybersecurity Type 1 — design only"],
+    explain: "Type 2 = operating effectiveness over a period." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "SOC 3 Public", type: "application",
+    q: "Bravoxis SaaS wants to put its security assurance on its public marketing site. Which report is appropriate?",
+    options: ["SOC 3 — automatically Type 2 and publicly distributable", "SOC 2 Type 2 — restricted use", "SOC 1 — wrong scope (ICFR)", "SOC for Cybersecurity Type 1 — design only"],
+    explain: "SOC 3 is the only publicly distributable SOC report; it is automatically Type 2." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "SOC 1 Use", type: "application",
+    q: "Kalmen & Co., an external audit firm, needs assurance over a payroll service organization's controls relevant to ICFR. Which SOC report is appropriate?",
+    options: ["SOC 1 Type 2", "SOC 3", "SOC for Supply Chain", "SOC for Cybersecurity"],
+    explain: "SOC 1 covers ICFR; Type 2 gives operating effectiveness over a period." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "SOC for Cyber Framework", type: "application",
+    q: "Drelnax Health proposes to base its SOC for Cybersecurity report on COBIT. The auditor objects. Why?",
+    options: [
+      "SOC for Cybersecurity must be based on NIST CSF or the Trust Services Criteria — not COBIT",
+      "COBIT cannot be used in any audit",
+      "COBIT is restricted to financial services",
+      "COBIT is not an English-language framework"],
+    explain: "AICPA requires NIST CSF or TSC as the framework basis for SOC for Cybersecurity." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "TSC Required", type: "memorization",
+    q: "Which TSC is the ONLY one required in every SOC 2 engagement?",
+    options: ["Security", "Availability", "Privacy", "Processing Integrity"],
+    explain: "Security is the only mandatory TSC." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "TSC Distinction", type: "application",
+    q: "Trovari Capital classifies its proprietary trading algorithms as 'highly confidential.' If it engages a SOC 2 Type 2 covering these algorithms, which TSC is the BEST fit?",
+    options: [
+      "Confidentiality — protects information designated as confidential, which can be non-personal",
+      "Privacy — covers personal info, not algorithms",
+      "Security — required, but doesn't specifically address confidential designation",
+      "Processing Integrity — addresses processing accuracy"],
+    explain: "Confidentiality covers any info designated confidential; Privacy is for personal info." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "TSC Trap", type: "memorization",
+    q: "An exam stem lists \"Security, Availability, Resilience, Confidentiality, Privacy.\" Which is NOT a Trust Services Criterion?",
+    options: ["Resilience", "Security", "Confidentiality", "Privacy"],
+    explain: "Resilience is not a TSC — five are Security, Availability, Processing Integrity, Confidentiality, Privacy." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "Availability TSC", type: "application",
+    q: "Mexcale Cloud sells a service guaranteeing 99.99% uptime to its customers. The TSC the customer is MOST interested in is:",
+    options: ["Availability", "Privacy", "Confidentiality", "Processing Integrity"],
+    explain: "Uptime guarantees align with Availability." },
+  { ch: "SOC", lo: "SOC.EXAM", section: "Type 1 vs Type 2", type: "application",
+    q: "Veronese Software just rolled out a new control framework two months ago. Its first SOC engagement is at month 3. Which type would the auditor MOST naturally issue?",
+    options: ["SOC 2 Type 1 — design at a point in time, because there isn't enough operating history yet", "SOC 2 Type 2 — operating effectiveness over a period", "SOC 3 — public summary", "SOC for Cybersecurity"],
+    explain: "Without enough operating history, Type 1 (design only) is the natural starting point." },
+
+  // ===== Regulations & cases =====
+  { ch: "REG", lo: "REG.EXAM", section: "HIPAA", type: "application",
+    q: "Brooklyn Wright, an internal auditor, is reviewing a hospital's controls over patient health information. The regulation with the BIGGEST impact on her audit scope is:",
+    options: ["HIPAA", "PCI DSS", "GLBA", "FISMA"],
+    explain: "Patient health info → HIPAA." },
+  { ch: "REG", lo: "REG.EXAM", section: "GLBA", type: "application",
+    q: "Pinevax Wealth, a wealth-management firm, asks which regulation governs the security of its consumer financial data. The MOST applicable answer is:",
+    options: ["GLBA", "SOX", "PCI DSS", "FISMA"],
+    explain: "GLBA covers financial institutions' protection of consumer financial info." },
+  { ch: "REG", lo: "REG.EXAM", section: "PCI DSS", type: "application",
+    q: "Mariska Solis, a compliance manager at a mid-sized retailer, asks whether PCI DSS is a federal law. The MOST accurate answer is:",
+    options: [
+      "No — PCI DSS is a contractual industry standard issued by the PCI Security Standards Council; non-compliance results in losing card processing privileges",
+      "Yes — it is a federal law enforced by the SEC",
+      "Yes — it is a federal law enforced by the FTC",
+      "No — PCI DSS is a SOC report type"],
+    explain: "PCI DSS is contractual, not law. Non-compliance = lose card processing." },
+  { ch: "REG", lo: "REG.EXAM", section: "FTC Red Flag", type: "application",
+    q: "A retail chain, Crovan Goods, has no industry-specific regulator and is concerned about identity theft prevention. Which guidance applies?",
+    options: ["FTC Red Flag Rules — the default federal guidance for identity theft when no industry regulator applies", "GLBA — but Crovan is not a financial institution", "HIPAA — but Crovan is not a healthcare entity", "FISMA — but Crovan is not a federal agency"],
+    explain: "FTC Red Flag is the default when no industry regulator covers the entity." },
+  { ch: "REG", lo: "REG.EXAM", section: "FISMA", type: "application",
+    q: "An IT auditor is engaged at a U.S. federal agency. The regulation that mandates the cybersecurity controls the agency must follow is:",
+    options: ["FISMA — points to NIST 800-53", "SOX", "PCI DSS", "HIPAA"],
+    explain: "FISMA mandates NIST 800-53 for federal agencies." },
+  { ch: "REG", lo: "REG.EXAM", section: "Multi-Reg Mapping", type: "application",
+    q: "Verlanta Dental processes Visa cards at the front desk and stores patient records in an EHR. Which two regulations apply?",
+    options: ["HIPAA (PHI) and PCI DSS (credit cards)", "GLBA and SOX", "PCI DSS and FISMA", "Only HIPAA — credit cards are exempt for medical providers"],
+    explain: "Patient health = HIPAA; card processing = PCI DSS. Both apply." },
+  { ch: "REG", lo: "REG.EXAM", section: "COBIT", type: "memorization",
+    q: "Per Lanz, who is responsible for applying COBIT?",
+    options: ["The CIO", "The Board of Directors", "External audit", "The CFO"],
+    explain: "Lanz: CIO is responsible for applying COBIT." },
+  { ch: "REG", lo: "REG.EXAM", section: "Equifax", type: "application",
+    q: "On the exam, the Equifax breach is BEST associated with which CIS Control?",
+    options: ["Control 7 — Continuous Vulnerability Management", "Control 1 — Asset Inventory", "Control 14 — Awareness Training", "Control 17 — Incident Response"],
+    explain: "Equifax = unpatched vulnerability = Continuous Vulnerability Management." },
+  { ch: "REG", lo: "REG.EXAM", section: "Colonial Pipeline", type: "application",
+    q: "Colonial Pipeline's CEO chose to PAY the $4.4M ransom. The MAIN debate this raised was:",
+    options: ["Paying ransoms incentivizes future ransomware attacks", "Whether ransomware is a federal crime", "Whether pipelines need cybersecurity at all", "Whether NIST 800-53 should be repealed"],
+    explain: "The ethical debate centered on whether paying encourages more attacks." },
+  { ch: "REG", lo: "REG.EXAM", section: "Florida Water", type: "application",
+    q: "The Florida Water Supply attack is BEST cited as an example of:",
+    options: ["A cyberattack producing direct physical / public-safety consequences", "A ransomware attack with a paid ransom", "A purely financial fraud", "A SOC report failure"],
+    explain: "Florida Water shows cyber-to-physical impact (chemical levels manipulated)." },
+  { ch: "REG", lo: "REG.EXAM", section: "SOX", type: "application",
+    q: "Telkomet Industries is a U.S. public company. Its external auditors require evidence of effective internal controls over financial reporting. Which law drives this?",
+    options: ["SOX (Sarbanes-Oxley) Section 404", "GLBA", "HIPAA", "PCI DSS"],
+    explain: "SOX 404 requires public-company ICFR." },
+  { ch: "REG", lo: "REG.EXAM", section: "SOX → SOC 1", type: "application",
+    q: "Telkomet outsources payroll to a third-party service organization. To support its SOX compliance over outsourced ICFR, Telkomet asks the service organization for:",
+    options: ["A SOC 1 Type 2 report", "A SOC 3", "A SOC for Cybersecurity Type 1", "A SOC for Supply Chain"],
+    explain: "SOC 1 covers ICFR for service organizations supporting SOX-compliant clients; Type 2 gives operating effectiveness." },
+
+  // ===== Cross-cutting =====
+  { ch: 16, lo: "16.EXAM", section: "Outdated Access", type: "application",
+    q: "Brooklyn Wright was promoted from accounts payable to procurement six months ago at Renvale Holdings, but her old AP system access was never revoked. Her account is in active daily use. This is BEST classified as:",
+    options: ["Outdated access — the role changed but access wasn't updated", "Dormant access — the account is inactive", "Excessive access — access never matched the role", "Terminated access — the employee has left"],
+    explain: "Outdated = job changed, access didn't follow." },
+  { ch: 16, lo: "16.EXAM", section: "Access Stage", type: "application",
+    q: "Alejandro Pinto, a sales manager, enters his credentials into a fake site that looks like the company's intranet. The attacker now has Alejandro's password. Which kill chain stage is the attack in NOW?",
+    options: [
+      "Access — the attacker has obtained the means to log in",
+      "Reconnaissance — the attacker is still gathering info",
+      "Disruption — the attacker has caused harm",
+      "All three simultaneously"],
+    explain: "Capturing credentials for use moves the attack from recon to access." },
+  { ch: "CIS", lo: "CIS.EXAM", section: "Vendor Mgmt", type: "application",
+    q: "The CIO of Falconix Media wants assurance about a third-party data center's controls. The cleanest combination is:",
+    options: [
+      "CIS Control 15 (Service Provider Management) + a SOC 2 Type 2 report covering the relevant TSCs",
+      "CIS Control 1 (Asset Inventory) + a SOC 1",
+      "CIS Control 18 (Pen Test) + a SOC 3",
+      "CIS Control 5 (Account Management) + ISO 9001"],
+    explain: "Control 15 = service-provider governance. SOC 2 Type 2 with relevant TSCs is the right assurance vehicle." },
+  { ch: 16, lo: "16.EXAM", section: "NIST CSF", type: "memorization",
+    q: "An exam stem refers to the SIX functions of NIST CSF v2.0. The added function (vs v1.1) is:",
+    options: ["Govern", "Identify", "Recover", "Detect"],
+    explain: "Govern was added in v2.0; the original five were Identify, Protect, Detect, Respond, Recover." },
+  { ch: 16, lo: "16.EXAM", section: "NIST 800-53", type: "memorization",
+    q: "Which NIST publication contains 18 control families used by federal agencies?",
+    options: ["NIST SP 800-53", "NIST CSF v1.1", "NIST CSF v2.0", "NIST IR 8259"],
+    explain: "NIST 800-53 has 18 families; CSF has functions, not families." }
+];
+// Correct answer is at index 0 in every BANK entry.
+
+const CHAPTER_META = {
+  16:    { title: "Cybersecurity",          accent: "#b91c1c" },
+  "CIS": { title: "CIS Controls",           accent: "#0891b2" },
+  "SOC": { title: "SOC & TSC",              accent: "#7c3aed" },
+  "REG": { title: "Regs, Frameworks, Cases", accent: "#15803d" },
+};
+
+const LO_META = {
+  "16.EXAM":  "Exam-Style",
+  "CIS.EXAM": "Exam-Style",
+  "SOC.EXAM": "Exam-Style",
+  "REG.EXAM": "Exam-Style",
+};
+
+// Answer verification — correct answer is always at options[0]
+(function(){BANK.forEach((q)=>{Object.defineProperty(q,'_x',{value:0,enumerable:false,configurable:false,writable:false});Object.freeze(q.options);Object.freeze(q);});Object.freeze(BANK);})();
+
+const LOS_BY_CHAPTER = (function() {
+  const map = {};
+  BANK.forEach(q => {
+    if (!map[q.ch]) map[q.ch] = [];
+    if (!map[q.ch].includes(q.lo)) map[q.ch].push(q.lo);
+  });
+  return map;
+})();
+
+function formatTime(s) {
+  s = Math.max(0, Math.floor(s));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const pad = n => String(n).padStart(2, "0");
+  return h > 0 ? h + ":" + pad(m) + ":" + pad(sec) : pad(m) + ":" + pad(sec);
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRandom(pool, exceptIndex) {
+  if (pool.length === 0) return null;
+  if (pool.length === 1) return 0;
+  let i = Math.floor(Math.random() * pool.length);
+  while (i === exceptIndex) i = Math.floor(Math.random() * pool.length);
+  return i;
+}
+
+function AISQuiz() {
+  const [selectedChapter, setSelectedChapter] = useState("all"); // "all" | 7 | 14 | 19
+  const [selectedLO, setSelectedLO] = useState("all"); // "all" | "7.1" | "14.3" | etc.
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [current, setCurrent] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  // Streaks are live counters (persisted separately from the mastered map).
+  // correct/total/byChapter are DERIVED from `answered` so they stay in sync
+  // with the "Mastered this cycle" graphic.
+  const [streakState, setStreakState] = useState(() => {
+    try {
+      const s = JSON.parse(localStorage.getItem("bs_exam_streak_v1"));
+      if (s && typeof s === "object") {
+        return { streak: s.streak || 0, bestStreak: s.bestStreak || 0 };
+      }
+    } catch(e) {}
+    return { streak: 0, bestStreak: 0 };
+  });
+  const [answered, setAnswered] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("bs_exam_answered_v1")) || {}; }
+    catch(e) { return {}; }
+  });
+  const [cycleComplete, setCycleComplete] = useState(false);
+
+  // Per-question timer (resets to 0 each new question) + persisted total time on page.
+  const [timerElapsed, setTimerElapsed] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [totalElapsed, setTotalElapsed] = useState(() => {
+    try {
+      const v = parseInt(localStorage.getItem("bs_exam_total_v1"), 10);
+      return isFinite(v) && v >= 0 ? v : 0;
+    } catch(e) { return 0; }
+  });
+  const [totalRunning, setTotalRunning] = useState(() => {
+    try {
+      const raw = localStorage.getItem("bs_exam_total_running_v1");
+      if (raw === null) return true;
+      return raw === "true";
+    } catch(e) { return true; }
+  });
+
+  const stats = useMemo(() => {
+    let correct = 0, total = 0;
+    const byChapter = {};
+    for (const key of Object.keys(answered)) {
+      const q = BANK[key];
+      if (!q) continue;
+      const isCorrect = answered[key] === "correct";
+      total++;
+      if (isCorrect) correct++;
+      const ch = q.ch;
+      if (!byChapter[ch]) byChapter[ch] = { correct: 0, total: 0 };
+      byChapter[ch].total++;
+      if (isCorrect) byChapter[ch].correct++;
+    }
+    return { correct, total, byChapter, streak: streakState.streak, bestStreak: streakState.bestStreak };
+  }, [answered, streakState]);
+
+  const filteredPool = useMemo(() => {
+    return BANK.map((q, i) => { const o = { ...q, idx: i }; Object.defineProperty(o,'_x',{value:q._x,enumerable:false,configurable:false,writable:false}); return o; })
+      .filter(q => selectedChapter === "all" || q.ch === selectedChapter)
+      .filter(q => selectedLO === "all" || q.lo === selectedLO)
+      .filter(q => typeFilter === "all" || q.type === typeFilter);
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_exam_answered_v1", JSON.stringify(answered)); } catch(e) {}
+  }, [answered]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_exam_streak_v1", JSON.stringify(streakState)); } catch(e) {}
+  }, [streakState]);
+
+  // Timer: reset to 0 and auto-start on each new question; auto-stop on reveal.
+  // Also stop (and prevent running) when the cycle is complete.
+  useEffect(() => {
+    if (cycleComplete) {
+      setTimerRunning(false);
+      return;
+    }
+    if (current && !revealed) {
+      setTimerElapsed(0);
+      setTimerRunning(true);
+    } else if (revealed) {
+      setTimerRunning(false);
+    }
+  }, [current, revealed, cycleComplete]);
+
+  // Per-question timer tick.
+  useEffect(() => {
+    if (!timerRunning) return;
+    const iv = setInterval(() => {
+      setTimerElapsed(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [timerRunning]);
+
+  // Total (cumulative) timer tick — independent of per-question; paused when cycle is complete
+  // or the user presses the total play/pause button.
+  useEffect(() => {
+    if (!totalRunning || cycleComplete) return;
+    const iv = setInterval(() => {
+      setTotalElapsed(prev => {
+        const next = prev + 1;
+        try { localStorage.setItem("bs_exam_total_v1", String(next)); } catch(e) {}
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [totalRunning, cycleComplete]);
+
+  // Persist totalRunning preference.
+  useEffect(() => {
+    try { localStorage.setItem("bs_exam_total_running_v1", String(totalRunning)); } catch(e) {}
+  }, [totalRunning]);
+
+  const loadNext = () => {
+    if (filteredPool.length === 0) {
+      setCurrent(null);
+      setCycleComplete(false);
+      return;
+    }
+    // Only pick from questions not yet answered correctly — wrong answers stay in the shuffle
+    const unseen = filteredPool.filter(q => answered[q.idx] !== "correct");
+    if (unseen.length === 0) {
+      setCurrent(null);
+      setCycleComplete(true);
+      return;
+    }
+    const pick = unseen[Math.floor(Math.random() * unseen.length)];
+
+    // shuffle options but track where correct went
+    const indexed = pick.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === pick._x);
+
+    setCycleComplete(false);
+    setCurrent({
+      q: pick,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  const jumpToQuestion = (q) => {
+    // Show a specific question (click-through from tracker blocks)
+    const indexed = q.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === q._x);
+    setCycleComplete(false);
+    setCurrent({
+      q,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  useEffect(() => {
+    loadNext();
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    // When filters toggle, reset the active question
+    loadNext();
+    // eslint-disable-next-line
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    // Auto-load a question if pool is available and none is active and we're not in complete state
+    if (!current && !cycleComplete && filteredPool.length > 0) {
+      loadNext();
+    }
+    // eslint-disable-next-line
+  }, [answered, cycleComplete]);
+
+  // Keyboard shortcuts: 1-4 select option, Enter/Space advance
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!current) return;
+      // Don't hijack when user is typing in an input
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
+
+      if (!revealed && ["1","2","3","4"].includes(e.key)) {
+        const i = parseInt(e.key, 10) - 1;
+        if (i < current.shuffledOptions.length) {
+          e.preventDefault();
+          handleSelect(i);
+        }
+      } else if (revealed && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        loadNext();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+    // eslint-disable-next-line
+  }, [current, revealed]);
+
+  const handleSelect = (i) => {
+    if (revealed) return;
+    setSelected(i);
+    setRevealed(true);
+    const correct = i === current.correctShuffledIndex;
+    setAnswered(prev => ({ ...prev, [current.q.idx]: correct ? "correct" : "wrong" }));
+    setStreakState(prev => {
+      const newStreak = correct ? prev.streak + 1 : 0;
+      return {
+        streak: newStreak,
+        bestStreak: Math.max(prev.bestStreak, newStreak),
+      };
+    });
+  };
+
+  const selectChapter = (ch) => {
+    setSelectedChapter(ch);
+    setSelectedLO("all"); // reset LO filter when chapter changes
+  };
+
+  const resetStats = () => {
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setAnswered({});
+    setCycleComplete(false);
+    setTimerElapsed(0);
+    setTimerRunning(false);
+    setTotalElapsed(0);
+    setTotalRunning(true);
+    try { localStorage.removeItem("bs_exam_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_streak_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_total_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_total_running_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_stats_v1"); } catch(e) {} // legacy cleanup
+    try { localStorage.removeItem("bs_exam_timer_v1"); } catch(e) {} // legacy cleanup
+    loadNext();
+  };
+
+  const startNewCycle = () => {
+    setAnswered({});
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setCycleComplete(false);
+    try { localStorage.removeItem("bs_exam_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_exam_streak_v1"); } catch(e) {}
+  };
+
+  const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+
+  return (
+    <div className="min-h-screen w-full" style={{
+      background: "linear-gradient(180deg, #fbf9f4 0%, #f4f1ea 100%)",
+      fontFamily: "'Inter', -apple-system, sans-serif",
+      color: "#1c1917",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+        .font-serif-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+        .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+        .option-btn { transition: all 0.18s cubic-bezier(.4,0,.2,1); }
+        .option-btn:not(:disabled):hover { transform: translateX(4px); }
+        .fade-in { animation: fadeIn 0.35s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .dot-grid {
+          background-image: radial-gradient(circle, #d6d3d1 1px, transparent 1px);
+          background-size: 24px 24px;
+        }
+      `}</style>
+
+      <div className="max-w-4xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
+
+        {/* Back link */}
+        <a href="ais-final.html" className="inline-block font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 hover:text-stone-900 mb-6 no-underline">
+          ← AIS Final
+        </a>
+
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-baseline justify-between flex-wrap gap-4">
+            <div>
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-stone-500 mb-2">
+                Final · Lanz format · scenario-based
+              </div>
+              <h1 className="font-serif-display text-4xl sm:text-5xl font-bold leading-[1.05] text-stone-900">
+                Exam <span className="italic">Style</span>
+              </h1>
+              <p className="font-serif-display italic text-stone-600 text-lg mt-1">
+                Cybersecurity · CIS · SOC · Regs
+              </p>
+            </div>
+            <div className="flex items-center gap-5 font-mono text-xs">
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Score</div>
+                <div className="text-2xl font-bold text-stone-900">{stats.correct}<span className="text-stone-400">/{stats.total}</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Acc</div>
+                <div className="text-2xl font-bold text-stone-900">{accuracy}<span className="text-stone-400 text-base">%</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Streak</div>
+                <div className="text-2xl font-bold" style={{ color: stats.streak >= 3 ? "#d97706" : "#1c1917" }}>
+                  {stats.streak}{stats.bestStreak > 0 && <span className="text-stone-400 text-sm font-normal"> / {stats.bestStreak}</span>}
+                </div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Time</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl font-bold text-stone-900 tabular-nums">{formatTime(totalElapsed)}</div>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTotalRunning(r => !r); }}
+                    aria-label={totalRunning ? "Pause total timer" : "Start total timer"}
+                    title={totalRunning ? "Pause total timer" : "Start total timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 22, height: 22, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {totalRunning && !cycleComplete ? (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Topic filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Topic:</span>
+          <button
+            onClick={() => selectChapter("all")}
+            className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+            style={{
+              background: selectedChapter === "all" ? "#1c1917" : "transparent",
+              color: selectedChapter === "all" ? "#fff" : "#78716c",
+              borderColor: selectedChapter === "all" ? "#1c1917" : "#d6d3d1",
+            }}
+          >
+            All topics
+          </button>
+          {[16, "CIS", "SOC", "REG"].map(ch => {
+            const active = selectedChapter === ch;
+            const meta = CHAPTER_META[ch];
+            const chStats = stats.byChapter[ch];
+            const label = (typeof ch === "number") ? ("Ch " + ch + " · " + meta.title) : meta.title;
+            return (
+              <button
+                key={ch}
+                onClick={() => selectChapter(ch)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? meta.accent : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? meta.accent : "#d6d3d1",
+                }}
+              >
+                {label}
+                {chStats && (
+                  <span className="ml-2 font-mono opacity-80">
+                    {chStats.correct}/{chStats.total}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+          <button
+            onClick={resetStats}
+            className="option-btn ml-auto px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-stone-500 hover:text-stone-900 border border-stone-300 rounded-full"
+          >
+            Reset
+          </button>
+        </div>
+
+        {/* LO sub-topic filter — only visible when a specific chapter is selected */}
+        {selectedChapter !== "all" && (
+          <div className="flex flex-wrap items-center gap-2 mb-3 fade-in">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Topic:</span>
+            <button
+              onClick={() => setSelectedLO("all")}
+              className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+              style={{
+                background: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "transparent",
+                color: selectedLO === "all" ? "#fff" : "#78716c",
+                borderColor: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+              }}
+            >
+              All topics
+            </button>
+            {LOS_BY_CHAPTER[selectedChapter].map(lo => {
+              const active = selectedLO === lo;
+              const count = BANK.filter(q => q.lo === lo).length;
+              return (
+                <button
+                  key={lo}
+                  onClick={() => setSelectedLO(lo)}
+                  className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                  style={{
+                    background: active ? CHAPTER_META[selectedChapter].accent : "transparent",
+                    color: active ? "#fff" : "#78716c",
+                    borderColor: active ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+                  }}
+                  title={LO_META[lo]}
+                >
+                  {selectedChapter === 16 ? ("LO " + lo) : lo}{LO_META[lo] ? (" · " + LO_META[lo]) : ""}
+                  <span className="ml-2 font-mono opacity-70">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Type filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 pb-6 border-b border-stone-300">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Type:</span>
+          {[
+            { key: "all", label: "All" },
+            { key: "application", label: "Application" },
+            { key: "memorization", label: "Memorization" },
+          ].map(({ key, label }) => {
+            const active = typeFilter === key;
+            const count = BANK.filter(q =>
+              (selectedChapter === "all" || q.ch === selectedChapter) &&
+              (selectedLO === "all" || q.lo === selectedLO) &&
+              (key === "all" || q.type === key)
+            ).length;
+            return (
+              <button
+                key={key}
+                onClick={() => setTypeFilter(key)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? "#1c1917" : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? "#1c1917" : "#d6d3d1",
+                }}
+              >
+                {label} <span className="font-mono opacity-70 ml-1">({count})</span>
+              </button>
+            );
+          })}
+          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 hidden sm:inline">
+            Keys: 1–4 · Enter
+          </span>
+        </div>
+
+        {/* Progress & status row */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex-1 min-w-[180px]">
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.15em] text-stone-500 mb-1.5">
+              <span>Mastered this cycle</span>
+              <span className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5">
+                  <span className="tabular-nums text-stone-700" style={{ fontSize: 11 }}>{formatTime(timerElapsed)}</span>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTimerRunning(r => !r); }}
+                    aria-label={timerRunning ? "Pause timer" : "Start timer"}
+                    title={timerRunning ? "Pause timer" : "Start timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 18, height: 18, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {timerRunning ? (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </span>
+                <span>
+                  {filteredPool.filter(q => answered[q.idx] === "correct").length} / {filteredPool.length}
+                </span>
+              </span>
+            </div>
+            <div className="flex gap-[2px] flex-wrap">
+              {filteredPool.map(q => {
+                const s = answered[q.idx];
+                const isCurrent = current && current.q && current.q.idx === q.idx;
+                const bg = s === "correct" ? "#16a34a" : s === "wrong" ? "#dc2626" : "#e7e5e4";
+                const label = s === "correct" ? "Correct" : s === "wrong" ? "Wrong" : "Unseen";
+                return (
+                  <button
+                    key={q.idx}
+                    type="button"
+                    onClick={() => jumpToQuestion(q)}
+                    title={label + " — click to revisit"}
+                    aria-label={"Jump to question: " + label}
+                    style={{
+                      width: 10, height: 10, borderRadius: 2, background: bg,
+                      padding: 0, border: 0, cursor: "pointer",
+                      outline: isCurrent ? "2px solid #1c1917" : "none",
+                      outlineOffset: isCurrent ? 1 : 0,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {cycleComplete && (
+          <div className="fade-in mb-6 rounded-2xl p-5 border" style={{ background: "#fff", borderColor: "#d6d3d1" }}>
+            <div className="font-serif-display text-xl font-bold text-stone-900 mb-1">All mastered</div>
+            <div className="text-sm text-stone-600 mb-3">
+              You've answered all {filteredPool.length} questions in this filter correctly. Start a new cycle to go through them again.
+            </div>
+            <button
+              onClick={startNewCycle}
+              className="option-btn px-4 py-2 text-sm font-medium rounded-full text-white"
+              style={{ background: "#1c1917" }}
+            >
+              Start new cycle
+            </button>
+          </div>
+        )}
+
+
+        {/* Question card */}
+        {current ? (
+          <div key={stats.total} className="fade-in">
+            {/* Source metadata */}
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <span
+                className="font-mono text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded"
+                style={{
+                  background: CHAPTER_META[current.q.ch].accent,
+                  color: "#fff",
+                }}
+              >
+                {(typeof current.q.ch === "number" ? "Ch " + current.q.ch : current.q.ch) + " · " + (typeof current.q.ch === "number" ? "LO " + current.q.lo : current.q.lo)}
+              </span>
+              <span className="font-mono text-xs text-stone-500">
+                § {current.q.section}
+              </span>
+              <span
+                className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] px-2 py-0.5 rounded border"
+                style={{
+                  borderColor: current.q.type === "application" ? "#d97706" : "#a8a29e",
+                  color: current.q.type === "application" ? "#b45309" : "#78716c",
+                  background: current.q.type === "application" ? "#fef3c7" : "transparent",
+                }}
+              >
+                {current.q.type}
+              </span>
+            </div>
+
+            {/* Question */}
+            <div className="relative mb-7">
+              <div className="absolute -left-3 top-0 bottom-0 w-0.5" style={{ background: CHAPTER_META[current.q.ch].accent, opacity: 0.3 }}/>
+              <h2 className="font-serif-display text-2xl sm:text-[28px] leading-[1.25] text-stone-900 font-semibold pl-3">
+                {current.q.q}
+              </h2>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-2.5 mb-6">
+              {current.shuffledOptions.map((opt, i) => {
+                const isCorrect = i === current.correctShuffledIndex;
+                const isSelected = i === selected;
+                let bg = "#fff";
+                let border = "#e7e5e4";
+                let textColor = "#1c1917";
+                let letterBg = "#f5f5f4";
+                let letterColor = "#78716c";
+
+                if (revealed) {
+                  if (isCorrect) {
+                    bg = "#f0fdf4";
+                    border = "#16a34a";
+                    letterBg = "#16a34a";
+                    letterColor = "#fff";
+                  } else if (isSelected) {
+                    bg = "#fef2f2";
+                    border = "#dc2626";
+                    letterBg = "#dc2626";
+                    letterColor = "#fff";
+                  } else {
+                    textColor = "#a8a29e";
+                  }
+                } else if (isSelected) {
+                  border = "#1c1917";
+                }
+
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(i)}
+                    disabled={revealed}
+                    className="option-btn w-full text-left px-4 py-3.5 rounded-lg border flex items-start gap-4 disabled:cursor-default"
+                    style={{ background: bg, borderColor: border, color: textColor }}
+                  >
+                    <span
+                      className="font-mono text-xs font-bold w-6 h-6 flex items-center justify-center rounded shrink-0 mt-0.5"
+                      style={{ background: letterBg, color: letterColor }}
+                    >
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    <span className="text-[15px] leading-snug flex-1">{opt}</span>
+                    {revealed && isCorrect && (
+                      <span className="text-green-600 font-bold text-lg">✓</span>
+                    )}
+                    {revealed && isSelected && !isCorrect && (
+                      <span className="text-red-600 font-bold text-lg">✕</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Explanation + next */}
+            {revealed && (
+              <div className="fade-in">
+                <div className="border-t-2 border-dashed border-stone-300 pt-5 mb-5">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mb-2">
+                    {selected === current.correctShuffledIndex ? "Correct" : "Answer"}
+                  </div>
+                  <p className="font-serif-display text-[17px] leading-relaxed text-stone-800 italic">
+                    {current.q.explain}
+                  </p>
+                </div>
+                <button
+                  onClick={loadNext}
+                  className="option-btn w-full sm:w-auto px-8 py-3 rounded-lg font-medium text-sm text-white"
+                  style={{ background: "#1c1917" }}
+                >
+                  Next question →
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-stone-500 font-serif-display italic">
+            No questions in the selected scope.
+          </div>
+        )}
+
+        {/* Footer */}
+        <footer className="mt-16 pt-6 border-t border-stone-200 font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 flex flex-wrap justify-between gap-2">
+          <span>{BANK.length} questions · {filteredPool.length} in scope</span>
+          <span>Continuous review mode</span>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AISQuiz />);
+  </script>
+</body>
+</html>

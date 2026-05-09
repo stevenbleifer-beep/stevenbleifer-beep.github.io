@@ -1,0 +1,1494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Final Practice Test — Bleifer Study</title>
+  <meta name="description" content="40-question timed practice test for the AIS Final — Ch 16 cybersecurity, CIS Controls, SOC reports, regulations. No repeats across attempts." />
+  <meta name="theme-color" content="#fbf9f4" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #fbf9f4; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1c1917;
+      min-height: 100vh;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    .wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 48px 24px 64px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+    .brand {
+      font-family: Georgia, serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      color: #1c1917;
+      letter-spacing: -0.01em;
+    }
+    .brand .sep { color: #d6d3d1; margin: 0 8px; font-weight: 400; }
+    .brand .mode { color: #78716c; font-weight: 400; font-style: italic; }
+    .back {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #78716c;
+      text-decoration: none;
+    }
+    .back:hover { color: #1c1917; }
+    h1 {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    .subtitle {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #78716c;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 16px;
+    }
+    .section-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #a8a29e;
+      margin-bottom: 12px;
+    }
+    .big {
+      font-family: Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.35;
+      letter-spacing: -0.02em;
+    }
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .stat {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #78716c;
+    }
+    .stat .val {
+      color: #1c1917;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+    }
+    button, .btn {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.92rem;
+      padding: 12px 22px;
+      border-radius: 10px;
+      border: 1px solid #e7e5e4;
+      background: #fff;
+      color: #1c1917;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover:not(:disabled), .btn:hover { border-color: #1c1917; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.primary, .btn.primary {
+      background: #1c1917;
+      color: #fbf9f4;
+      border-color: #1c1917;
+    }
+    button.primary:hover:not(:disabled) { background: #292524; }
+    button.danger {
+      color: #991b1b;
+    }
+    button.danger:hover { border-color: #991b1b; }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #f5f5f4;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-top: 12px;
+    }
+    .progress-fill {
+      height: 100%;
+      background: #1c1917;
+      transition: width 0.3s;
+    }
+
+    .timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      font-variant-numeric: tabular-nums;
+      color: #1c1917;
+    }
+    .timer-btn {
+      width: 22px; height: 22px; padding: 0;
+      border: 1px solid #d6d3d1; border-radius: 999px;
+      background: #fff; display: inline-flex;
+      align-items: center; justify-content: center;
+      cursor: pointer; color: #1c1917;
+    }
+    .timer-btn:hover { border-color: #1c1917; }
+    .timer-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #a8a29e;
+    }
+
+    .tag-row {
+      display: flex; gap: 6px; flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .tag {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #f5f5f4;
+      color: #78716c;
+    }
+    .tag.src-easy { background: #eff6ff; color: #1e40af; }
+    .tag.src-hard { background: #fef2f2; color: #991b1b; }
+
+    .q-number {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #a8a29e;
+    }
+    .q-prompt {
+      font-family: Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      line-height: 1.45;
+      letter-spacing: -0.01em;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      text-align: left;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #1c1917;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      display: flex; gap: 12px; align-items: flex-start;
+    }
+    .option:hover:not(:disabled) { border-color: #1c1917; background: #fafaf9; }
+    .option .letter {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #a8a29e;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .option.selected { border-color: #1c1917; background: #fafaf9; }
+    .option.correct { border-color: #166534; background: #f0fdf4; }
+    .option.correct .letter { color: #166534; }
+    .option.incorrect { border-color: #991b1b; background: #fef2f2; }
+    .option.incorrect .letter { color: #991b1b; }
+    .option.faded { opacity: 0.55; }
+    .option:disabled { cursor: default; }
+
+    .nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .score-huge {
+      font-family: Georgia, serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    .score-sub {
+      font-family: Georgia, serif;
+      color: #78716c;
+      font-size: 1rem;
+      margin-top: 6px;
+      font-style: italic;
+    }
+
+    .review-item {
+      padding: 16px 0;
+      border-bottom: 1px solid #f5f5f4;
+    }
+    .review-item:last-child { border-bottom: none; }
+    .review-q {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.45;
+      margin-bottom: 8px;
+    }
+    .review-line {
+      font-family: Georgia, serif;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin-bottom: 4px;
+    }
+    .review-line .lbl {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #a8a29e;
+      margin-right: 8px;
+    }
+    .review-line.right .val { color: #166534; }
+    .review-line.wrong .val { color: #991b1b; text-decoration: line-through; }
+    .review-item.correct-item .review-q::before {
+      content: "✓ ";
+      color: #166534;
+    }
+    .review-item.wrong-item .review-q::before {
+      content: "✗ ";
+      color: #991b1b;
+    }
+    .explain {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #57534e;
+      font-size: 0.86rem;
+      line-height: 1.5;
+      margin-top: 6px;
+    }
+
+    #devtools-shield {
+      display: none;
+      position: fixed; inset: 0; z-index: 99999;
+      background: #fbf9f4;
+      align-items: center; justify-content: center;
+      font-family: Georgia, serif; font-style: italic;
+      color: #a8a29e; font-size: 1.2rem;
+      text-align: center; padding: 24px;
+    }
+
+    @media (max-width: 640px) {
+      .q-prompt { font-size: 1.05rem; }
+      .big { font-size: 1.25rem; }
+      .score-huge { font-size: 2.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="devtools-shield">Please close developer tools to continue studying.</div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="index.html">Bleifer Study<span class="sep">/</span><span class="mode">Practice Test</span></a>
+      <a class="back" href="ais-final.html">← AIS Final</a>
+    </div>
+
+    <h1>Final Practice Test</h1>
+    <div class="subtitle">40 questions, drawn without repeats across attempts from the full final-exam bank. Timed, with review at the end.</div>
+
+    <div id="screen-landing" style="display:none;">
+      <div class="card">
+        <div class="section-label">Bank Progress</div>
+        <div class="row" style="margin-bottom:6px;">
+          <div>
+            <span class="stat"><span class="val" id="land-seen">0</span> / <span class="val" id="land-total">0</span> seen</span>
+          </div>
+          <div>
+            <span class="stat"><span class="val" id="land-remaining">0</span> remaining</span>
+          </div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="land-fill" style="width:0%"></div></div>
+        <div class="stat" style="margin-top:14px;">
+          <span id="land-breakdown"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Start</div>
+        <div class="big" id="land-headline">Ready for 40 fresh questions.</div>
+        <div class="subtitle" id="land-sub" style="margin-top:10px;margin-bottom:18px;">No overlap with previous attempts until the bank is exhausted.</div>
+        <div class="nav">
+          <button class="primary" id="btn-start" onclick="startTest()">Start 40-Question Test</button>
+          <button class="danger" onclick="resetBank()">Reset Bank Memory</button>
+        </div>
+      </div>
+
+      <div id="landing-last-result"></div>
+    </div>
+
+    <div id="screen-test" style="display:none;">
+      <div class="card">
+        <div class="row">
+          <div class="stat">Question <span class="val" id="q-pos">1</span> / <span class="val" id="q-count">40</span></div>
+          <div class="row" style="gap:18px;">
+            <span class="timer">
+              <span class="timer-label">Elapsed</span>
+              <span id="timer-value">00:00</span>
+              <button type="button" class="timer-btn" id="timer-btn" aria-label="Pause timer" title="Pause timer">
+                <svg id="timer-icon" width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect></svg>
+              </button>
+            </span>
+            <span class="stat">Answered <span class="val" id="answered-count">0</span></span>
+          </div>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="q-fill" style="width:0%"></div></div>
+      </div>
+
+      <div class="card" id="q-card">
+        <div class="q-number" id="q-meta">—</div>
+        <div class="q-prompt" id="q-prompt">—</div>
+        <div class="options" id="q-options"></div>
+        <div class="tag-row" id="q-tags"></div>
+        <div class="nav">
+          <button id="btn-prev" onclick="prevQ()">← Previous</button>
+          <div class="row" style="gap:10px;">
+            <button id="btn-skip" onclick="nextQ()">Skip →</button>
+            <button class="primary" id="btn-next" onclick="nextQ()">Next →</button>
+            <button class="primary" id="btn-submit" style="display:none;" onclick="finishTest()">Submit Test</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row">
+          <div class="stat">Want to stop early?</div>
+          <div class="row" style="gap:10px;">
+            <button onclick="endEarly()">End & Score Now</button>
+            <button class="danger" onclick="abandonTest()">Abandon (no score saved)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-results" style="display:none;">
+      <div class="card" style="text-align:center;padding:36px 28px;">
+        <div class="section-label">Your Score</div>
+        <div class="score-huge" id="res-score">—</div>
+        <div class="score-sub" id="res-sub">—</div>
+        <div class="nav" style="justify-content:center;margin-top:24px;">
+          <button class="primary" onclick="goLanding()">Back to Start</button>
+          <button onclick="scrollToReview()">Review Answers ↓</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Summary</div>
+        <div class="row" style="margin-top:6px;">
+          <div class="stat">Time <span class="val" id="res-time">—</span></div>
+          <div class="stat">Correct <span class="val" id="res-correct">—</span></div>
+          <div class="stat">Incorrect <span class="val" id="res-wrong">—</span></div>
+          <div class="stat">Skipped <span class="val" id="res-skipped">—</span></div>
+        </div>
+        <div class="stat" style="margin-top:12px;" id="res-breakdown"></div>
+      </div>
+
+      <div class="card" id="review-card">
+        <div class="section-label" id="review-anchor">Review</div>
+        <div id="review-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='F12') { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && (e.key==='u'||e.key==='s')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e){
+      var t = e.target;
+      if (t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+    function checkDevTools(){
+      var shield = document.getElementById('devtools-shield');
+      var w = window.outerWidth - window.innerWidth > 160;
+      var h = window.outerHeight - window.innerHeight > 160;
+      var isOpen = w || h;
+      if(!isOpen){ try { var s=performance.now(); (function(){}).constructor('debugger')(); if(performance.now()-s>100) isOpen=true; } catch(e){} }
+      if(isOpen){ shield.style.display='flex'; document.querySelector('.wrap').style.display='none'; }
+      else { shield.style.display='none'; document.querySelector('.wrap').style.display=''; }
+    }
+    setInterval(checkDevTools, 1000);
+    checkDevTools();
+    console.clear();
+    console.log('%cStop!','color:red;font-size:48px;font-weight:bold;');
+    console.log('%cThis is a study tool. Inspecting answers defeats the purpose.','font-size:16px;');
+  })();
+  </script>
+
+  <script>
+    // ===== QUESTION BANK =====
+    // Each: { id, src, ch, lo, section, type, q, options[4], explain }
+    // Correct answer is ALWAYS at options[0]. Display order is shuffled at test time.
+    const BANK = [
+      // ===== Ch 16 — Cybersecurity =====
+      { id:"f16-001", src:"review", ch:16, lo:"16.1", section:"Definitions", type:"memorization",
+        q:"Cybersecurity is BEST defined as:",
+        options:[
+          "The measures a company takes to protect a system against unauthorized access or attacks",
+          "The legal requirement that public companies disclose breaches within 72 hours",
+          "An insurance product that reimburses ransomware losses",
+          "A subset of cloud computing focused on financial data transfer"],
+        explain:"Cybersecurity is the set of measures protecting a system against unauthorized access or attacks." },
+      { id:"f16-002", src:"review", ch:16, lo:"16.1", section:"NIST CSF v2.0", type:"memorization",
+        q:"Which function was added to NIST CSF in v2.0 that did not exist in v1.1?",
+        options:["Govern","Identify","Detect","Recover"],
+        explain:"Govern was added in v2.0 to highlight cybersecurity governance." },
+      { id:"f16-003", src:"review", ch:16, lo:"16.1", section:"NIST 800-53", type:"memorization",
+        q:"How many control families does NIST SP 800-53 define?",
+        options:["18","5","6","20"],
+        explain:"NIST 800-53 has 18 control families." },
+      { id:"f16-004", src:"review", ch:16, lo:"16.2", section:"Cyber-Kill Chain", type:"memorization",
+        q:"What are the three stages of the cyber-kill chain?",
+        options:[
+          "Gather information → Access the network → Disrupt the network",
+          "Disrupt → Access → Gather",
+          "Phishing → Brute-force → Ransomware",
+          "Reconnaissance → Recovery → Remediation"],
+        explain:"The kill chain progresses from gathering information, to access, to disruption." },
+      { id:"f16-005", src:"review", ch:16, lo:"16.2", section:"Physical vs Logical", type:"memorization",
+        q:"Why is social engineering ALWAYS classified as physical?",
+        options:[
+          "The target is always a person",
+          "It always involves on-site break-ins",
+          "It can only happen face-to-face",
+          "It requires specialized hardware"],
+        explain:"Social engineering targets people, which makes it physical regardless of medium." },
+      { id:"f16-006", src:"review", ch:16, lo:"16.2", section:"Logical Recon", type:"memorization",
+        q:"Which combination correctly pairs a recon technique with its category?",
+        options:[
+          "Dumpster diving = physical; ping sweep = logical; phishing = physical; port scan = logical",
+          "Dumpster diving = logical; ping sweep = physical; phishing = logical; port scan = physical",
+          "All four are physical because they involve information gathering",
+          "All four are logical because they could lead to digital intrusion"],
+        explain:"Dumpster + phishing involve people/things → physical. Ping + port are digital scans → logical." },
+      { id:"f16-007", src:"review", ch:16, lo:"16.2", section:"Recon Sequence", type:"application",
+        q:"An attacker first identifies which IPs are alive, then enumerates which ports those IPs have open. The two techniques in order are:",
+        options:["Ping sweep, then port scan","Port scan, then ping sweep","Phishing, then dumpster diving","Brute force, then on-path"],
+        explain:"Ping sweep finds active hosts; port scans then narrow to open ports." },
+      { id:"f16-008", src:"hard", ch:16, lo:"16.2", section:"Eavesdropping vs On-Path", type:"application",
+        q:"An attacker silently captures unencrypted HTTP traffic at a coffee shop and never modifies, impersonates, or injects anything. This is BEST classified as:",
+        options:["Eavesdropping — passive interception","On-path — between two endpoints","IP spoofing","Brute force"],
+        explain:"Pure passive observation = eavesdropping. On-path requires active impersonation." },
+      { id:"f16-009", src:"review", ch:16, lo:"16.3", section:"Tailgating", type:"memorization",
+        q:"What distinguishes accidental tailgating from polite tailgating?",
+        options:[
+          "Accidental: the authorized user is unaware. Polite: the authorized user is aware and holds the door.",
+          "Accidental: door is held open. Polite: door is forced open.",
+          "Accidental: at night. Polite: during business hours.",
+          "Accidental: hacker is alone. Polite: hacker is in a group."],
+        explain:"Accidental = unaware; polite = aware and holds the door." },
+      { id:"f16-010", src:"review", ch:16, lo:"16.3", section:"On-Path", type:"memorization",
+        q:"An on-path attack differs from eavesdropping in that:",
+        options:[
+          "On-path actively impersonates each party in the connection; eavesdropping only listens",
+          "On-path is physical; eavesdropping is logical",
+          "On-path requires a botnet; eavesdropping requires phishing",
+          "On-path can only happen on Wi-Fi"],
+        explain:"On-path actively impersonates and injects; eavesdropping is passive." },
+      { id:"f16-011", src:"review", ch:16, lo:"16.3", section:"IP Spoofing", type:"memorization",
+        q:"In IP spoofing, the attacker:",
+        options:[
+          "Creates IP packets with modified source addresses to disguise their identity",
+          "Captures keyboard input to steal passwords",
+          "Encrypts files and demands payment",
+          "Generates fake login pages"],
+        explain:"IP spoofing forges source addresses." },
+      { id:"f16-012", src:"review", ch:16, lo:"16.3", section:"Brute-Force", type:"memorization",
+        q:"A dictionary attack is a special form of:",
+        options:[
+          "Brute-force attack — using lists of common words and combinations",
+          "On-path attack",
+          "Tailgating",
+          "Phishing"],
+        explain:"Dictionary attacks are a brute-force subtype." },
+      { id:"f16-013", src:"review", ch:16, lo:"16.3", section:"MFA Scope", type:"memorization",
+        q:"MFA is required for ALL of the following EXCEPT:",
+        options:[
+          "Internal-only printers and copiers",
+          "Externally exposed applications",
+          "Remote network access",
+          "Administrator access"],
+        explain:"Internal-only printers/copiers are not in the MFA-required list." },
+      { id:"f16-014", src:"review", ch:16, lo:"16.4", section:"DDoS", type:"memorization",
+        q:"What distinguishes a DDoS attack from a DoS attack?",
+        options:[
+          "DDoS uses multiple machines or IP addresses; DoS comes from a single source",
+          "DDoS is illegal; DoS is legal",
+          "DDoS targets only websites; DoS targets only servers",
+          "DDoS is non-malicious"],
+        explain:"DDoS = distributed across multiple sources." },
+      { id:"f16-015", src:"hard", ch:16, lo:"16.4", section:"Replication", type:"application",
+        q:"Two malware types replicate themselves; two do not. Which pair REPLICATES?",
+        options:["Virus and worm","Trojan and logic bomb","Virus and Trojan","Worm and logic bomb"],
+        explain:"Virus + worm replicate. Trojan + logic bomb do not." },
+      { id:"f16-016", src:"review", ch:16, lo:"16.4", section:"Virus vs Worm", type:"memorization",
+        q:"What is the defining difference between a virus and a worm?",
+        options:[
+          "A virus needs human interaction to replicate; a worm replicates without human interaction",
+          "A virus is harmful; a worm is benign",
+          "A virus targets servers; a worm targets desktops",
+          "A virus encrypts; a worm only deletes"],
+        explain:"Viruses need user clicks; worms self-propagate." },
+      { id:"f16-017", src:"review", ch:16, lo:"16.4", section:"Trojan", type:"memorization",
+        q:"Which malware type is disguised as benign software, does NOT replicate, and often delivers a back door?",
+        options:["Trojan horse","Worm","Virus","Logic bomb"],
+        explain:"Trojans = disguised + non-replicating + back door." },
+      { id:"f16-018", src:"review", ch:16, lo:"16.4", section:"Logic Bomb", type:"memorization",
+        q:"A logic bomb is BEST described as:",
+        options:[
+          "Malicious code that remains dormant until certain conditions are met",
+          "A network device that explodes if tampered with",
+          "A type of phishing email",
+          "A self-replicating worm"],
+        explain:"Logic bombs sit dormant and trigger on conditions." },
+      { id:"f16-019", src:"review", ch:16, lo:"16.4", section:"Ransomware", type:"memorization",
+        q:"What is ransomware?",
+        options:[
+          "Malware used to hold a system hostage in exchange for payment",
+          "Malware that quietly steals keystrokes",
+          "Malware that disables network adapters permanently",
+          "An anti-malware tool"],
+        explain:"Ransomware locks systems/files and demands payment." },
+      { id:"f16-020", src:"hard", ch:16, lo:"16.3", section:"Outdated Access", type:"application",
+        q:"Brooklyn was promoted from accounts payable to procurement six months ago, but her old AP system access was never revoked. Her account is in active daily use. This is BEST classified as:",
+        options:[
+          "Outdated access — the role changed but access wasn't updated",
+          "Dormant access — the account is inactive",
+          "Excessive access — access never matched the role",
+          "Terminated access — the employee has left"],
+        explain:"Outdated = job changed, access didn't follow." },
+      { id:"f16-021", src:"exam", ch:16, lo:"16.EXAM", section:"DDoS Identification", type:"application",
+        q:"Korenix Bank's website goes dark after 4 million HTTP requests per minute from 14,000 distinct IPs across 22 countries. This is BEST classified as:",
+        options:["DDoS","DoS","Brute-force","Phishing"],
+        explain:"Multiple distributed sources flooding the target = DDoS." },
+      { id:"f16-022", src:"exam", ch:16, lo:"16.EXAM", section:"Trojan Identification", type:"application",
+        q:"An employee at Carthex Energy installs what looks like a free PDF reader. The reader works fine, but quietly opens a back door. The malware does not replicate. This is BEST classified as:",
+        options:["Trojan horse","Worm","Virus","Botnet"],
+        explain:"Disguised + non-replicating + back door = Trojan." },
+      { id:"f16-023", src:"exam", ch:16, lo:"16.EXAM", section:"Logic Bomb", type:"application",
+        q:"A disgruntled developer at Pilarist Software Co. plants code that wipes the customer database the day after she's removed from payroll. This is BEST classified as:",
+        options:["Logic bomb","Worm","Phishing","Ransomware"],
+        explain:"Dormant code triggered by a condition = logic bomb." },
+      { id:"f16-024", src:"exam", ch:16, lo:"16.EXAM", section:"On-Path", type:"application",
+        q:"An attacker on a coffee-shop Wi-Fi sets up a fake access point, then impersonates a victim's bank to her laptop and her laptop to the bank. This is BEST classified as:",
+        options:["On-path attack","Eavesdropping","IP spoofing","Brute force"],
+        explain:"Active impersonation of both endpoints = on-path." },
+      { id:"f16-025", src:"exam", ch:16, lo:"16.EXAM", section:"IP Spoofing", type:"application",
+        q:"An attacker forges packets with a victim's IP address as the source so reply packets flood the victim's machine. This is BEST classified as:",
+        options:["IP spoofing","On-path attack","Phishing","Worm"],
+        explain:"Forged source addresses redirecting traffic = IP spoofing." },
+      { id:"f16-026", src:"exam", ch:16, lo:"16.EXAM", section:"Worm vs Virus", type:"application",
+        q:"A junior IT analyst finds malware that has spread itself across 800 endpoints overnight without anyone clicking anything. This is MOST likely:",
+        options:["A worm","A virus","A Trojan horse","A logic bomb"],
+        explain:"Self-spreading without human interaction = worm." },
+      { id:"f16-027", src:"exam", ch:16, lo:"16.EXAM", section:"Phishing", type:"application",
+        q:"Marcus, AP manager at Vortrix Industries, gets an email from \"@vortrlx.com\" telling him a wire transfer must be approved \"immediately.\" The link goes to a credential page. This is BEST classified as:",
+        options:["Email phishing — physical reconnaissance","On-path attack","IP spoofing","DDoS"],
+        explain:"Deceptive email targeting a person = phishing (physical recon)." },
+      { id:"f16-028", src:"hard", ch:16, lo:"16.2", section:"Phishing as Recon", type:"application",
+        q:"An attacker sends a fake DocuSign email that lures a CFO to a credential-harvesting page. Which BEST classifies this attack?",
+        options:[
+          "Physical reconnaissance — the target is a person (social engineering)",
+          "Logical reconnaissance — credentials are digital",
+          "Logical access — credentials have been gained",
+          "On-path — the attacker intercepted communication"],
+        explain:"Social engineering = physical recon, regardless of digital medium." },
+      { id:"f16-029", src:"hard", ch:16, lo:"16.2", section:"Kill Chain Stage", type:"application",
+        q:"Once captured credentials from a phishing attack are USED to log into the corporate VPN three weeks later, the attack has progressed to which kill chain stage?",
+        options:["Access","Reconnaissance","Disruption","All three"],
+        explain:"Capturing credentials for use moves the attack from recon to access." },
+      { id:"f16-030", src:"hard", ch:16, lo:"16.4", section:"Logic Bomb Defense", type:"application",
+        q:"Why are logic bombs especially difficult to defend against?",
+        options:[
+          "They remain dormant until conditions are met, often evading detection until activation",
+          "They self-replicate faster than worms",
+          "They require physical access",
+          "They are encrypted by default and cannot be scanned"],
+        explain:"Dormancy makes them hard to catch until they fire." },
+
+      // ===== CIS Controls =====
+      { id:"f17-001", src:"review", ch:"CIS", lo:"Background", section:"Origin", type:"memorization",
+        q:"Which organization originally created the critical security controls list before transferring it to CIS?",
+        options:["SANS Institute","NIST","ISO","AICPA"],
+        explain:"SANS originated the controls list and later transferred it to CIS." },
+      { id:"f17-002", src:"review", ch:"CIS", lo:"Background", section:"Threat Intel", type:"memorization",
+        q:"The Verizon DBIR is BEST characterized as:",
+        options:[
+          "A retrospective annual analysis of real breaches Verizon investigated",
+          "A predictive database of adversary techniques",
+          "A government-issued list of required security configurations",
+          "A SOC report"],
+        explain:"DBIR is retrospective." },
+      { id:"f17-003", src:"review", ch:"CIS", lo:"Background", section:"Threat Intel", type:"memorization",
+        q:"MITRE ATT&CK is BEST characterized as:",
+        options:[
+          "A predictive database of enterprise adversary techniques",
+          "A retrospective list of breaches",
+          "A list of approved cybersecurity vendors",
+          "An AICPA framework"],
+        explain:"MITRE ATT&CK enumerates TTPs adversaries are likely to use." },
+      { id:"f17-004", src:"hard", ch:"CIS", lo:"Background", section:"Threat Intel", type:"application",
+        q:"A risk assessor wants to model what a sophisticated nation-state adversary is LIKELY to do in the next 12 months. Which is MOST appropriate?",
+        options:[
+          "MITRE ATT&CK — predictive enumeration of TTPs",
+          "Verizon DBIR — retrospective real-world breaches",
+          "CIS Benchmarks — configuration standards",
+          "SANS historical archive"],
+        explain:"MITRE ATT&CK is predictive." },
+      { id:"f17-005", src:"hard", ch:"CIS", lo:"Background", section:"Threat Intel", type:"application",
+        q:"A board presentation requires year-over-year industry-attack trend data from breaches that already occurred. Which is MOST appropriate?",
+        options:[
+          "Verizon DBIR — annual real-world breach analysis",
+          "MITRE ATT&CK — predictive techniques",
+          "PCI DSS — credit card standard",
+          "FISMA — federal law"],
+        explain:"DBIR provides the retrospective real-world breach data." },
+      { id:"f17-006", src:"review", ch:"CIS", lo:"Background", section:"Frameworks", type:"memorization",
+        q:"FISMA is BEST described as:",
+        options:[
+          "A U.S. federal law requiring federal agencies to comply with NIST cybersecurity standards",
+          "An international information-security standards body",
+          "A standard issued by AICPA",
+          "A community-developed list of critical controls"],
+        explain:"FISMA is the law that points to NIST 800-53." },
+      { id:"f17-007", src:"review", ch:"CIS", lo:"Implementation Groups", section:"IG1", type:"memorization",
+        q:"What is Implementation Group 1 (IG1) intended for?",
+        options:[
+          "Essential cyber hygiene appropriate for every enterprise — especially small to mid-sized",
+          "Defense-industrial-complex contractors only",
+          "Enterprises that have never experienced a breach",
+          "Enterprises with billion-dollar IT budgets"],
+        explain:"IG1 is the baseline." },
+      { id:"f17-008", src:"hard", ch:"CIS", lo:"Implementation Groups", section:"IG Selection", type:"application",
+        q:"A 25-person small business with no compliance obligations is implementing CIS Controls for the first time. Which IG should they prioritize?",
+        options:[
+          "IG1 — essential cyber hygiene applicable to every enterprise",
+          "IG2",
+          "IG3",
+          "IG4"],
+        explain:"IG1 is the baseline. IG4 doesn't exist." },
+      { id:"f17-009", src:"review", ch:"CIS", lo:"Asset Classes", section:"Asset Classes", type:"memorization",
+        q:"Which is NOT one of the six CIS asset classes?",
+        options:["Hardware","Devices","Software","Documentation"],
+        explain:"Hardware is part of Devices, not a separate class." },
+      { id:"f17-010", src:"review", ch:"CIS", lo:"Asset Classes", section:"Asset Classes", type:"memorization",
+        q:"Which two asset classes WRAP everything (apply to all controls)?",
+        options:["Documentation and Network","Users and Devices","Software and Data","Devices and Data"],
+        explain:"Documentation (above) and Network (below) wrap the user→device→software→data flow." },
+      { id:"f17-011", src:"review", ch:"CIS", lo:"Documentation", section:"4 P's", type:"memorization",
+        q:"What is the correct order of the CIS documentation hierarchy from highest to lowest?",
+        options:["Plan → Policy → Process → Procedure","Policy → Plan → Procedure → Process","Procedure → Process → Policy → Plan","Plan → Process → Policy → Procedure"],
+        explain:"4 P's: Plan → Policy → Process → Procedure." },
+      { id:"f17-012", src:"review", ch:"CIS", lo:"Documentation", section:"Steering Committee", type:"memorization",
+        q:"In IT-specific governance, IT policies originate from:",
+        options:["The IT Steering Committee","The Board of Directors","External auditors","The CFO"],
+        explain:"Lanz: IT policies come from the Steering Committee, not the Board." },
+      { id:"f17-013", src:"review", ch:"CIS", lo:"CIS-01", section:"Control 1", type:"memorization",
+        q:"What is the central rationale for CIS Control 1?",
+        options:[
+          "You can't protect what you don't know you have",
+          "Encrypt every asset",
+          "Outsource asset management",
+          "Avoid issuing assets to remote workers"],
+        explain:"Asset inventory enables protection." },
+      { id:"f17-014", src:"review", ch:"CIS", lo:"CIS-02", section:"Control 2", type:"memorization",
+        q:"Why does Control 2 require ensuring software is currently SUPPORTED?",
+        options:[
+          "Unsupported software does not receive security patches when vulnerabilities are found",
+          "Unsupported software costs more to license",
+          "Vendors charge fees for advisories on unsupported software",
+          "Audit standards prohibit unsupported software"],
+        explain:"Unsupported = no patches = exposed." },
+      { id:"f17-015", src:"review", ch:"CIS", lo:"CIS-03", section:"DLP", type:"memorization",
+        q:"Why is DLP needed when traffic is encrypted?",
+        options:[
+          "Firewalls cannot read through encrypted traffic; DLP examines content (typically at the host) to detect sensitive data leaving",
+          "Encrypted traffic is auto-blocked",
+          "Encryption increases bandwidth, so DLP throttles it",
+          "DLP replaces encryption"],
+        explain:"DLP solves the encryption-firewall paradox." },
+      { id:"f17-016", src:"review", ch:"CIS", lo:"CIS-04", section:"Hardening", type:"memorization",
+        q:"To 'harden' an asset means to:",
+        options:[
+          "Configure software and hardware for security",
+          "Encrypt all data at rest",
+          "Prohibit any internet access",
+          "Outsource the operating system"],
+        explain:"Hardening = configuring for security." },
+      { id:"f17-017", src:"review", ch:"CIS", lo:"CIS-05", section:"Account Mgmt", type:"memorization",
+        q:"Per CIS Control 5, how often should access be reviewed?",
+        options:["Every 30 days","Annually","Every 5 years","Only at termination"],
+        explain:"Lanz emphasized 30-day cadence." },
+      { id:"f17-018", src:"review", ch:"CIS", lo:"CIS-06", section:"RBAC", type:"memorization",
+        q:"Which authorization model does CIS Safeguard 6.8 require?",
+        options:["RBAC","Open access","Single-factor authentication","Manual approval per login"],
+        explain:"6.8 requires Role-Based Access Control." },
+      { id:"f17-019", src:"review", ch:"CIS", lo:"CIS-07", section:"Equifax Map", type:"memorization",
+        q:"Which control covers continuous vulnerability management — \"where accounting and audit go crazy\"?",
+        options:["Control 7","Control 1","Control 11","Control 18"],
+        explain:"Control 7 = Continuous Vulnerability Management." },
+      { id:"f17-020", src:"review", ch:"CIS", lo:"CIS-10", section:"Anti-malware", type:"memorization",
+        q:"Per Control 10, how often must anti-malware signatures update?",
+        options:["Automatically and daily","Manually each quarter","Annually with the OS upgrade","Only when issues are noticed"],
+        explain:"Daily automatic updates required." },
+      { id:"f17-021", src:"review", ch:"CIS", lo:"CIS-11", section:"Recovery Testing", type:"memorization",
+        q:"Per Control 11, how often must data recovery be tested?",
+        options:["Quarterly","Annually","Every 5 years","Only after a disaster"],
+        explain:"Quarterly testing — untested backups are unproven." },
+      { id:"f17-022", src:"review", ch:"CIS", lo:"CIS-13", section:"Network Defense", type:"memorization",
+        q:"Why does Control 13 emphasize network segmentation?",
+        options:[
+          "Each segment can have its own controls and limit lateral movement after a breach",
+          "Segmentation eliminates the need for firewalls",
+          "Segmentation is required by GAAP",
+          "Segmentation makes the network easier to advertise"],
+        explain:"Segmentation contains breaches and allows differentiated controls." },
+      { id:"f17-023", src:"review", ch:"CIS", lo:"CIS-15", section:"Vendor Mgmt", type:"memorization",
+        q:"CIS Control 15 ties directly to:",
+        options:[
+          "SOC reports — particularly walking through the TSCs for the provider",
+          "PCI DSS internal scans",
+          "FISMA compliance audits",
+          "MITRE ATT&CK adversary mapping"],
+        explain:"Service-provider governance ties to SOC 2 and TSCs." },
+      { id:"f17-024", src:"review", ch:"CIS", lo:"CIS-17", section:"Alternate Comms", type:"memorization",
+        q:"Why does Safeguard 17.6 require alternate communication mechanisms?",
+        options:[
+          "If primary channels are compromised, the response team needs alternatives that aren't being read by attackers",
+          "Cell reception is unreliable in data centers",
+          "Email is too slow for emergencies",
+          "It is required by HIPAA"],
+        explain:"Assume the attacker can read primary channels." },
+      { id:"f17-025", src:"review", ch:"CIS", lo:"CIS-18", section:"Pen Test vs Vuln", type:"memorization",
+        q:"What is the defining difference between a penetration test and a vulnerability assessment?",
+        options:[
+          "Pen tests EXPLOIT vulnerabilities to demonstrate impact; vulnerability assessments only IDENTIFY them",
+          "Pen tests are automated; vulnerability assessments are manual",
+          "Pen tests are cheaper",
+          "Pen tests target only web apps"],
+        explain:"Exploit vs identify is the defining distinction." },
+      { id:"f17-026", src:"hard", ch:"CIS", lo:"CIS-18", section:"Pen Test", type:"application",
+        q:"If a question mentions 'exploit' or 'breaking in,' which test is being described?",
+        options:["Penetration test","Vulnerability assessment","Risk assessment","SOC 1 audit"],
+        explain:"\"Exploit\" = pen test." },
+      { id:"f17-027", src:"hard", ch:"CIS", lo:"CIS-18", section:"Pen Test Independence", type:"application",
+        q:"An IT director argues the company's own security team can perform the annual pen test. Which safeguard does this conflict with?",
+        options:[
+          "SG 18.2 — pen tests should be performed by external testers not involved in operating the systems",
+          "SG 18.1 — program must exist",
+          "SG 18.3 — findings must be remediated",
+          "SG 18.4 — validate after remediation"],
+        explain:"18.2 requires external independence." },
+      { id:"f17-028", src:"exam", ch:"CIS", lo:"CIS.EXAM", section:"Software Support", type:"application",
+        q:"The ops team at Solivex Energy still runs an analytics tool whose vendor stopped issuing security updates three years ago. Which CIS Control does this MOST directly violate?",
+        options:["Control 2","Control 8","Control 11","Control 14"],
+        explain:"Control 2 SG 2.2 — software must be currently supported." },
+      { id:"f17-029", src:"exam", ch:"CIS", lo:"CIS.EXAM", section:"Hardening", type:"application",
+        q:"A new server arrives at Glaviron Industries with the default admin password printed in the manual. The IT team leaves it as-is. This MOST directly violates:",
+        options:["Control 4 — Secure Configuration (hardening; default accounts must be changed)","Control 1","Control 7","Control 11"],
+        explain:"Default accounts = hardening (Control 4)." },
+      { id:"f17-030", src:"exam", ch:"CIS", lo:"CIS.EXAM", section:"Backup Testing", type:"application",
+        q:"Jorinex Manufacturing performs nightly backups but has never restored from them. Per Control 11:",
+        options:[
+          "Insufficient — recovery must be tested quarterly",
+          "Sufficient — taking the backup is enough",
+          "Sufficient if encrypted",
+          "Required only after an incident"],
+        explain:"Untested backups = unproven. Quarterly testing required." },
+      { id:"f17-031", src:"hard", ch:"CIS", lo:"CIS-05", section:"Admin Accounts", type:"application",
+        q:"An IT admin uses ONE account for everything: email, web browsing, AD administration. The BEST control rationale for splitting it into two accounts is:",
+        options:[
+          "If malware is encountered while logged in as admin, it inherits admin privileges. Separate accounts contain blast radius.",
+          "It reduces software licensing costs",
+          "It allows the admin to work weekends",
+          "It is required by HIPAA"],
+        explain:"Account separation contains blast radius." },
+
+      // ===== SOC & TSC =====
+      { id:"f18-001", src:"review", ch:"SOC", lo:"SOC", section:"SOC 1", type:"memorization",
+        q:"What does a SOC 1 report cover?",
+        options:[
+          "Internal controls over financial reporting (ICFR) at a service organization",
+          "The Trust Services Criteria",
+          "Public-use cybersecurity assurance",
+          "Supply chain controls"],
+        explain:"SOC 1 = ICFR at a service organization." },
+      { id:"f18-002", src:"review", ch:"SOC", lo:"SOC", section:"SOC 2", type:"memorization",
+        q:"Which SOC report covers the Trust Services Criteria?",
+        options:["SOC 2","SOC 1","SOC for Cybersecurity","SOC for Supply Chain"],
+        explain:"SOC 2 covers TSC." },
+      { id:"f18-003", src:"review", ch:"SOC", lo:"SOC", section:"SOC 3", type:"memorization",
+        q:"Which SOC report is the publicly distributable summary of a SOC 2, automatically Type 2?",
+        options:["SOC 3","SOC 1","SOC for Cybersecurity","SOC for Supply Chain"],
+        explain:"SOC 3 = public summary of SOC 2, always Type 2." },
+      { id:"f18-004", src:"review", ch:"SOC", lo:"SOC", section:"SOC for Cyber", type:"memorization",
+        q:"On which framework(s) must a SOC for Cybersecurity report be based?",
+        options:["NIST CSF or the Trust Services Criteria","COBIT or COSO","ISO 9001 or PCI DSS","FISMA or SOX"],
+        explain:"AICPA approves NIST CSF or TSC for SOC for Cybersecurity." },
+      { id:"f18-005", src:"review", ch:"SOC", lo:"Type", section:"Type 1", type:"memorization",
+        q:"A SOC Type 1 report covers:",
+        options:[
+          "The DESIGN of controls at a single point in time",
+          "Design AND operating effectiveness over a period",
+          "Only a specific incident response",
+          "Only the user entities"],
+        explain:"Type 1 = design at a point in time." },
+      { id:"f18-006", src:"review", ch:"SOC", lo:"Type", section:"Type 2", type:"memorization",
+        q:"A SOC Type 2 report covers:",
+        options:[
+          "Design AND operating effectiveness over a period",
+          "Only design at a point in time",
+          "Only adverse opinions",
+          "Only privacy controls"],
+        explain:"Type 2 tests operating effectiveness over a period." },
+      { id:"f18-007", src:"review", ch:"SOC", lo:"TSC", section:"TSC List", type:"memorization",
+        q:"Which is NOT one of the five Trust Services Criteria?",
+        options:["Accountability","Security","Availability","Confidentiality"],
+        explain:"Accountability is not a TSC." },
+      { id:"f18-008", src:"review", ch:"SOC", lo:"TSC", section:"TSC Required", type:"memorization",
+        q:"Which TSC is required in EVERY SOC 2 engagement?",
+        options:["Security","Availability","Privacy","Processing Integrity"],
+        explain:"Security is the only mandatory TSC." },
+      { id:"f18-009", src:"review", ch:"SOC", lo:"TSC", section:"TSC Definition", type:"memorization",
+        q:"Which TSC addresses whether system processing is complete, valid, accurate, timely, and authorized?",
+        options:["Processing Integrity","Security","Availability","Confidentiality"],
+        explain:"Processing Integrity covers processing accuracy attributes." },
+      { id:"f18-010", src:"review", ch:"SOC", lo:"TSC", section:"TSC Definition", type:"memorization",
+        q:"Which TSC specifically addresses personal information?",
+        options:["Privacy","Confidentiality","Security","Availability"],
+        explain:"Privacy = personal information; Confidentiality = anything designated confidential." },
+      { id:"f18-011", src:"hard", ch:"SOC", lo:"TSC", section:"Privacy vs Confidentiality", type:"application",
+        q:"A company designates its proprietary algorithms as confidential. Which TSC applies?",
+        options:[
+          "Confidentiality — Privacy is reserved for personal information",
+          "Privacy — it covers anything sensitive",
+          "Both apply equally",
+          "Neither — only Security"],
+        explain:"Privacy is for personal info; Confidentiality covers anything designated confidential." },
+      { id:"f18-012", src:"hard", ch:"SOC", lo:"SOC", section:"Public vs Restricted", type:"application",
+        q:"A SaaS company wants to put security assurance on its public marketing site. Which is appropriate?",
+        options:[
+          "SOC 3 — automatically Type 2 and publicly distributable",
+          "SOC 2 Type 2 — restricted use",
+          "SOC 1 — wrong scope",
+          "SOC for Cybersecurity Type 1 — design only"],
+        explain:"Only SOC 3 is publicly distributable." },
+      { id:"f18-013", src:"hard", ch:"SOC", lo:"Type", section:"Operating Effectiveness", type:"application",
+        q:"A startup wants to demonstrate to a prospect that controls work over time, not just on paper. Which is BEST?",
+        options:["SOC 2 Type 2","SOC 2 Type 1","SOC 1 Type 2","SOC for Cybersecurity Type 1"],
+        explain:"Type 2 demonstrates operating effectiveness." },
+      { id:"f18-014", src:"hard", ch:"SOC", lo:"SOC", section:"SOC 1 Use", type:"application",
+        q:"A user-entity auditor needs assurance over a payroll processor's controls relevant to ICFR. Which is appropriate?",
+        options:["SOC 1 Type 2","SOC 3","SOC for Supply Chain","SOC for Cybersecurity"],
+        explain:"SOC 1 covers ICFR; Type 2 gives operating effectiveness." },
+      { id:"f18-015", src:"hard", ch:"SOC", lo:"TSC", section:"Trap", type:"memorization",
+        q:"Which sounds like a TSC but is NOT?",
+        options:["Resilience","Availability","Confidentiality","Privacy"],
+        explain:"Resilience and Accountability sound TSC-like but are not in the AICPA list." },
+      { id:"f18-016", src:"exam", ch:"SOC", lo:"SOC.EXAM", section:"COBIT Trap", type:"application",
+        q:"Drelnax Health proposes basing its SOC for Cybersecurity report on COBIT. The auditor objects. Why?",
+        options:[
+          "SOC for Cybersecurity must be based on NIST CSF or the Trust Services Criteria — not COBIT",
+          "COBIT cannot be used in any audit",
+          "COBIT is restricted to financial services",
+          "COBIT is not English"],
+        explain:"AICPA requires NIST CSF or TSC." },
+      { id:"f18-017", src:"exam", ch:"SOC", lo:"SOC.EXAM", section:"Availability", type:"application",
+        q:"Mexcale Cloud sells a service guaranteeing 99.99% uptime. The TSC the customer is MOST interested in is:",
+        options:["Availability","Privacy","Confidentiality","Processing Integrity"],
+        explain:"Uptime guarantees align with Availability." },
+      { id:"f18-018", src:"hard", ch:"SOC", lo:"SOC", section:"Type 1 Choice", type:"application",
+        q:"Veronese Software just rolled out a new control framework two months ago. Its first SOC engagement is at month 3. Which type would the auditor MOST naturally issue?",
+        options:["SOC 2 Type 1 — design at a point in time, because there isn't enough operating history yet","SOC 2 Type 2","SOC 3","SOC for Cybersecurity"],
+        explain:"Without operating history, Type 1 is the natural starting point." },
+
+      // ===== Regulations & Cases =====
+      { id:"f19-001", src:"review", ch:"REG", lo:"Health", section:"Healthcare", type:"memorization",
+        q:"Which U.S. law governs the protection of patient health information?",
+        options:["HIPAA","GLBA","PCI DSS","FISMA"],
+        explain:"HIPAA (with HITECH) governs PHI." },
+      { id:"f19-002", src:"review", ch:"REG", lo:"Finance", section:"Financial Services", type:"memorization",
+        q:"Which U.S. law requires financial institutions to protect consumer financial information?",
+        options:["GLBA","HIPAA","PCI DSS","FISMA"],
+        explain:"GLBA covers banks, wealth-management firms." },
+      { id:"f19-003", src:"review", ch:"REG", lo:"Cards", section:"Payment Cards", type:"memorization",
+        q:"Which standard applies specifically to companies that accept credit card payments?",
+        options:["PCI DSS","GLBA","HIPAA","FISMA"],
+        explain:"PCI DSS = credit card data security standard." },
+      { id:"f19-004", src:"review", ch:"REG", lo:"Cards", section:"PCI Issuer", type:"memorization",
+        q:"Who issues PCI DSS?",
+        options:[
+          "The PCI Security Standards Council — it is NOT a federal law",
+          "The U.S. federal government as a federal statute",
+          "The AICPA",
+          "The FTC"],
+        explain:"PCI DSS is contractual/industry, not a law." },
+      { id:"f19-005", src:"review", ch:"REG", lo:"ID-Theft", section:"Identity Theft", type:"application",
+        q:"A company is freaking out about identity theft, but is not a healthcare entity, financial institution, or federal agency. Which rule applies?",
+        options:["FTC Red Flag Rules","HIPAA","GLBA","FISMA"],
+        explain:"FTC Red Flag is the default when no industry regulator covers." },
+      { id:"f19-006", src:"review", ch:"REG", lo:"Federal", section:"Federal Law", type:"memorization",
+        q:"Which U.S. federal law requires federal agencies to comply with NIST cybersecurity standards?",
+        options:["FISMA","SOX","HIPAA","GLBA"],
+        explain:"FISMA mandates NIST 800-53 for federal agencies." },
+      { id:"f19-007", src:"review", ch:"REG", lo:"Public", section:"Public Companies", type:"memorization",
+        q:"Which U.S. law requires public companies to maintain effective internal controls over financial reporting?",
+        options:["SOX (Sarbanes-Oxley)","GLBA","HIPAA","PCI DSS"],
+        explain:"SOX Section 404 drives ICFR requirements." },
+      { id:"f19-008", src:"review", ch:"REG", lo:"Frameworks", section:"COBIT", type:"memorization",
+        q:"Per Lanz, who is responsible for applying COBIT?",
+        options:["The CIO","The Board","External auditors","The CFO"],
+        explain:"Lanz: the CIO is responsible for applying COBIT." },
+      { id:"f19-009", src:"review", ch:"REG", lo:"Cases", section:"Equifax", type:"memorization",
+        q:"What was the root cause of the Equifax breach?",
+        options:[
+          "Failure to apply a known vendor patch",
+          "An on-path attack on internal Wi-Fi",
+          "An insider threat from a disgruntled employee",
+          "A physical break-in at a data center"],
+        explain:"Equifax failed to patch a known Apache Struts vulnerability." },
+      { id:"f19-010", src:"hard", ch:"REG", lo:"Cases", section:"Equifax Mapping", type:"application",
+        q:"Equifax's breach maps MOST directly to which CIS Control?",
+        options:[
+          "Control 7 — Continuous Vulnerability Management",
+          "Control 1 — Inventory of Assets",
+          "Control 14 — Awareness and Training",
+          "Control 17 — Incident Response"],
+        explain:"Failure to patch = Continuous Vulnerability Management." },
+      { id:"f19-011", src:"review", ch:"REG", lo:"Cases", section:"Colonial", type:"memorization",
+        q:"What type of attack hit Colonial Pipeline in 2021?",
+        options:["Ransomware","DDoS","IP spoofing","Tailgating"],
+        explain:"Colonial = ransomware. CEO paid $4.4M." },
+      { id:"f19-012", src:"hard", ch:"REG", lo:"Cases", section:"Colonial Decision", type:"application",
+        q:"Colonial Pipeline's CEO chose to pay the $4.4M ransom. The MAIN debate this raised was:",
+        options:[
+          "Paying ransoms incentivizes future ransomware attacks",
+          "Whether ransomware is a federal crime",
+          "Whether pipelines need cybersecurity",
+          "Whether NIST 800-53 should be repealed"],
+        explain:"The ethical debate centered on whether paying encourages more attacks." },
+      { id:"f19-013", src:"review", ch:"REG", lo:"Cases", section:"Florida Water", type:"memorization",
+        q:"What did the Florida water supply attacker do after gaining access?",
+        options:[
+          "Increased sodium hydroxide levels in the water-treatment system to potentially fatal amounts",
+          "Encrypted hospital records and demanded a ransom",
+          "Published customer credit card numbers",
+          "Shut down the city's electrical grid"],
+        explain:"The Florida case = manipulating chemical-treatment levels." },
+      { id:"f19-014", src:"hard", ch:"REG", lo:"Industry Mapping", section:"HIPAA Scope", type:"application",
+        q:"Brooklyn is auditing a hospital's patient data security. Which regulation has the BIGGEST impact?",
+        options:["HIPAA","PCI DSS","GLBA","FISMA"],
+        explain:"Patient health → HIPAA." },
+      { id:"f19-015", src:"hard", ch:"REG", lo:"Industry Mapping", section:"GLBA Scope", type:"application",
+        q:"A wealth-management firm asks which regulation governs the security of its consumer financial data. The MOST applicable answer is:",
+        options:["GLBA","SOX","PCI DSS","FISMA"],
+        explain:"GLBA covers financial institutions." },
+      { id:"f19-016", src:"hard", ch:"REG", lo:"Industry Mapping", section:"Multi-Reg", type:"application",
+        q:"A small dental practice processes Visa cards at the front desk and stores patient records in an EHR. Which two regulations apply?",
+        options:["HIPAA (PHI) and PCI DSS (credit cards)","GLBA and SOX","PCI DSS and FISMA","Only HIPAA — credit cards are exempt"],
+        explain:"Patient health = HIPAA; card processing = PCI DSS." },
+      { id:"f19-017", src:"exam", ch:"REG", lo:"REG.EXAM", section:"FTC Red Flag", type:"application",
+        q:"A retail chain, Crovan Goods, has no industry-specific regulator and is concerned about identity theft. Which guidance applies?",
+        options:["FTC Red Flag Rules","GLBA","HIPAA","FISMA"],
+        explain:"FTC Red Flag is the default." },
+      { id:"f19-018", src:"exam", ch:"REG", lo:"REG.EXAM", section:"SOX → SOC 1", type:"application",
+        q:"Telkomet Industries (public co.) outsources payroll. To support SOX compliance over outsourced ICFR, Telkomet asks the service organization for:",
+        options:["A SOC 1 Type 2 report","A SOC 3","A SOC for Cybersecurity Type 1","A SOC for Supply Chain"],
+        explain:"SOC 1 covers ICFR; Type 2 = operating effectiveness." }
+    ];
+    const __ans = function() { return 0; }; // correct answer is always at options[0]
+    BANK.forEach((q, i) => { q.__i = i; });
+    Object.freeze(BANK);
+
+    const TOTAL_BANK = BANK.length;
+    const TEST_LENGTH = 40;
+
+    // ===== PERSISTENCE =====
+    const SEEN_KEY = 'bs_practice_test_final_seen_v1';
+    const INPROG_KEY = 'bs_practice_test_final_inprog_v1';
+    const LAST_KEY = 'bs_practice_test_final_last_v1';
+
+    function loadSeen() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(SEEN_KEY));
+        if (Array.isArray(raw)) return new Set(raw);
+      } catch(e) {}
+      return new Set();
+    }
+    function saveSeen() {
+      try { localStorage.setItem(SEEN_KEY, JSON.stringify(Array.from(seen))); } catch(e) {}
+    }
+    function loadInProgress() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(INPROG_KEY));
+        if (raw && Array.isArray(raw.ids) && raw.ids.length) return raw;
+      } catch(e) {}
+      return null;
+    }
+    function saveInProgress() {
+      if (!test) return;
+      try {
+        localStorage.setItem(INPROG_KEY, JSON.stringify({
+          ids: test.ids,
+          answers: test.answers,
+          elapsed: test.elapsed,
+          running: test.running,
+          pos: test.pos,
+          startedAt: test.startedAt,
+        }));
+      } catch(e) {}
+    }
+    function clearInProgress() {
+      try { localStorage.removeItem(INPROG_KEY); } catch(e) {}
+    }
+    function loadLast() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(LAST_KEY));
+        if (raw && typeof raw === 'object') return raw;
+      } catch(e) {}
+      return null;
+    }
+    function saveLast(summary) {
+      try { localStorage.setItem(LAST_KEY, JSON.stringify(summary)); } catch(e) {}
+    }
+
+    let seen = loadSeen();
+    let test = null;
+    let timerInterval = null;
+
+    // ===== HELPERS =====
+    function fmtTime(sec) {
+      sec = Math.max(0, Math.floor(sec));
+      const h = Math.floor(sec / 3600);
+      const m = Math.floor((sec % 3600) / 60);
+      const s = sec % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return h > 0 ? h + ':' + pad(m) + ':' + pad(s) : pad(m) + ':' + pad(s);
+    }
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+    function sample(arr, n) {
+      const copy = arr.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, n);
+    }
+    function qById(id) {
+      return BANK.find(q => q.id === id);
+    }
+
+    // ===== LANDING =====
+    function showScreen(which) {
+      document.getElementById('screen-landing').style.display = which === 'landing' ? '' : 'none';
+      document.getElementById('screen-test').style.display = which === 'test' ? '' : 'none';
+      document.getElementById('screen-results').style.display = which === 'results' ? '' : 'none';
+    }
+    function renderLanding() {
+      const remaining = BANK.filter(q => !seen.has(q.id));
+      document.getElementById('land-seen').textContent = seen.size;
+      document.getElementById('land-total').textContent = TOTAL_BANK;
+      document.getElementById('land-remaining').textContent = remaining.length;
+      document.getElementById('land-fill').style.width = (seen.size / TOTAL_BANK * 100).toFixed(1) + '%';
+
+      const reviewRem = remaining.filter(q => q.src === 'review').length;
+      const hardRem = remaining.filter(q => q.src === 'hard').length;
+      const examRem = remaining.filter(q => q.src === 'exam').length;
+      const reviewTot = BANK.filter(q => q.src === 'review').length;
+      const hardTot = BANK.filter(q => q.src === 'hard').length;
+      const examTot = BANK.filter(q => q.src === 'exam').length;
+      document.getElementById('land-breakdown').innerHTML =
+        'Review: <span class="val">' + reviewRem + '</span>/' + reviewTot + ' · ' +
+        'Hard: <span class="val">' + hardRem + '</span>/' + hardTot + ' · ' +
+        'Exam-style: <span class="val">' + examRem + '</span>/' + examTot + ' remaining';
+
+      const startBtn = document.getElementById('btn-start');
+      const inProg = loadInProgress();
+      if (inProg) {
+        document.getElementById('land-headline').textContent = 'Resume your test in progress.';
+        document.getElementById('land-sub').textContent = 'You have an unfinished test. Resume where you left off, or start over.';
+        startBtn.textContent = 'Resume Test';
+        startBtn.onclick = () => resumeTest();
+        // add a "start fresh" button alongside
+        if (!document.getElementById('btn-start-fresh')) {
+          const fresh = document.createElement('button');
+          fresh.id = 'btn-start-fresh';
+          fresh.textContent = 'Start New Test';
+          fresh.onclick = () => { clearInProgress(); renderLanding(); startTest(); };
+          startBtn.parentElement.insertBefore(fresh, startBtn.nextSibling);
+        }
+      } else {
+        const stale = document.getElementById('btn-start-fresh');
+        if (stale) stale.remove();
+        if (remaining.length === 0) {
+          document.getElementById('land-headline').textContent = 'Bank exhausted.';
+          document.getElementById('land-sub').textContent = 'You\u2019ve seen every question in both banks. Reset bank memory to start over.';
+          startBtn.disabled = true;
+          startBtn.textContent = 'No Questions Left';
+        } else if (remaining.length < TEST_LENGTH) {
+          startBtn.disabled = false;
+          startBtn.textContent = 'Start ' + remaining.length + '-Question Test';
+          startBtn.onclick = () => startTest();
+          document.getElementById('land-headline').textContent = 'Only ' + remaining.length + ' questions left in the bank.';
+          document.getElementById('land-sub').textContent = 'Your final test will use the remaining ' + remaining.length + ' unseen questions.';
+        } else {
+          startBtn.disabled = false;
+          startBtn.textContent = 'Start 40-Question Test';
+          startBtn.onclick = () => startTest();
+          document.getElementById('land-headline').textContent = 'Ready for 40 fresh questions.';
+          document.getElementById('land-sub').textContent = 'No overlap with previous attempts until the bank is exhausted.';
+        }
+      }
+
+      // Show last-result card if present
+      const last = loadLast();
+      const lastBox = document.getElementById('landing-last-result');
+      if (last) {
+        const pct = last.total ? Math.round(last.correct / last.total * 100) : 0;
+        lastBox.innerHTML = '<div class="card"><div class="section-label">Last Test</div>' +
+          '<div class="row"><div><span class="stat">Score <span class="val">' + last.correct + ' / ' + last.total + '</span> (' + pct + '%)</span></div>' +
+          '<div><span class="stat">Time <span class="val">' + fmtTime(last.elapsed || 0) + '</span></span></div>' +
+          '<div><span class="stat">Finished <span class="val">' + new Date(last.finishedAt || Date.now()).toLocaleString() + '</span></span></div></div></div>';
+      } else {
+        lastBox.innerHTML = '';
+      }
+    }
+
+    function resetBank() {
+      if (!confirm('Clear your bank memory? Your next test will be free to repeat any questions you\u2019ve already seen.')) return;
+      seen = new Set();
+      saveSeen();
+      renderLanding();
+    }
+
+    // ===== TEST =====
+    function pickQuestions(n) {
+      const remaining = BANK.filter(q => !seen.has(q.id));
+      if (remaining.length >= n) return sample(remaining, n);
+      // Exhausted — take all remaining, no padding. (We never repeat until reset.)
+      return sample(remaining, remaining.length);
+    }
+
+    function startTest() {
+      const picks = pickQuestions(TEST_LENGTH);
+      if (picks.length === 0) return;
+      test = {
+        ids: picks.map(q => q.id),
+        answers: picks.map(() => null),
+        pos: 0,
+        elapsed: 0,
+        running: true,
+        startedAt: Date.now(),
+      };
+      saveInProgress();
+      showScreen('test');
+      renderTest();
+      startTimer();
+    }
+
+    function resumeTest() {
+      const raw = loadInProgress();
+      if (!raw) return;
+      test = {
+        ids: raw.ids,
+        answers: Array.isArray(raw.answers) ? raw.answers : raw.ids.map(() => null),
+        pos: Number.isInteger(raw.pos) ? raw.pos : 0,
+        elapsed: Number(raw.elapsed) || 0,
+        running: raw.running !== false,
+        startedAt: raw.startedAt || Date.now(),
+      };
+      showScreen('test');
+      renderTest();
+      if (test.running) startTimer(); else renderTimerUi();
+    }
+
+    function renderTest() {
+      document.getElementById('q-pos').textContent = test.pos + 1;
+      document.getElementById('q-count').textContent = test.ids.length;
+      const answered = test.answers.filter(a => a !== null).length;
+      document.getElementById('answered-count').textContent = answered;
+      document.getElementById('q-fill').style.width = ((test.pos + 1) / test.ids.length * 100).toFixed(1) + '%';
+
+      const q = qById(test.ids[test.pos]);
+      if (!q) return;
+      document.getElementById('q-meta').textContent =
+        ((typeof q.ch === 'number' ? 'Ch ' + q.ch : q.ch) + ' · ' + (typeof q.ch === 'number' ? 'LO ' + q.lo : q.lo) + ' · ' + q.section + ' · ' + q.type);
+      document.getElementById('q-prompt').textContent = q.q;
+
+      const tags = document.getElementById('q-tags');
+      tags.innerHTML = '';
+      const srcTag = document.createElement('span');
+      srcTag.className = 'tag src-' + q.src;
+      srcTag.textContent = q.src === 'easy' ? 'Review Bank' : 'Hard Bank';
+      tags.appendChild(srcTag);
+
+      const container = document.getElementById('q-options');
+      container.innerHTML = '';
+      const letters = ['A','B','C','D'];
+      const selected = test.answers[test.pos];
+      q.options.forEach((opt, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'option' + (selected === i ? ' selected' : '');
+        btn.innerHTML = '<span class="letter">' + letters[i] + '</span><span>' + escapeHtml(opt) + '</span>';
+        btn.addEventListener('click', () => selectOption(i));
+        container.appendChild(btn);
+      });
+
+      document.getElementById('btn-prev').disabled = test.pos === 0;
+      const isLast = test.pos === test.ids.length - 1;
+      document.getElementById('btn-next').style.display = isLast ? 'none' : '';
+      document.getElementById('btn-submit').style.display = isLast ? '' : 'none';
+      document.getElementById('btn-skip').style.display = (selected === null && !isLast) ? '' : 'none';
+      // If last question and unanswered, keep skip visible alongside submit
+      if (isLast && selected === null) {
+        document.getElementById('btn-skip').style.display = '';
+        document.getElementById('btn-skip').textContent = 'Leave Blank';
+      } else {
+        document.getElementById('btn-skip').textContent = 'Skip →';
+      }
+    }
+
+    function selectOption(i) {
+      test.answers[test.pos] = i;
+      saveInProgress();
+      // Update UI selection without full re-render
+      const opts = document.querySelectorAll('#q-options .option');
+      opts.forEach((o, oi) => o.classList.toggle('selected', oi === i));
+      document.getElementById('answered-count').textContent = test.answers.filter(a => a !== null).length;
+      // Hide skip once answered (unless on last, handled in renderTest)
+      const isLast = test.pos === test.ids.length - 1;
+      document.getElementById('btn-skip').style.display = isLast ? 'none' : 'none';
+    }
+
+    function nextQ() {
+      if (test.pos < test.ids.length - 1) {
+        test.pos++;
+        saveInProgress();
+        renderTest();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+    function prevQ() {
+      if (test.pos > 0) {
+        test.pos--;
+        saveInProgress();
+        renderTest();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+
+    function finishTest() {
+      const unanswered = test.answers.filter(a => a === null).length;
+      if (unanswered > 0) {
+        if (!confirm('You have ' + unanswered + ' unanswered question' + (unanswered === 1 ? '' : 's') + '. Submit anyway?')) return;
+      }
+      scoreAndShow();
+    }
+    function endEarly() {
+      if (!confirm('End the test now and see your score? Unanswered questions count as skipped.')) return;
+      scoreAndShow();
+    }
+    function abandonTest() {
+      if (!confirm('Abandon this test? Nothing will be saved and these questions stay in your bank for next time.')) return;
+      stopTimer();
+      test = null;
+      clearInProgress();
+      showScreen('landing');
+      renderLanding();
+    }
+
+    function scoreAndShow() {
+      stopTimer();
+      let correct = 0, wrong = 0, skipped = 0;
+      const review = [];
+      test.ids.forEach((id, i) => {
+        const q = qById(id);
+        const ans = test.answers[i];
+        const truth = __ans(q.__i);
+        const isRight = ans !== null && ans === truth;
+        if (ans === null) skipped++;
+        else if (isRight) correct++;
+        else wrong++;
+        review.push({ q, ans, truth, isRight, skipped: ans === null });
+        seen.add(id);
+      });
+      saveSeen();
+
+      const total = test.ids.length;
+      const summary = {
+        correct, wrong, skipped, total,
+        elapsed: test.elapsed,
+        finishedAt: Date.now(),
+      };
+      saveLast(summary);
+      clearInProgress();
+
+      // Render results
+      const pct = total ? Math.round(correct / total * 100) : 0;
+      document.getElementById('res-score').textContent = correct + ' / ' + total;
+      document.getElementById('res-sub').textContent = pct + '% correct';
+      document.getElementById('res-time').textContent = fmtTime(test.elapsed);
+      document.getElementById('res-correct').textContent = correct;
+      document.getElementById('res-wrong').textContent = wrong;
+      document.getElementById('res-skipped').textContent = skipped;
+
+      const easyCorrect = review.filter(r => r.q.src === 'easy' && r.isRight).length;
+      const easyTotal = review.filter(r => r.q.src === 'easy').length;
+      const hardCorrect = review.filter(r => r.q.src === 'hard' && r.isRight).length;
+      const hardTotal = review.filter(r => r.q.src === 'hard').length;
+      document.getElementById('res-breakdown').innerHTML =
+        'Review bank: <span class="val">' + easyCorrect + ' / ' + easyTotal + '</span> · ' +
+        'Hard bank: <span class="val">' + hardCorrect + ' / ' + hardTotal + '</span>';
+
+      const list = document.getElementById('review-list');
+      list.innerHTML = '';
+      const letters = ['A','B','C','D'];
+      review.forEach((r, i) => {
+        const box = document.createElement('div');
+        box.className = 'review-item ' + (r.isRight ? 'correct-item' : (r.skipped ? 'skipped-item' : 'wrong-item'));
+        const meta = ((typeof r.q.ch === 'number' ? 'Ch ' + r.q.ch : r.q.ch) + ' · ' + (typeof r.q.ch === 'number' ? 'LO ' + r.q.lo : r.q.lo) + ' · ' + r.q.section);
+        let html = '<div class="q-number">Q' + (i + 1) + ' · ' + escapeHtml(meta) + (r.q.src === 'hard' ? ' · Hard' : '') + '</div>';
+        html += '<div class="review-q">' + escapeHtml(r.q.q) + '</div>';
+        if (r.skipped) {
+          html += '<div class="review-line"><span class="lbl">Your answer</span><span class="val" style="color:#a8a29e;">— skipped —</span></div>';
+        } else {
+          html += '<div class="review-line ' + (r.isRight ? 'right' : 'wrong') + '"><span class="lbl">Your answer</span><span class="val">' + letters[r.ans] + '. ' + escapeHtml(r.q.options[r.ans]) + '</span></div>';
+        }
+        if (!r.isRight) {
+          html += '<div class="review-line right"><span class="lbl">Correct</span><span class="val">' + letters[r.truth] + '. ' + escapeHtml(r.q.options[r.truth]) + '</span></div>';
+        }
+        if (r.q.explain) {
+          html += '<div class="explain">' + escapeHtml(r.q.explain) + '</div>';
+        }
+        box.innerHTML = html;
+        list.appendChild(box);
+      });
+
+      showScreen('results');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function scrollToReview() {
+      const el = document.getElementById('review-anchor');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    function goLanding() {
+      test = null;
+      showScreen('landing');
+      renderLanding();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ===== TIMER =====
+    function renderTimerUi() {
+      document.getElementById('timer-value').textContent = fmtTime(test ? test.elapsed : 0);
+      const icon = document.getElementById('timer-icon');
+      const btn = document.getElementById('timer-btn');
+      const running = !!(test && test.running);
+      if (icon) {
+        icon.innerHTML = running
+          ? '<rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect>'
+          : '<path d="M1 1 L7 4 L1 7 Z"></path>';
+      }
+      if (btn) {
+        btn.setAttribute('aria-label', running ? 'Pause timer' : 'Resume timer');
+        btn.setAttribute('title', running ? 'Pause timer' : 'Resume timer');
+      }
+    }
+    function startTimer() {
+      if (!test) return;
+      stopTimerInterval();
+      test.running = true;
+      saveInProgress();
+      renderTimerUi();
+      timerInterval = setInterval(() => {
+        if (!test) return;
+        if (!test.running) return;
+        test.elapsed++;
+        document.getElementById('timer-value').textContent = fmtTime(test.elapsed);
+        if (test.elapsed % 5 === 0) saveInProgress();
+      }, 1000);
+    }
+    function stopTimerInterval() {
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    }
+    function stopTimer() {
+      stopTimerInterval();
+      if (test) { test.running = false; saveInProgress(); renderTimerUi(); }
+    }
+    function toggleTimer() {
+      if (!test) return;
+      if (test.running) stopTimer(); else startTimer();
+    }
+    document.getElementById('timer-btn').addEventListener('click', toggleTimer);
+
+    // Keyboard
+    document.addEventListener('keydown', (e) => {
+      if (document.getElementById('screen-test').style.display === 'none') return;
+      const tag = (e.target && e.target.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.key === 'ArrowRight') { e.preventDefault(); nextQ(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); prevQ(); }
+      else if (['1','2','3','4','a','b','c','d','A','B','C','D'].includes(e.key)) {
+        const map = {'1':0,'2':1,'3':2,'4':3,'a':0,'b':1,'c':2,'d':3,'A':0,'B':1,'C':2,'D':3};
+        selectOption(map[e.key]);
+      } else if (e.key === ' ') { e.preventDefault(); toggleTimer(); }
+    });
+
+    // ===== BOOT =====
+    function boot() {
+      showScreen('landing');
+      renderLanding();
+    }
+    boot();
+  </script>
+</body>
+</html>
