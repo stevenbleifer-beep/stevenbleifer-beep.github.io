@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Final Exam Guide — Bleifer Study</title>
+  <meta name="description" content="Final exam guide for AIS with Prof. Lanz — Chapter 16 cybersecurity and CIS Controls focus" />
+  <meta name="theme-color" content="#fbf9f4" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #fbf9f4;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1c1917;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .container {
+      max-width: 680px;
+      width: 100%;
+      padding: 64px 24px 64px;
+    }
+    .back {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #78716c;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 32px;
+    }
+    .back:hover { color: #1c1917; }
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .tagline {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #78716c;
+      font-size: 0.95rem;
+      margin-bottom: 40px;
+    }
+
+    /* Exam logistics banner */
+    .logistics {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .logistic-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .logistic-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #a8a29e;
+    }
+    .logistic-value {
+      font-family: Georgia, serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1c1917;
+    }
+
+    /* Section */
+    .section-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #a8a29e;
+      margin-bottom: 12px;
+      margin-top: 40px;
+    }
+
+    /* Topic card */
+    .topic-card {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 12px;
+      padding: 22px 24px;
+      margin-bottom: 12px;
+    }
+    .topic-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .topic-title {
+      font-family: Georgia, serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #1c1917;
+      line-height: 1.3;
+    }
+    .pill {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 4px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .pill-default { background: #f5f5f4; color: #78716c; }
+    .pill-hot { background: #fef2f2; color: #b91c1c; }
+    .pill-warn { background: #fffbeb; color: #92400e; }
+    .pill-muted { background: #f5f5f4; color: #a8a29e; }
+    .pill-info { background: #eff6ff; color: #1d4ed8; }
+
+    /* Bullet list inside cards */
+    .notes {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .notes li {
+      font-size: 0.875rem;
+      color: #44403c;
+      line-height: 1.55;
+      padding-left: 16px;
+      position: relative;
+    }
+    .notes li::before {
+      content: "–";
+      position: absolute;
+      left: 0;
+      color: #a8a29e;
+    }
+    .notes li strong {
+      color: #1c1917;
+      font-weight: 600;
+    }
+
+    /* Sub-header inside a topic card */
+    .sub-header {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #a8a29e;
+      margin-top: 16px;
+      margin-bottom: 8px;
+    }
+    .sub-header:first-child { margin-top: 0; }
+
+    /* Two-column compare table */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      border: 1px solid #e7e5e4;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-top: 4px;
+    }
+    .compare-col {
+      padding: 14px 16px;
+      background: #fafaf9;
+    }
+    .compare-col:first-child {
+      border-right: 1px solid #e7e5e4;
+    }
+    .compare-head {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: #a8a29e;
+      margin-bottom: 6px;
+    }
+    .compare-title {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .compare-body {
+      font-size: 0.8rem;
+      color: #57534e;
+      line-height: 1.5;
+    }
+
+    /* CIS asset class diagram */
+    .asset-diagram {
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      border-radius: 8px;
+      padding: 18px;
+      margin-top: 4px;
+    }
+    .asset-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.78rem;
+      color: #1c1917;
+      justify-content: center;
+    }
+    .asset-row.top {
+      margin-bottom: 8px;
+      color: #78716c;
+      font-style: italic;
+      font-family: Georgia, serif;
+      font-size: 0.85rem;
+    }
+    .asset-row.bottom {
+      margin-top: 8px;
+      color: #78716c;
+      font-style: italic;
+      font-family: Georgia, serif;
+      font-size: 0.85rem;
+    }
+    .asset-pill {
+      background: #fff;
+      border: 1px solid #d6d3d1;
+      padding: 5px 10px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .asset-arrow {
+      color: #a8a29e;
+      font-weight: bold;
+    }
+
+    /* Mini-list rows for CIS controls */
+    .ctrl-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      margin-top: 4px;
+    }
+    .ctrl-row {
+      display: flex;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f5f5f4;
+      align-items: flex-start;
+    }
+    .ctrl-row:last-child { border-bottom: none; }
+    .ctrl-num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.7rem;
+      color: #a8a29e;
+      flex-shrink: 0;
+      width: 26px;
+      padding-top: 1px;
+    }
+    .ctrl-body { flex: 1; min-width: 0; }
+    .ctrl-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #1c1917;
+      line-height: 1.3;
+    }
+    .ctrl-detail {
+      font-size: 0.78rem;
+      color: #78716c;
+      margin-top: 2px;
+      line-height: 1.45;
+    }
+
+    /* Skip / Focus box */
+    .focus-box {
+      background: #ecfeff;
+      border: 1px solid #a5f3fc;
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-bottom: 24px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .focus-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: #0e7490;
+    }
+    .focus-title {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #155e75;
+      margin-bottom: 5px;
+    }
+    .focus-body {
+      font-size: 0.85rem;
+      color: #155e75;
+      line-height: 1.55;
+    }
+
+    /* Strategy box */
+    .strategy-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 18px 22px;
+      margin-top: 40px;
+    }
+    .strategy-title {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1c1917;
+      margin-bottom: 10px;
+    }
+
+    /* Key term inline */
+    .term {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #1c1917;
+    }
+
+    /* Quick reference list */
+    .quick-ref {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .quick-ref li {
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+      font-size: 0.85rem;
+      line-height: 1.45;
+    }
+    .quick-ref .key {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.72rem;
+      color: #1c1917;
+      font-weight: 600;
+      flex-shrink: 0;
+      min-width: 88px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .quick-ref .val {
+      color: #57534e;
+    }
+
+    /* Numbered emphasis row (for Plan/Policy/Process/Procedure etc.) */
+    .seq {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .seq-item {
+      flex: 1;
+      min-width: 120px;
+      background: #fafaf9;
+      border: 1px solid #e7e5e4;
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .seq-num {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      color: #a8a29e;
+      text-transform: uppercase;
+    }
+    .seq-name {
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1c1917;
+      margin: 2px 0 4px;
+    }
+    .seq-desc {
+      font-size: 0.75rem;
+      color: #78716c;
+      line-height: 1.45;
+    }
+
+    footer {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid #e7e5e4;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #a8a29e;
+    }
+
+    @media (max-width: 540px) {
+      .compare { grid-template-columns: 1fr; }
+      .compare-col:first-child { border-right: none; border-bottom: 1px solid #e7e5e4; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="ais.html">← AIS Review</a>
+    <h1>Final Exam Guide</h1>
+    <div class="tagline">AIS · Prof. Lanz · Ch 16 cybersecurity + Center for Internet Security focus</div>
+
+    <!-- Logistics -->
+    <div class="logistics">
+      <div class="logistic-item">
+        <span class="logistic-label">Format</span>
+        <span class="logistic-value">40 MC Questions</span>
+      </div>
+      <div class="logistic-item">
+        <span class="logistic-label">Primary Focus</span>
+        <span class="logistic-value">Ch 16 + CIS Controls</span>
+      </div>
+      <div class="logistic-item">
+        <span class="logistic-label">Also Tested</span>
+        <span class="logistic-value">SOC, TSC, Frameworks</span>
+      </div>
+      <div class="logistic-item">
+        <span class="logistic-label">Case</span>
+        <span class="logistic-value">Equifax</span>
+      </div>
+    </div>
+
+    <!-- Focus banner -->
+    <div class="focus-box">
+      <div class="focus-icon">★</div>
+      <div>
+        <div class="focus-title">What Lanz emphasized</div>
+        <div class="focus-body">Read the <strong>CIS introduction</strong> — it will be tested. For each control, read the <strong>overview</strong>, <strong>"why is this control critical?"</strong>, and the <strong>safeguards</strong>. Always read <strong>IG1</strong>; he'll tell you if IG2/IG3 matter. Don't memorize which safeguard maps to which control — know <strong>the concept of what each safeguard accomplishes</strong>.</div>
+      </div>
+    </div>
+
+    <div class="section-label">Chapter 16 — Cybersecurity</div>
+
+    <!-- Cyber-kill chain -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">The Cyber-Kill Chain</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <ul class="notes" style="margin-bottom: 16px;">
+        <li>The full life cycle of a cyberattack — three sequential stages.</li>
+        <li>Every attack in Ch 16 falls into one of these stages, and every stage is either <strong>physical</strong> or <strong>logical</strong>.</li>
+      </ul>
+      <div class="seq">
+        <div class="seq-item">
+          <div class="seq-num">Stage 1</div>
+          <div class="seq-name">Reconnaissance</div>
+          <div class="seq-desc">Gather information about the network. Identify targets and vulnerabilities.</div>
+        </div>
+        <div class="seq-item">
+          <div class="seq-num">Stage 2</div>
+          <div class="seq-name">Access</div>
+          <div class="seq-desc">Get into the network. Use info from recon or force entry.</div>
+        </div>
+        <div class="seq-item">
+          <div class="seq-num">Stage 3</div>
+          <div class="seq-name">Disrupt</div>
+          <div class="seq-desc">Damage, destroy, steal, ransom, or shut down the network.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recon attacks -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Reconnaissance Attacks — Physical vs Logical</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <div class="compare">
+        <div class="compare-col">
+          <div class="compare-head">Physical recon</div>
+          <div class="compare-title">Human interaction required</div>
+          <div class="compare-body">
+            <strong>Phishing</strong> — deceptive email tricking the victim. Social engineering is always physical because the target is a person.<br><br>
+            <strong>Dumpster diving</strong> — looking through trash for passwords, network diagrams, sensitive info.<br><br>
+            <strong>Eavesdropping (sniffing)</strong> — unauthorized interception of communication. Mitigate with encryption + secure FTP.
+          </div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-head">Logical recon</div>
+          <div class="compare-title">Fully digital, no human target</div>
+          <div class="compare-body">
+            <strong>Ping sweep (IP probe)</strong> — pings each IP to see which hosts are <em>active</em>.<br><br>
+            <strong>Port scan</strong> — narrows the active list by finding which <em>ports</em> are open and accepting traffic.<br><br>
+            <strong>Defenses:</strong> internal vulnerability scans, penetration testing, applying patches promptly.
+          </div>
+        </div>
+      </div>
+      <div class="sub-header" style="margin-top: 16px;">Email phishing red flags</div>
+      <ul class="notes">
+        <li>Wrong sender domain (e.g. <em>arnazon.com</em> not <em>amazon.com</em>), vague salutation, poor grammar.</li>
+        <li>Urgency words: "suspended", "security concerns", "immediately".</li>
+        <li>Hover-mismatched links, surveys asking for personal info instead of a portal login.</li>
+      </ul>
+    </div>
+
+    <!-- Access attacks -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Access Attacks — Physical vs Logical</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <div class="compare">
+        <div class="compare-col">
+          <div class="compare-head">Physical access</div>
+          <div class="compare-title">Tailgating (piggybacking)</div>
+          <div class="compare-body">
+            Following an authorized user through a checkpoint to use their credentials.<br><br>
+            <strong>Accidental:</strong> authorized user is unaware.<br>
+            <strong>Polite:</strong> authorized user holds the door.<br><br>
+            Controls: PE-2/3 (authorizations, escorts, guards, barriers), PE-6 (intrusion alarms, surveillance).
+          </div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-head">Logical access</div>
+          <div class="compare-title">Force or exploit the network</div>
+          <div class="compare-body">
+            <strong>Brute-force</strong> — guess passwords with automation; <em>dictionary attacks</em> use common words.<br><br>
+            <strong>On-path (MITM)</strong> — actively injects between two endpoints. Different from eavesdropping (passive).<br><br>
+            <strong>IP spoofing</strong> — forges source addresses to impersonate a legitimate host.
+          </div>
+        </div>
+      </div>
+      <div class="sub-header" style="margin-top: 16px;">NIST password guidelines</div>
+      <ul class="notes">
+        <li>Length 8–64, mix character types, avoid dictionary words and previously used passwords.</li>
+        <li>Only reset on compromise. Use <strong>MFA</strong> where possible. Limit failed login attempts.</li>
+      </ul>
+    </div>
+
+    <!-- Disruptive attacks -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Disruptive Attacks</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <div class="sub-header">Denial-of-service family</div>
+      <ul class="notes" style="margin-bottom: 12px;">
+        <li><strong>DoS</strong> — flood a single target with fake requests until it can't serve real users. Single source.</li>
+        <li><strong>Botnet</strong> — network of malware-infected computers acting as robots for the attacker.</li>
+        <li><strong>DDoS</strong> — DoS but distributed across <em>many</em> sources/IPs. Harder to stop because each source must be identified, and harder to distinguish from legitimate traffic.</li>
+      </ul>
+      <div class="sub-header">Malware types — replication is the key distinction</div>
+      <div class="compare">
+        <div class="compare-col">
+          <div class="compare-head">Replicates</div>
+          <div class="compare-title">Virus &middot; Worm</div>
+          <div class="compare-body">
+            <strong>Virus</strong> — replicates with human interaction (clicking, opening attachments).<br><br>
+            <strong>Worm</strong> — replicates <em>without</em> human interaction. Same destructive power as a virus.
+          </div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-head">Does not replicate</div>
+          <div class="compare-title">Trojan &middot; Logic Bomb</div>
+          <div class="compare-body">
+            <strong>Trojan horse</strong> — disguised as benign software; usually installs a back door.<br><br>
+            <strong>Logic bomb</strong> — dormant code that triggers when conditions are met. Hard to detect or prevent until activated.
+          </div>
+        </div>
+      </div>
+      <ul class="notes" style="margin-top: 12px;">
+        <li><strong>Ransomware</strong> = malware used to hold a system hostage in exchange for a payment (Colonial Pipeline).</li>
+      </ul>
+    </div>
+
+    <!-- NIST CSF + 800-53 -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">NIST — Framework vs Control Catalog</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <ul class="notes" style="margin-bottom: 14px;">
+        <li><strong>NIST</strong> = National Institute of Standards and Technology (U.S. Dept. of Commerce). Mandated by the <strong>FISMA</strong> law for federal agencies.</li>
+        <li>Two distinct things to keep separate on the exam:</li>
+      </ul>
+      <div class="compare">
+        <div class="compare-col">
+          <div class="compare-head">High-level framework</div>
+          <div class="compare-title">NIST CSF — Functions</div>
+          <div class="compare-body">
+            <strong>v1.1: 5 functions</strong> — Identify, Protect, Detect, Respond, Recover.<br><br>
+            <strong>v2.0: 6 functions</strong> — added <strong>Govern</strong>.<br><br>
+            Best-practice cybersecurity program framework.
+          </div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-head">Detailed control catalog</div>
+          <div class="compare-title">NIST 800-53 — 18 Families</div>
+          <div class="compare-body">
+            18 control families (AC, AT, AU, CA, CM, CP, IA, IR, MA, MP, PE, PL, PS, RA, SA, SC, SI, PM).<br><br>
+            Each family contains specific controls (e.g. <strong>RA-5</strong> Vulnerability Scanning, <strong>CA-8</strong> Pen Testing, <strong>SC-5</strong> DoS Protection).
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent threats -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Recent Cybersecurity Threats</div>
+        <span class="pill pill-warn">Know the Examples</span>
+      </div>
+      <ul class="notes">
+        <li><strong>Colonial Pipeline</strong> — ransomware attack; CEO paid $4.4M ransom.</li>
+        <li><strong>Florida Water Supply</strong> — hacker accessed treatment system and increased sodium hydroxide levels (terrorism-like physical impact via cyber).</li>
+        <li><strong>Equifax</strong> — names, SSNs, DOBs, addresses, driver's license info stolen. <strong>Root cause: failed to apply a known vendor patch.</strong> Maps to <em>Continuous Vulnerability Management</em> (CIS Control 7).</li>
+      </ul>
+    </div>
+
+    <div class="section-label">CIS Controls — Center for Internet Security</div>
+
+    <!-- CIS background -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Background &amp; Threat Intelligence</div>
+        <span class="pill pill-hot">Read the Intro</span>
+      </div>
+      <ul class="notes" style="margin-bottom: 14px;">
+        <li><strong>SANS</strong> originally created the critical security controls list, then transferred it to <strong>CIS</strong>.</li>
+        <li>To know which controls to prioritize, you have to know <strong>what the threats are</strong> — that's where threat intel comes in.</li>
+      </ul>
+      <ul class="quick-ref">
+        <li><span class="key">Verizon DBIR</span><span class="val">Annual <strong>retrospective</strong> — real breaches Verizon investigated. "What already happened."</span></li>
+        <li><span class="key">MITRE ATT&amp;CK</span><span class="val"><strong>Predictive</strong> database of enterprise adversary techniques. Used in risk assessments to anticipate attacks before they happen.</span></li>
+        <li><span class="key">CIS Benchmarks</span><span class="val">Measurable configuration standards. The framework you bring to the <strong>audit committee / board</strong>.</span></li>
+        <li><span class="key">NIST</span><span class="val">U.S. risk management frameworks. Anchored by the <strong>FISMA</strong> law.</span></li>
+        <li><span class="key">ISO</span><span class="val">International standard.</span></li>
+        <li><span class="key">FISMA</span><span class="val">U.S. federal law requiring information security at federal agencies — points to NIST.</span></li>
+      </ul>
+    </div>
+
+    <!-- Asset Classes -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">The Six Asset Classes</div>
+        <span class="pill pill-hot">Memorize</span>
+      </div>
+      <ul class="notes" style="margin-bottom: 14px;">
+        <li><strong>Documentation</strong> applies to everything (above the line). <strong>Network</strong> applies to everything (below the line). Both wrap the workflow.</li>
+        <li>The flow: <strong>Users</strong> → <strong>Devices</strong> → <strong>Software</strong> → <strong>Data</strong> (the end result you protect).</li>
+        <li>Hardware is <strong>not</strong> a separate class — it's part of <em>Devices</em>.</li>
+      </ul>
+      <div class="asset-diagram">
+        <div class="asset-row top">Documentation</div>
+        <div class="asset-row">
+          <span class="asset-pill">Users</span>
+          <span class="asset-arrow">→</span>
+          <span class="asset-pill">Devices</span>
+          <span class="asset-arrow">→</span>
+          <span class="asset-pill">Software</span>
+          <span class="asset-arrow">→</span>
+          <span class="asset-pill">Data</span>
+        </div>
+        <div class="asset-row bottom">Network</div>
+      </div>
+      <ul class="notes" style="margin-top: 14px;">
+        <li>If you could only choose one to secure: <strong>Documentation</strong> or <strong>Data</strong>. (Use cyber language, not accounting language.)</li>
+        <li><strong>Multi-layered security</strong>: many points of entry → controls at every level.</li>
+      </ul>
+    </div>
+
+    <!-- Documentation hierarchy -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Documentation Hierarchy — 4 P's</div>
+        <span class="pill pill-hot">Memorize</span>
+      </div>
+      <ul class="notes" style="margin-bottom: 12px;">
+        <li><strong>IT policies do not come from the Board</strong> — they come from the <strong>IT Steering Committee</strong>. (Lanz IT-specific distinction.)</li>
+        <li>Procedure is the lowest, most specific level — ordered steps to accomplish a task.</li>
+      </ul>
+      <div class="seq">
+        <div class="seq-item">
+          <div class="seq-num">Highest</div>
+          <div class="seq-name">Plan</div>
+          <div class="seq-desc">Strategic direction.</div>
+        </div>
+        <div class="seq-item">
+          <div class="seq-num">↓</div>
+          <div class="seq-name">Policy</div>
+          <div class="seq-desc">Rules and intent.</div>
+        </div>
+        <div class="seq-item">
+          <div class="seq-num">↓</div>
+          <div class="seq-name">Process</div>
+          <div class="seq-desc">How work flows.</div>
+        </div>
+        <div class="seq-item">
+          <div class="seq-num">Lowest</div>
+          <div class="seq-name">Procedure</div>
+          <div class="seq-desc">Specific steps.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Implementation Groups -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Implementation Groups (IG1, IG2, IG3)</div>
+        <span class="pill pill-hot">Always Read IG1</span>
+      </div>
+      <ul class="notes">
+        <li><strong>IG1 — Essential cyber hygiene.</strong> Fundamental controls every small-to-mid business should implement. <em>Always read this.</em></li>
+        <li><strong>IG2</strong> — Builds on IG1; for larger or more regulated enterprises. Lanz will tell you if you need to read it.</li>
+        <li><strong>IG3</strong> — Most mature; for organizations that need to defend against sophisticated adversaries.</li>
+        <li>There is <strong>no IG4</strong>.</li>
+      </ul>
+    </div>
+
+    <!-- The 18 CIS Controls -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">The 18 CIS Controls</div>
+        <span class="pill pill-hot">Know Each Concept</span>
+      </div>
+      <ul class="notes" style="margin-bottom: 14px;">
+        <li>Don't memorize which safeguard maps to which control — know <strong>what each control accomplishes</strong>.</li>
+        <li>The concepts below are what Lanz emphasized in lecture for each one.</li>
+      </ul>
+      <div class="ctrl-list">
+        <div class="ctrl-row">
+          <div class="ctrl-num">01</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Inventory and Control of Enterprise Assets</div>
+            <div class="ctrl-detail">"Can't protect what you don't know you have." Active discovery, DHCP logging. Static inventory is most secure but a pain. <strong>Know all safeguards.</strong></div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">02</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Inventory and Control of Software Assets</div>
+            <div class="ctrl-detail">Ensure software is currently <strong>supported</strong> — unsupported software won't get security patches. Allowlist authorized software (SG 2.5).</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">03</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Data Protection</div>
+            <div class="ctrl-detail">Inventory + risk-rank data (3.7). <strong>When in doubt, encrypt</strong> (3.9). Encrypt data in transit (3.10), segment data (3.12), data loss prevention (3.13). Firewalls cannot read encrypted packets — that's why DLP exists.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">04</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Secure Configuration of Enterprise Assets and Software</div>
+            <div class="ctrl-detail"><strong>Harden</strong> all assets — configure for security. Eliminate default accounts (everybody knows them). Host firewalls (4.5). Uninstall unused software (4.8) — if it's there, you're responsible for it.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">05</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Account Management</div>
+            <div class="ctrl-detail">Hierarchy of admin types — what each can do. Review access <strong>every 30 days</strong>. Dedicated admin accounts separate from daily-use accounts.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">06</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Access Control Management</div>
+            <div class="ctrl-detail">Role-Based Access Control (RBAC, SG 6.8). MFA required for externally-exposed apps, remote access, and admin access.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">07</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Continuous Vulnerability Management</div>
+            <div class="ctrl-detail">"Where accounting and audit go crazy." Vulnerability scanners rate findings. <strong>This is the Equifax control.</strong></div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">08</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Audit Log Management</div>
+            <div class="ctrl-detail">Logs let you know everything that's going on. Configuration determines log detail — wrong config can disable logs. Centralize logs (SG 8.9).</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">09</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Email and Web Browser Protections</div>
+            <div class="ctrl-detail">Lighter coverage in lecture.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">10</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Malware Defenses</div>
+            <div class="ctrl-detail">Anti-malware signatures must update <strong>automatically, daily</strong> (10.2) — manual or quarterly defeats the purpose.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">11</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Data Recovery</div>
+            <div class="ctrl-detail">Need ability to <em>restore</em> after a breach. <strong>Test recovery quarterly</strong> (SG 11.5) — untested backups are unproven.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">12</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Network Infrastructure Management</div>
+            <div class="ctrl-detail">Keep network infrastructure up to date (12.1). Maintain a current network schematic (12.4) so you understand what you're looking at.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">13</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Network Monitoring and Defense</div>
+            <div class="ctrl-detail">Encryption + firewalls. <strong>Configurations are everything.</strong> Segment the network (13.4) and put a safeguard in each segment via firewalls.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">14</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Security Awareness and Skills Training</div>
+            <div class="ctrl-detail">Train people to recognize threats. Counters phishing and social engineering at the human layer.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">15</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Service Provider Management</div>
+            <div class="ctrl-detail">Ties directly to <strong>SOC reports</strong>. Walk through the Trust Services Criteria for any provider holding your data.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">16</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Application Software Security</div>
+            <div class="ctrl-detail">Apps need their own security. Safeguards follow the SDLC. Know 16.1 / 16.2 at a high level.</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">17</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Incident Response Management</div>
+            <div class="ctrl-detail">Need policies/procedures before something happens. <strong>Alternate communication channels (17.6)</strong> — assume the hacker is inside and primary channels are compromised. Run exercises (17.7).</div>
+          </div>
+        </div>
+        <div class="ctrl-row">
+          <div class="ctrl-num">18</div>
+          <div class="ctrl-body">
+            <div class="ctrl-name">Penetration Testing</div>
+            <div class="ctrl-detail">Simulate a real attacker. Pen test <em>exploits</em> (only finds one way in). Vulnerability assessment <em>identifies</em> (find as many as possible, no exploit). <strong>If you hear "exploit," it's a pen test.</strong> Engage external testers (18.2). Fix what you find (18.3). Not ready for a pen test = a weakness.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">Regulations — Match the Industry to the Rule</div>
+
+    <!-- Regulations -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Industry-to-Regulation Quick Map</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <ul class="quick-ref">
+        <li><span class="key">Healthcare</span><span class="val"><strong>HIPAA</strong> + <strong>HITECH</strong> — patient health info.</span></li>
+        <li><span class="key">Financial svcs</span><span class="val"><strong>GLBA</strong> — banks, wealth managers, JPMorgan-type firms.</span></li>
+        <li><span class="key">Credit cards</span><span class="val"><strong>PCI DSS</strong> — issued by PCI Security Standards Council. <em>Not a law.</em> Non-compliance = lose card processing.</span></li>
+        <li><span class="key">Identity theft</span><span class="val"><strong>FTC Red Flag Rules</strong> — the default when no industry regulator applies.</span></li>
+        <li><span class="key">Federal agency</span><span class="val"><strong>FISMA</strong> → NIST 800-53.</span></li>
+        <li><span class="key">Public co. ICFR</span><span class="val"><strong>SOX</strong> — financial reporting integrity.</span></li>
+        <li><span class="key">Voluntary</span><span class="val"><strong>SOC 2</strong> — privacy is one of the trust criteria, but no one is required to follow SOC 2.</span></li>
+      </ul>
+    </div>
+
+    <div class="section-label">SOC Reports &amp; Trust Services Criteria</div>
+
+    <!-- SOC reports -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">SOC Report Types</div>
+        <span class="pill pill-hot">Definitely Tested</span>
+      </div>
+      <ul class="quick-ref" style="margin-bottom: 14px;">
+        <li><span class="key">SOC 1</span><span class="val">Internal controls over <strong>financial reporting</strong> (ICFR) at a service organization.</span></li>
+        <li><span class="key">SOC 2</span><span class="val">Trust Services Criteria — security, availability, processing integrity, confidentiality, privacy. <em>Restricted-use.</em></span></li>
+        <li><span class="key">SOC 3</span><span class="val"><strong>Public summary</strong> of SOC 2. Automatically <strong>Type 2</strong>.</span></li>
+        <li><span class="key">SOC for Cyber</span><span class="val">Enterprise-wide cybersecurity risk program. Must be based on <strong>NIST CSF or TSC</strong>.</span></li>
+        <li><span class="key">SOC for Supply Chain</span><span class="val">Production / supply chain controls.</span></li>
+      </ul>
+      <div class="sub-header">Type 1 vs Type 2</div>
+      <div class="compare">
+        <div class="compare-col">
+          <div class="compare-head">Type 1</div>
+          <div class="compare-title">Design at a point in time</div>
+          <div class="compare-body">"How we would like it to be." Are the controls designed properly?</div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-head">Type 2</div>
+          <div class="compare-title">Effectiveness over a period</div>
+          <div class="compare-body">"What's actually there." Are the controls operating as designed?</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TSC -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">The Five Trust Services Criteria</div>
+        <span class="pill pill-hot">Memorize</span>
+      </div>
+      <ul class="notes">
+        <li><strong>Security</strong> — protection against unauthorized access (the only required criterion).</li>
+        <li><strong>Availability</strong> — system is available for operation as agreed.</li>
+        <li><strong>Processing Integrity</strong> — system processing is complete, valid, accurate, timely, authorized.</li>
+        <li><strong>Confidentiality</strong> — information designated as confidential is protected.</li>
+        <li><strong>Privacy</strong> — personal information is collected, used, retained, and disclosed appropriately.</li>
+        <li>Common traps: <em>Accountability</em> and <em>Resilience</em> are <strong>not</strong> TSCs.</li>
+      </ul>
+    </div>
+
+    <div class="section-label">Connecting Pieces</div>
+
+    <!-- Equifax -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Equifax — The Anchor Case</div>
+        <span class="pill pill-hot">Will Show Up</span>
+      </div>
+      <ul class="notes">
+        <li><strong>What was stolen:</strong> names, SSNs, DOBs, addresses, driver's license info.</li>
+        <li><strong>Root cause:</strong> Equifax did not apply a known vendor patch. It was a <strong>change management / patching failure</strong>, not a phishing or insider issue.</li>
+        <li><strong>Maps to:</strong> <strong>CIS Control 7 — Continuous Vulnerability Management.</strong></li>
+        <li>Don't be tempted by adjacent answers (asset inventory, training, incident response). The exam wants the patching control.</li>
+      </ul>
+    </div>
+
+    <!-- Pen test vs Vuln scan -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Penetration Test vs Vulnerability Assessment</div>
+        <span class="pill pill-hot">Classic Trap</span>
+      </div>
+      <div class="compare">
+        <div class="compare-col">
+          <div class="compare-head">Pen test</div>
+          <div class="compare-title">Exploits</div>
+          <div class="compare-body">Actively breaks in. Demonstrates impact. Usually finds <em>one</em> way in. Run after every other test. <strong>"Exploit" → pen test.</strong></div>
+        </div>
+        <div class="compare-col">
+          <div class="compare-head">Vulnerability assessment</div>
+          <div class="compare-title">Identifies</div>
+          <div class="compare-body">Never goes in. Tries to find <em>as many</em> weaknesses as possible. Output feeds the remediation backlog.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Other Lanz emphases -->
+    <div class="topic-card">
+      <div class="topic-header">
+        <div class="topic-title">Lanz's Quiet Emphases</div>
+        <span class="pill pill-warn">Easy Points</span>
+      </div>
+      <ul class="notes">
+        <li><strong>CIO is responsible for applying COBIT.</strong></li>
+        <li><strong>IT policies come from the Steering Committee, not the Board.</strong></li>
+        <li><strong>Firewalls cannot read encrypted packets.</strong> That's why DLP exists at the host level.</li>
+        <li><strong>Outdated access</strong> (Ch 14): job duties changed but access wasn't updated. Distinct from <em>dormant</em> (inactive) and <em>terminated</em> (gone).</li>
+        <li><strong>RPA in Ch 7</strong> automated SOX user access testing — account management + access controls.</li>
+        <li><strong>Alternate comms in incident response</strong>: assume the attacker is inside and email/chat are compromised.</li>
+        <li><strong>MFA is required</strong> for externally-exposed apps, remote network access, and admin access — <em>not</em> for internal-only printers/copiers.</li>
+        <li><strong>Quarterly</strong> data recovery testing.</li>
+      </ul>
+    </div>
+
+    <!-- Strategy box -->
+    <div class="strategy-box">
+      <div class="strategy-title">Test-Taking Strategy</div>
+      <ul class="notes">
+        <li>Read the question fully and <strong>form your answer in your head first</strong> — then look at the choices.</li>
+        <li><strong>Predictive vs retrospective</strong>: MITRE = before, Verizon DBIR = after. Watch the verb tense in the question.</li>
+        <li><strong>Replication</strong>: virus + worm replicate; trojan + logic bomb don't. Worm = no human interaction.</li>
+        <li><strong>"Exploit" in a question</strong> = pen test. <strong>"Identify only"</strong> = vulnerability assessment.</li>
+        <li>Type 1 vs Type 2: <em>design</em> vs <em>operating effectiveness</em>. SOC 3 is auto Type 2 and public.</li>
+        <li>If a question names an industry, match it to its specific regulation before reading the choices. No specific industry → <strong>FTC Red Flag</strong>.</li>
+        <li>Equifax answers map to <strong>Continuous Vulnerability Management</strong>, not adjacent controls.</li>
+      </ul>
+    </div>
+
+    <footer>
+      &copy; 2026 Steven Bleifer
+    </footer>
+  </div>
+</body>
+</html>
