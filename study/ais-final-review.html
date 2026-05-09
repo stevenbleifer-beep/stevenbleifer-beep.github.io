@@ -1,0 +1,1610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Final Review — Bleifer Study</title>
+  <meta name="description" content="AIS Final review quiz — Ch 16 cybersecurity, CIS Controls, SOC reports, regulations, and the Equifax case." />
+  <meta name="theme-color" content="#fbf9f4" />
+
+  <!-- Tailwind (Play CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- React + ReactDOM + Babel standalone for in-browser JSX -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <style>
+    html, body { margin: 0; padding: 0; }
+    body { background: #fbf9f4; }
+    /* Hide un-hydrated content flash */
+    #root:empty::before {
+      content: "Loading…";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+    <div id="devtools-shield" style="display:none;position:fixed;inset:0;z-index:99999;background:#fbf9f4;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;color:#a8a29e;font-size:1.2rem;">
+    Please close developer tools to continue studying.
+  </div>
+
+  <!-- Anti-tampering -->
+  <script>
+  (function(){
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='F12') { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && (e.key==='u'||e.key==='s')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e){
+      var t = e.target;
+      if (t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+    var shield = document.getElementById('devtools-shield');
+    var root = document.getElementById('root');
+    function checkDevTools(){
+      var w = window.outerWidth - window.innerWidth > 160;
+      var h = window.outerHeight - window.innerHeight > 160;
+      var isOpen = w || h;
+      if(!isOpen){ var s=performance.now(); (function(){}).constructor('debugger')(); if(performance.now()-s>100) isOpen=true; }
+      if(isOpen){ shield.style.display='flex'; root.style.display='none'; }
+      else { shield.style.display='none'; root.style.display=''; }
+    }
+    setInterval(checkDevTools, 1000);
+    checkDevTools();
+    console.clear();
+    console.log('%cStop!','color:red;font-size:48px;font-weight:bold;');
+    console.log('%cThis is a study tool. Inspecting answers defeats the purpose of learning.','font-size:16px;');
+  })();
+  </script>
+
+  <script type="text/babel" data-type="module">
+const { useState, useMemo, useEffect } = React;
+
+
+// ===== QUESTION BANK =====
+// Each: { ch, lo, section, type, q, options[4], explain }
+// NOTE: correct answer is always options[0]. Display order is shuffled at quiz time.
+const BANK = [
+  // ============================================================
+  // CHAPTER 16 — CYBERSECURITY
+  // ============================================================
+  // ----- LO 16.1 - Accounting & Cybersecurity -----
+  { ch: 16, lo: "16.1", section: "Cybersecurity Definition", type: "memorization",
+    q: "Cybersecurity is BEST defined as:",
+    options: [
+      "The measures a company takes to protect a computer or system, including those on the internet, against unauthorized access or attacks",
+      "The legal requirement that all U.S. public companies disclose data breaches within 72 hours of discovery",
+      "An insurance product that reimburses companies for losses sustained from ransomware attacks",
+      "A subset of cloud computing focused on securely transferring financial data between service providers"],
+    explain: "Cybersecurity is the set of measures protecting a computer or system against unauthorized access or attacks." },
+  { ch: 16, lo: "16.1", section: "NIST", type: "memorization",
+    q: "What does NIST stand for?",
+    options: [
+      "National Institute of Standards and Technology",
+      "National Information Security Taskforce",
+      "Network Integrity and Security Toolkit",
+      "Non-government Internet Security Trust"],
+    explain: "NIST is the National Institute of Standards and Technology, a U.S. Department of Commerce agency." },
+  { ch: 16, lo: "16.1", section: "NIST CSF", type: "memorization",
+    q: "How many functions are in NIST Cybersecurity Framework v2.0?",
+    options: ["6", "5", "4", "18"],
+    explain: "CSF v2.0 has six functions: Govern, Identify, Protect, Detect, Respond, Recover. v1.1 had five." },
+  { ch: 16, lo: "16.1", section: "NIST CSF v2.0", type: "memorization",
+    q: "Which function was added to NIST CSF in version 2.0 that did not exist in version 1.1?",
+    options: ["Govern", "Identify", "Detect", "Recover"],
+    explain: "Govern was added in v2.0 to emphasize the role of cybersecurity governance and risk-management strategy." },
+  { ch: 16, lo: "16.1", section: "NIST 800-53", type: "memorization",
+    q: "How many control families are in NIST SP 800-53?",
+    options: ["18", "5", "6", "20"],
+    explain: "NIST 800-53 organizes its detailed controls into 18 families (e.g., AC, AU, CM, RA, SC)." },
+  { ch: 16, lo: "16.1", section: "Recent Threats", type: "memorization",
+    q: "What type of cyberattack was used against Colonial Pipeline in 2021?",
+    options: ["Ransomware", "Denial-of-service", "Phishing", "IP spoofing"],
+    explain: "Colonial Pipeline was hit by ransomware; the CEO ultimately paid a $4.4M ransom." },
+  { ch: 16, lo: "16.1", section: "Recent Threats", type: "application",
+    q: "A hacker accessed a Florida water utility's treatment system and increased sodium hydroxide to potentially fatal levels. This case BEST illustrates:",
+    options: [
+      "Cyberattacks can have direct physical and public-safety consequences, not just data loss",
+      "Water utilities are exempt from NIST cybersecurity requirements",
+      "Ransomware always demands a financial ransom",
+      "Logical reconnaissance is impossible against industrial control systems"],
+    explain: "The Florida water case shows that cyberattacks can produce real-world physical harm." },
+  // ----- LO 16.2 - Reconnaissance -----
+  { ch: 16, lo: "16.2", section: "Cyber-Kill Chain", type: "memorization",
+    q: "What are the three stages of the cyber-kill chain in order?",
+    options: [
+      "Gather information → Access the network → Disrupt the network",
+      "Disrupt the network → Access the network → Gather information",
+      "Phishing → Brute-force → Ransomware",
+      "Reconnaissance → Recovery → Remediation"],
+    explain: "The kill chain progresses from gathering information, to gaining access, to disrupting." },
+  { ch: 16, lo: "16.2", section: "Reconnaissance", type: "memorization",
+    q: "Which type of attack is part of the FIRST stage of the cyber-kill chain?",
+    options: ["Reconnaissance attack", "Brute-force attack", "Denial-of-service attack", "Logic bomb"],
+    explain: "Reconnaissance attacks gather information; that's the first kill-chain stage." },
+  { ch: 16, lo: "16.2", section: "Physical vs Logical", type: "memorization",
+    q: "What is the defining characteristic of a PHYSICAL reconnaissance attack?",
+    options: [
+      "It uses human interaction to gather information",
+      "It is performed only inside data centers",
+      "It always uses specialized hardware tools",
+      "It targets only mobile phones"],
+    explain: "Physical recon uses human interaction (target, attacker, or both)." },
+  { ch: 16, lo: "16.2", section: "Physical vs Logical", type: "memorization",
+    q: "What is the defining characteristic of a LOGICAL reconnaissance attack?",
+    options: [
+      "It uses digital techniques and does not require a human target",
+      "It is always performed in person",
+      "It requires the attacker to have administrative privileges",
+      "It can only be performed against open-source software"],
+    explain: "Logical recon is fully digital — no human target." },
+  { ch: 16, lo: "16.2", section: "Phishing", type: "memorization",
+    q: "Why is social engineering ALWAYS classified as a physical attack category?",
+    options: [
+      "The target of social engineering is always a person",
+      "It always involves on-site break-ins",
+      "It can only be performed face-to-face",
+      "It requires specialized hardware tools"],
+    explain: "Social engineering targets people, which makes it physical (regardless of email vs. phone medium)." },
+  { ch: 16, lo: "16.2", section: "Phishing Red Flags", type: "application",
+    q: "An employee receives an email from \"@arnazon.com\" asking her to confirm her password \"immediately\" via a link. Which red flag is MOST likely to alert her?",
+    options: [
+      "The misspelled sender domain mimicking a legitimate company",
+      "Emails from outside the company are technically blocked by default",
+      "Amazon never communicates by email",
+      "The email is in plain text rather than HTML"],
+    explain: "Domain spoofing (arnazon vs amazon) is a classic phishing red flag." },
+  { ch: 16, lo: "16.2", section: "Dumpster Diving", type: "memorization",
+    q: "What is dumpster diving in a cybersecurity context?",
+    options: [
+      "Looking through physical trash for sensitive information like passwords or network diagrams",
+      "Crawling through internet archives for old credentials",
+      "A type of denial-of-service attack against cloud storage",
+      "An offsite backup strategy used by data centers"],
+    explain: "Dumpster diving is the physical act of searching trash for sensitive info." },
+  { ch: 16, lo: "16.2", section: "Eavesdropping", type: "memorization",
+    q: "Eavesdropping (also called sniffing) is BEST described as:",
+    options: [
+      "Unauthorized interception of communication",
+      "An active attack that modifies messages between two parties",
+      "An attempt to physically follow someone into a building",
+      "A scan that identifies open ports on the network"],
+    explain: "Eavesdropping is passive interception. Modification of messages is on-path; tailgating is physical access." },
+  { ch: 16, lo: "16.2", section: "Eavesdropping Defense", type: "memorization",
+    q: "Which protocol allows companies to securely transfer files between the company network and outside parties?",
+    options: ["File Transfer Protocol (FTP)", "Hypertext Transfer Protocol (HTTP)", "Internet Control Message Protocol (ICMP)", "Simple Mail Transfer Protocol (SMTP)"],
+    explain: "FTP is the standard protocol for transferring files between the company network and external parties." },
+  { ch: 16, lo: "16.2", section: "Ping Sweep", type: "memorization",
+    q: "What is the purpose of a ping sweep?",
+    options: [
+      "Identify which hosts are active on the network by sending a packet to each IP",
+      "Identify which ports are open on a single host",
+      "Crash the network using flood traffic",
+      "Encrypt traffic between two endpoints"],
+    explain: "A ping sweep (IP probe) tests which IPs respond — i.e., which hosts are active." },
+  { ch: 16, lo: "16.2", section: "Port Scan", type: "memorization",
+    q: "What does a port scan reveal that a ping sweep does not?",
+    options: [
+      "Which specific ports on a host are open and sending or receiving data",
+      "Which user accounts exist on the host",
+      "The encryption algorithm used by the network",
+      "The geographic location of the server"],
+    explain: "Port scans narrow the list further — from active hosts down to which ports are open." },
+  { ch: 16, lo: "16.2", section: "Logical Recon Sequence", type: "application",
+    q: "An attacker first identifies which IP addresses are alive on the network, and THEN narrows in on which ports those hosts have open. The two techniques used are:",
+    options: [
+      "Ping sweep, then port scan",
+      "Port scan, then ping sweep",
+      "Phishing, then dumpster diving",
+      "On-path attack, then IP spoofing"],
+    explain: "Ping sweep finds active hosts; port scans then narrow to specific open ports." },
+  { ch: 16, lo: "16.2", section: "Recon Defenses", type: "memorization",
+    q: "Which control activity does NIST recommend specifically to detect security loopholes in infrastructure?",
+    options: ["Vulnerability scanning (RA-5)", "Penetration testing (CA-8)", "Baseline configuration (CM-2)", "Role-based security training (AT-3)"],
+    explain: "RA-5 Vulnerability Scanning is the NIST control for detecting security loopholes." },
+  { ch: 16, lo: "16.2", section: "Recon Defenses", type: "memorization",
+    q: "Penetration testing is referenced under which NIST 800-53 control?",
+    options: ["CA-8", "RA-5", "CM-2", "AT-3"],
+    explain: "CA-8 covers penetration testing." },
+  // ----- LO 16.3 - Access -----
+  { ch: 16, lo: "16.3", section: "Access Categories", type: "memorization",
+    q: "A physical access attack results in unauthorized access to:",
+    options: [
+      "Either hardware or people",
+      "Software vulnerabilities only",
+      "Cloud services only",
+      "Network logs only"],
+    explain: "Physical access targets hardware and/or people." },
+  { ch: 16, lo: "16.3", section: "Tailgating", type: "memorization",
+    q: "What is tailgating in physical security?",
+    options: [
+      "Following an authorized person through a security checkpoint to use their credentials",
+      "Walking closely behind a guard during patrols",
+      "Tracking an authorized user's location with GPS",
+      "Stealing a badge from a parked car"],
+    explain: "Tailgating (also piggybacking) is unauthorized entry by closely following an authorized person." },
+  { ch: 16, lo: "16.3", section: "Tailgating", type: "memorization",
+    q: "What distinguishes accidental tailgating from polite tailgating?",
+    options: [
+      "Accidental: the authorized user is unaware. Polite: the authorized user is aware and holds the door.",
+      "Accidental: door is held open. Polite: door is forced open.",
+      "Accidental: occurs at night. Polite: occurs during business hours.",
+      "Accidental: hacker is alone. Polite: hacker is in a group."],
+    explain: "Accidental = unaware; polite = aware and holds the door." },
+  { ch: 16, lo: "16.3", section: "Brute-Force", type: "memorization",
+    q: "A brute-force attack is BEST described as:",
+    options: [
+      "Forcing access by attempting many passwords or phrases until finding the correct one",
+      "Physically breaking into a server room",
+      "Sending fraudulent emails to executives",
+      "Encrypting a victim's files until ransom is paid"],
+    explain: "Brute-force = trying many passwords until one works." },
+  { ch: 16, lo: "16.3", section: "Dictionary Attack", type: "memorization",
+    q: "A dictionary attack is a special form of:",
+    options: [
+      "Brute-force attack — using lists of common words and combinations",
+      "On-path attack — intercepting connections",
+      "Tailgating — following authorized users",
+      "Phishing — spoofing trusted senders"],
+    explain: "Dictionary attacks try common words/phrases — a subset of brute-force." },
+  { ch: 16, lo: "16.3", section: "On-Path", type: "memorization",
+    q: "An on-path attack (formerly known as man-in-the-middle) differs from eavesdropping in that:",
+    options: [
+      "On-path actively impersonates each party in the connection; eavesdropping only listens",
+      "On-path is physical; eavesdropping is logical",
+      "On-path requires a botnet; eavesdropping requires phishing",
+      "On-path can only happen on Wi-Fi; eavesdropping can happen anywhere"],
+    explain: "On-path actively impersonates and injects; eavesdropping is passive." },
+  { ch: 16, lo: "16.3", section: "IP Spoofing", type: "memorization",
+    q: "In IP spoofing, the attacker:",
+    options: [
+      "Creates IP packets with modified source addresses to disguise their identity",
+      "Captures keyboard input to steal passwords",
+      "Encrypts files until a ransom is paid",
+      "Generates fake login pages to steal credentials"],
+    explain: "IP spoofing forges source addresses to impersonate legitimate hosts." },
+  { ch: 16, lo: "16.3", section: "MFA", type: "memorization",
+    q: "Multifactor authentication is required for ALL of the following EXCEPT:",
+    options: [
+      "Internal-only printers and copiers",
+      "Externally exposed applications",
+      "Remote network access",
+      "Administrator access"],
+    explain: "Internal-only printers/copiers are not in the standard MFA-required list." },
+  { ch: 16, lo: "16.3", section: "Passwords", type: "memorization",
+    q: "Per NIST password guidelines, the recommended password length is:",
+    options: ["8–64 characters", "4–8 characters", "100+ characters", "Any length, no requirement"],
+    explain: "NIST recommends 8–64 characters." },
+  { ch: 16, lo: "16.3", section: "Passwords", type: "memorization",
+    q: "Per NIST password guidelines, when should a user reset their password?",
+    options: [
+      "Only if the password is known to be compromised",
+      "Every 30 days regardless of compromise",
+      "Every login attempt",
+      "Annually on a fixed date"],
+    explain: "NIST guidance: reset only on compromise. Routine forced rotation is no longer recommended." },
+  { ch: 16, lo: "16.3", section: "Logical Access Tactic", type: "application",
+    q: "An attacker captures a banker's password by joining a public-Wi-Fi connection and impersonating both the banker's laptop and the bank server. This is BEST classified as:",
+    options: ["On-path attack", "Eavesdropping", "Phishing", "IP spoofing"],
+    explain: "The attacker is actively impersonating both endpoints — that's an on-path attack." },
+  { ch: 16, lo: "16.3", section: "Logical Access Tactic", type: "application",
+    q: "An attacker pings every IP in a company's network range, then probes the responding hosts for open ports. Once a vulnerable port is identified, the attacker tries thousands of common passwords. The final step is BEST classified as:",
+    options: ["Brute-force attack (logical access)", "Logical reconnaissance", "Tailgating", "DDoS"],
+    explain: "Trying many passwords is brute-force, which is a logical access attack." },
+  // ----- LO 16.4 - Disruptive -----
+  { ch: 16, lo: "16.4", section: "DoS", type: "memorization",
+    q: "A denial-of-service (DoS) attack accomplishes its goal by:",
+    options: [
+      "Continuously sending fake requests to consume the system's capacity, denying legitimate users",
+      "Encrypting the victim's hard drive until ransom is paid",
+      "Stealing sensitive data and exfiltrating to a remote server",
+      "Modifying DNS records to redirect traffic"],
+    explain: "DoS overwhelms the system with fake traffic, blocking legitimate users." },
+  { ch: 16, lo: "16.4", section: "DDoS", type: "memorization",
+    q: "What distinguishes a DDoS attack from a DoS attack?",
+    options: [
+      "DDoS uses multiple machines or IP addresses; DoS comes from a single source",
+      "DDoS is illegal; DoS is legal",
+      "DDoS targets only websites; DoS targets only servers",
+      "DDoS is non-malicious; DoS is malicious"],
+    explain: "The distinguishing feature of DDoS is multiple distributed sources." },
+  { ch: 16, lo: "16.4", section: "Botnet", type: "memorization",
+    q: "What is a botnet?",
+    options: [
+      "A network of malware-infected computers programmed to act on the attacker's behalf",
+      "A team of human hackers coordinated through a chat room",
+      "A type of antivirus software that detects bots",
+      "A list of websites blocked by a corporate firewall"],
+    explain: "Botnets are zombie computers infected with malware that follow the attacker's commands." },
+  { ch: 16, lo: "16.4", section: "Malware Definition", type: "memorization",
+    q: "Malware is short for:",
+    options: ["Malicious software", "Maladaptive ware", "Manipulated firmware", "Malformed wares"],
+    explain: "Malware = malicious software." },
+  { ch: 16, lo: "16.4", section: "Ransomware", type: "memorization",
+    q: "What is ransomware?",
+    options: [
+      "Malware used to hold a system hostage in exchange for payment",
+      "Malware that quietly steals user keystrokes",
+      "Malware that disables network adapters permanently",
+      "An anti-malware tool used in incident response"],
+    explain: "Ransomware locks systems/files and demands payment for release." },
+  { ch: 16, lo: "16.4", section: "Virus vs Worm", type: "memorization",
+    q: "What is the defining difference between a virus and a worm?",
+    options: [
+      "A virus needs human interaction to replicate; a worm replicates without human interaction",
+      "A virus is harmful; a worm is benign",
+      "A virus targets servers; a worm targets only desktops",
+      "A virus encrypts files; a worm only deletes files"],
+    explain: "Viruses need user interaction (clicks/opens); worms self-propagate without it." },
+  { ch: 16, lo: "16.4", section: "Logic Bomb", type: "memorization",
+    q: "A logic bomb is BEST described as:",
+    options: [
+      "Malicious code that remains dormant until certain conditions are met",
+      "A network device that explodes if tampered with",
+      "A type of phishing email with destructive attachments",
+      "A self-replicating worm that spreads via email"],
+    explain: "Logic bombs sit dormant and trigger when specific conditions are met." },
+  { ch: 16, lo: "16.4", section: "Trojan", type: "memorization",
+    q: "Which malware type is disguised as benign software, does NOT replicate, and often delivers a back door?",
+    options: ["Trojan horse", "Worm", "Virus", "Logic bomb"],
+    explain: "Trojans disguise themselves as legitimate software and don't replicate." },
+  { ch: 16, lo: "16.4", section: "Replication", type: "application",
+    q: "Two malware types replicate themselves; two do not. Which pair REPLICATES?",
+    options: [
+      "Virus and worm",
+      "Trojan and logic bomb",
+      "Virus and Trojan",
+      "Worm and logic bomb"],
+    explain: "Virus + worm replicate. Trojan + logic bomb do not." },
+  { ch: 16, lo: "16.4", section: "Replication", type: "application",
+    q: "An employee opens an attachment that immediately spreads to other PCs on the network through file shares with no further user input. This BEST fits which malware type?",
+    options: ["Worm", "Virus", "Trojan", "Ransomware (only)"],
+    explain: "Self-spreading without further user interaction is the worm signature." },
+  { ch: 16, lo: "16.4", section: "DDoS Identification", type: "application",
+    q: "A retailer's website is hit with millions of HTTP requests per minute coming from 12,000 distinct IP addresses across 38 countries. This is BEST classified as:",
+    options: ["DDoS", "DoS", "Brute-force", "Phishing"],
+    explain: "Multiple distinct sources flooding the target = DDoS." },
+  { ch: 16, lo: "16.4", section: "Malware Defense", type: "memorization",
+    q: "NIST control SI-3 (Malicious Code Protection) requires the system to:",
+    options: [
+      "Detect, block, quarantine malicious code, and notify the administrator",
+      "Encrypt all traffic at rest",
+      "Force daily password rotation",
+      "Disable all USB ports"],
+    explain: "SI-3 covers detection, blocking, quarantining, and admin notification of malicious code." },
+
+  // ============================================================
+  // CIS CONTROLS
+  // ============================================================
+  // ----- Background / Threat Intel -----
+  { ch: "CIS", lo: "Background", section: "Origin", type: "memorization",
+    q: "Which organization originally created the critical security controls list before transferring it to CIS?",
+    options: ["SANS Institute", "NIST", "ISO", "AICPA"],
+    explain: "SANS originated the controls list and later transferred maintenance to CIS." },
+  { ch: "CIS", lo: "Background", section: "Threat Intel", type: "memorization",
+    q: "The Verizon Data Breach Investigations Report (DBIR) is best characterized as:",
+    options: [
+      "A retrospective annual analysis of real breaches Verizon investigated",
+      "A predictive database of adversary techniques",
+      "A government-issued list of required security configurations",
+      "A SOC report covering data centers"],
+    explain: "DBIR is retrospective — it looks at what already happened." },
+  { ch: "CIS", lo: "Background", section: "Threat Intel", type: "memorization",
+    q: "MITRE ATT&CK is BEST characterized as:",
+    options: [
+      "A predictive database of enterprise adversary techniques",
+      "A retrospective list of breaches",
+      "A list of approved cybersecurity vendors",
+      "An AICPA SOC framework"],
+    explain: "MITRE ATT&CK enumerates tactics, techniques, and procedures adversaries are LIKELY to use." },
+  { ch: "CIS", lo: "Background", section: "Threat Intel", type: "application",
+    q: "A risk team wants to identify what attackers are MOST LIKELY to do against their industry — independent of whether those attacks have been observed at their company. Which resource is BEST suited?",
+    options: ["MITRE ATT&CK", "Verizon DBIR", "SOC 1", "PCI DSS"],
+    explain: "MITRE ATT&CK is forward-looking. DBIR is retrospective." },
+  { ch: "CIS", lo: "Background", section: "Threat Intel", type: "application",
+    q: "A CISO is preparing a presentation for the audit committee comparing the company's cybersecurity posture to industry-standard configurations. Which framework is BEST suited?",
+    options: ["CIS Benchmarks", "MITRE ATT&CK", "Verizon DBIR", "Colonial Pipeline post-mortem"],
+    explain: "CIS Benchmarks provide measurable configuration standards designed for governance/board reporting." },
+  { ch: "CIS", lo: "Background", section: "Frameworks", type: "memorization",
+    q: "FISMA is BEST described as:",
+    options: [
+      "A U.S. federal law requiring federal agencies to comply with NIST cybersecurity standards",
+      "An international information-security standards body",
+      "A standard issued by the AICPA",
+      "A community-developed list of critical controls"],
+    explain: "FISMA is a U.S. federal law that points to NIST 800-53 for required controls." },
+  { ch: "CIS", lo: "Background", section: "Frameworks", type: "memorization",
+    q: "Which framework is internationally recognized for information-security management systems?",
+    options: ["ISO 27001", "FISMA", "PCI DSS", "GLBA"],
+    explain: "ISO 27001 is the international ISMS standard; FISMA is U.S.-specific." },
+  // ----- Implementation Groups -----
+  { ch: "CIS", lo: "Implementation Groups", section: "IG1", type: "memorization",
+    q: "What is Implementation Group 1 (IG1) intended for?",
+    options: [
+      "Essential cyber hygiene appropriate for every enterprise — especially small to mid-sized",
+      "Defense-industrial-complex contractors only",
+      "Enterprises that have never experienced a breach",
+      "Enterprises with billion-dollar IT budgets"],
+    explain: "IG1 is the baseline — every enterprise should implement it." },
+  { ch: "CIS", lo: "Implementation Groups", section: "IG2", type: "memorization",
+    q: "Which Implementation Group adds safeguards beyond IG1 for larger or more regulated enterprises?",
+    options: ["IG2", "IG1", "IG3", "IG4"],
+    explain: "IG2 builds on IG1 for larger or more regulated enterprises. IG4 does not exist." },
+  { ch: "CIS", lo: "Implementation Groups", section: "IG3", type: "memorization",
+    q: "Which Implementation Group represents the highest maturity, designed to defend against sophisticated, targeted adversaries?",
+    options: ["IG3", "IG1", "IG2", "IG4"],
+    explain: "IG3 is the most advanced. IG4 does not exist." },
+  // ----- Asset classes / docs -----
+  { ch: "CIS", lo: "Asset Classes", section: "Asset Classes", type: "memorization",
+    q: "Which of the following is NOT one of the six CIS asset classes?",
+    options: ["Hardware", "Devices", "Software", "Documentation"],
+    explain: "Hardware is part of Devices, not a separate asset class." },
+  { ch: "CIS", lo: "Asset Classes", section: "Asset Classes", type: "memorization",
+    q: "Which two asset classes WRAP the rest of the CIS framework — applying to everything?",
+    options: ["Documentation and Network", "Users and Devices", "Software and Data", "Devices and Data"],
+    explain: "Documentation (above) and Network (below) wrap the user→device→software→data flow." },
+  { ch: "CIS", lo: "Asset Classes", section: "Asset Classes", type: "memorization",
+    q: "In Lanz's CIS asset-class diagram, the workflow inside the wrapper goes from:",
+    options: [
+      "Users → Devices → Software → Data",
+      "Data → Software → Devices → Users",
+      "Documentation → Network → Software → Users",
+      "Devices → Users → Network → Software"],
+    explain: "Users use devices to run software to reach data — that's the core flow." },
+  { ch: "CIS", lo: "Documentation", section: "4 P's", type: "memorization",
+    q: "What is the correct order of the CIS documentation hierarchy from highest to lowest?",
+    options: [
+      "Plan → Policy → Process → Procedure",
+      "Policy → Plan → Procedure → Process",
+      "Procedure → Process → Policy → Plan",
+      "Plan → Process → Policy → Procedure"],
+    explain: "The 4 P's go: Plan (strategy) → Policy (rules) → Process (how) → Procedure (steps)." },
+  { ch: "CIS", lo: "Documentation", section: "4 P's", type: "memorization",
+    q: "Within IT-specific governance (per Lanz), where do IT policies originate?",
+    options: [
+      "The IT Steering Committee",
+      "The Board of Directors",
+      "External auditors",
+      "The CFO"],
+    explain: "Lanz emphasized: IT policies come from the Steering Committee, NOT the Board." },
+  // ----- Each control -----
+  { ch: "CIS", lo: "CIS-01", section: "Control 1", type: "memorization",
+    q: "What is the central rationale for CIS Control 1 (Inventory and Control of Enterprise Assets)?",
+    options: [
+      "You can't protect what you don't know you have",
+      "You must encrypt every asset",
+      "You must outsource asset management to a third party",
+      "You must avoid issuing assets to remote workers"],
+    explain: "Without a complete asset inventory, you can't apply controls to those assets." },
+  { ch: "CIS", lo: "CIS-02", section: "Control 2", type: "memorization",
+    q: "Why does CIS Control 2 require ensuring software is currently SUPPORTED?",
+    options: [
+      "Unsupported software does not receive security patches when vulnerabilities are discovered",
+      "Unsupported software costs more to license",
+      "Vendors charge fees for security advisories on unsupported software",
+      "Audit standards prohibit unsupported software entirely"],
+    explain: "Unsupported software won't get patches — you remain exposed when new vulns are disclosed." },
+  { ch: "CIS", lo: "CIS-02", section: "Control 2", type: "memorization",
+    q: "What does it mean to 'allowlist' authorized software (CIS Safeguard 2.5)?",
+    options: [
+      "Permit only pre-approved software to execute on enterprise assets",
+      "Block all software updates",
+      "Maintain a list of unauthorized software for blocking",
+      "Allow employees to install any software on their own devices"],
+    explain: "Allowlisting permits only approved software to run." },
+  { ch: "CIS", lo: "CIS-03", section: "Control 3", type: "memorization",
+    q: "CIS Control 3 (Data Protection) starts with which step?",
+    options: [
+      "Inventory and risk-rank the data",
+      "Encrypt all data immediately",
+      "Outsource data storage to a third party",
+      "Hire a Chief Privacy Officer"],
+    explain: "You can't classify or protect data without inventorying and risk-ranking it first." },
+  { ch: "CIS", lo: "CIS-03", section: "DLP", type: "memorization",
+    q: "Why is Data Loss Prevention (DLP) needed when traffic is encrypted?",
+    options: [
+      "Firewalls cannot read through encrypted traffic; DLP examines content (typically at the host) to detect sensitive data leaving",
+      "Encrypted traffic is automatically blocked by all firewalls",
+      "Encryption increases bandwidth requirements, so DLP throttles it",
+      "DLP replaces encryption entirely"],
+    explain: "The encryption-firewall paradox: firewalls see only encrypted bytes. DLP inspects content before encryption." },
+  { ch: "CIS", lo: "CIS-04", section: "Control 4", type: "memorization",
+    q: "CIS Control 4 requires hardening assets. To 'harden' means to:",
+    options: [
+      "Configure software and hardware for security",
+      "Encrypt all data at rest",
+      "Prohibit any internet access",
+      "Outsource the operating system"],
+    explain: "Hardening is configuring for security: disable defaults, remove unnecessary services, etc." },
+  { ch: "CIS", lo: "CIS-04", section: "Control 4", type: "memorization",
+    q: "Why does Lanz emphasize uninstalling software you do not use (Safeguard 4.8)?",
+    options: [
+      "Whether you use it or not, you remain responsible for its security",
+      "Vendors charge for unused software annually",
+      "Unused software automatically reinstalls itself",
+      "Unused software is required to be reported to regulators"],
+    explain: "If it's installed, it's part of your attack surface — even if no one uses it." },
+  { ch: "CIS", lo: "CIS-05", section: "Control 5", type: "memorization",
+    q: "Per CIS Control 5, how often should access be reviewed?",
+    options: ["Every 30 days", "Annually", "Every 5 years", "Only at termination"],
+    explain: "Lanz emphasized 30-day cadence for account review." },
+  { ch: "CIS", lo: "CIS-05", section: "Control 5", type: "memorization",
+    q: "Why does CIS Control 5 require administrator privileges to live on dedicated administrator accounts (separate from daily-use accounts)?",
+    options: [
+      "If malware is encountered while logged in as admin, it inherits admin privileges — separate accounts contain the blast radius",
+      "Administrators must use a different operating system",
+      "Daily-use accounts must be disabled at night",
+      "It is required by HIPAA"],
+    explain: "Account separation contains the impact if the daily-use account is compromised." },
+  { ch: "CIS", lo: "CIS-06", section: "Control 6", type: "memorization",
+    q: "Which authorization model does CIS Safeguard 6.8 require?",
+    options: ["Role-Based Access Control (RBAC)", "Open access", "Single-factor authentication", "Manual approval for every login"],
+    explain: "Safeguard 6.8 requires defining and maintaining RBAC." },
+  { ch: "CIS", lo: "CIS-07", section: "Control 7", type: "memorization",
+    q: "Which CIS Control covers continuous vulnerability management — the area Lanz called \"where accounting and audit go crazy\"?",
+    options: ["Control 7", "Control 1", "Control 11", "Control 18"],
+    explain: "Control 7 = Continuous Vulnerability Management." },
+  { ch: "CIS", lo: "CIS-08", section: "Control 8", type: "memorization",
+    q: "Why is configuration so important for CIS Control 8 (Audit Log Management)?",
+    options: [
+      "If you don't configure logs correctly, you can disable them entirely or miss critical detail",
+      "Configuration is irrelevant — logs are always on by default",
+      "Logs are only required for financial transactions",
+      "Configuration affects display formatting only"],
+    explain: "Log detail and even logging itself depend on configuration." },
+  { ch: "CIS", lo: "CIS-08", section: "Control 8", type: "memorization",
+    q: "Safeguard 8.9 requires audit logs to be:",
+    options: [
+      "Centralized",
+      "Stored only on the originating device",
+      "Printed daily",
+      "Encrypted with a single key"],
+    explain: "Centralizing logs (8.9) ensures they're not lost when an endpoint is compromised." },
+  { ch: "CIS", lo: "CIS-10", section: "Control 10", type: "memorization",
+    q: "Per CIS Control 10 (Malware Defenses), how often must anti-malware signatures update?",
+    options: [
+      "Automatically and daily",
+      "Manually each quarter",
+      "Annually with the OS upgrade",
+      "Only when the user notices a problem"],
+    explain: "Daily automatic signature updates — manual or quarterly defeats timely defense." },
+  { ch: "CIS", lo: "CIS-11", section: "Control 11", type: "memorization",
+    q: "Per CIS Control 11 (Data Recovery), how often must data recovery be tested?",
+    options: ["Quarterly", "Annually", "Every 5 years", "Only after a disaster"],
+    explain: "Quarterly testing — untested backups are unproven backups." },
+  { ch: "CIS", lo: "CIS-13", section: "Control 13", type: "memorization",
+    q: "Why does CIS Control 13 emphasize network segmentation (SG 13.4)?",
+    options: [
+      "Each segment can have its own controls and limit lateral movement after a breach",
+      "Segmentation eliminates the need for firewalls",
+      "Segmentation is required by GAAP",
+      "Segmentation makes the network easier to advertise to attackers"],
+    explain: "Segmentation contains breaches and lets you apply different controls per segment." },
+  { ch: "CIS", lo: "CIS-15", section: "Control 15", type: "memorization",
+    q: "CIS Control 15 (Service Provider Management) ties directly to:",
+    options: [
+      "SOC reports — particularly walking through the Trust Services Criteria for the provider",
+      "PCI DSS internal scans",
+      "FISMA compliance audits",
+      "MITRE ATT&CK adversary mapping"],
+    explain: "Service provider governance ties to SOC 2 and the TSCs." },
+  { ch: "CIS", lo: "CIS-17", section: "Control 17", type: "memorization",
+    q: "Why does CIS Safeguard 17.6 require alternate communication mechanisms during incident response?",
+    options: [
+      "If the attacker is inside primary channels (email, chat), the response team needs alternatives that aren't compromised",
+      "Cell phone reception is unreliable in data centers",
+      "Email is too slow for emergencies",
+      "It is required by HIPAA"],
+    explain: "Assume the attacker can read primary channels — coordinate elsewhere." },
+  { ch: "CIS", lo: "CIS-18", section: "Control 18", type: "memorization",
+    q: "What is the defining difference between a penetration test and a vulnerability assessment?",
+    options: [
+      "Pen tests EXPLOIT vulnerabilities to demonstrate impact; vulnerability assessments only IDENTIFY them",
+      "Pen tests are automated; vulnerability assessments are manual",
+      "Pen tests are cheaper; vulnerability assessments are more expensive",
+      "Pen tests target only web applications; vulnerability assessments target everything else"],
+    explain: "Exploit vs. identify is the defining distinction." },
+  { ch: "CIS", lo: "CIS-18", section: "Control 18", type: "memorization",
+    q: "Per Safeguard 18.2, who should perform penetration tests?",
+    options: [
+      "An external team not involved in operating the systems",
+      "Only the company's internal IT staff",
+      "Random employees on a rotation",
+      "External legal counsel"],
+    explain: "Independence — external testers outside the IT org." },
+  { ch: "CIS", lo: "CIS-18", section: "Control 18", type: "memorization",
+    q: "Per Safeguard 18.3, what must happen with pen test findings?",
+    options: [
+      "Findings must be remediated using the documented remediation process",
+      "Findings must be publicly disclosed",
+      "Findings must be deleted to avoid liability",
+      "Findings must be reported to law enforcement"],
+    explain: "Findings without remediation provide no security benefit." },
+  { ch: "CIS", lo: "CIS-18", section: "Control 18", type: "application",
+    q: "If a question mentions 'exploit' or 'breaking in,' which test is being described?",
+    options: ["Penetration test", "Vulnerability assessment", "Risk assessment", "SOC 1 audit"],
+    explain: "The word \"exploit\" is the giveaway for a pen test." },
+
+  // ============================================================
+  // SOC REPORTS & TSC
+  // ============================================================
+  { ch: "SOC", lo: "SOC", type: "memorization", section: "SOC 1",
+    q: "What does a SOC 1 report cover?",
+    options: [
+      "Internal controls over financial reporting (ICFR) at a service organization",
+      "The Trust Services Criteria",
+      "Public-use cybersecurity assurance",
+      "Supply chain controls"],
+    explain: "SOC 1 = ICFR at a service organization." },
+  { ch: "SOC", lo: "SOC", type: "memorization", section: "SOC 2",
+    q: "Which SOC report covers the Trust Services Criteria (security, availability, processing integrity, confidentiality, privacy)?",
+    options: ["SOC 2", "SOC 1", "SOC for Cybersecurity", "SOC for Supply Chain"],
+    explain: "SOC 2 is the TSC report. Restricted-use." },
+  { ch: "SOC", lo: "SOC", type: "memorization", section: "SOC 3",
+    q: "Which SOC report is the publicly distributable summary of a SOC 2 examination, and is automatically Type 2?",
+    options: ["SOC 3", "SOC 1", "SOC for Cybersecurity", "SOC for Supply Chain"],
+    explain: "SOC 3 = public summary of SOC 2, always Type 2." },
+  { ch: "SOC", lo: "SOC", type: "memorization", section: "SOC for Cyber",
+    q: "On which framework(s) must a SOC for Cybersecurity report be based?",
+    options: [
+      "NIST CSF or the Trust Services Criteria",
+      "COBIT or COSO",
+      "ISO 9001 or PCI DSS",
+      "FISMA or SOX"],
+    explain: "AICPA approves NIST CSF or TSC as the framework basis for SOC for Cybersecurity." },
+  { ch: "SOC", lo: "SOC", type: "memorization", section: "SOC for Supply Chain",
+    q: "Which SOC report covers controls within an entity's production, manufacturing, or distribution system?",
+    options: ["SOC for Supply Chain", "SOC 1", "SOC 2", "SOC 3"],
+    explain: "SOC for Supply Chain is the dedicated production/manufacturing/distribution report." },
+  { ch: "SOC", lo: "Type", type: "memorization", section: "Type 1",
+    q: "A SOC Type 1 report covers:",
+    options: [
+      "The DESIGN of controls at a single point in time",
+      "The DESIGN and OPERATING EFFECTIVENESS of controls over a period",
+      "Only a specific incident response",
+      "Only the user entities, not the service organization"],
+    explain: "Type 1 = design at a point in time." },
+  { ch: "SOC", lo: "Type", type: "memorization", section: "Type 2",
+    q: "A SOC Type 2 report covers:",
+    options: [
+      "Both DESIGN and OPERATING EFFECTIVENESS over a period (typically 6–12 months)",
+      "Only the design at a point in time",
+      "Only adverse opinions",
+      "Only privacy controls"],
+    explain: "Type 2 tests operating effectiveness over a period." },
+  { ch: "SOC", lo: "TSC", type: "memorization", section: "TSC List",
+    q: "Which of the following is NOT one of the five Trust Services Criteria?",
+    options: ["Accountability", "Security", "Availability", "Confidentiality"],
+    explain: "Accountability sounds plausible but is not a TSC. The five are Security, Availability, Processing Integrity, Confidentiality, Privacy." },
+  { ch: "SOC", lo: "TSC", type: "memorization", section: "TSC Required",
+    q: "Which Trust Services Criterion is required in EVERY SOC 2 engagement?",
+    options: ["Security", "Availability", "Privacy", "Processing Integrity"],
+    explain: "Security is the only required TSC. The others are added based on scope." },
+  { ch: "SOC", lo: "TSC", type: "memorization", section: "TSC Definition",
+    q: "Which Trust Services Criterion addresses whether system processing is complete, valid, accurate, timely, and authorized?",
+    options: ["Processing Integrity", "Security", "Availability", "Confidentiality"],
+    explain: "Processing Integrity covers complete, valid, accurate, timely, and authorized processing." },
+  { ch: "SOC", lo: "TSC", type: "memorization", section: "TSC Definition",
+    q: "Which Trust Services Criterion specifically addresses personal information?",
+    options: ["Privacy", "Confidentiality", "Security", "Availability"],
+    explain: "Privacy = personal information collection, use, retention, disclosure, disposal. Confidentiality covers any info designated as confidential, not just personal info." },
+  { ch: "SOC", lo: "TSC", type: "application", section: "TSC Application",
+    q: "A cloud provider sells a service guaranteeing 99.99% uptime. Which TSC is the customer MOST likely interested in?",
+    options: ["Availability", "Privacy", "Confidentiality", "Processing Integrity"],
+    explain: "Uptime promises align with the Availability criterion." },
+  { ch: "SOC", lo: "SOC", type: "application", section: "SOC Selection",
+    q: "A service organization wants a publicly shareable assurance report it can post on its marketing website. Which SOC report is appropriate?",
+    options: ["SOC 3", "SOC 1", "SOC 2", "SOC for Supply Chain"],
+    explain: "SOC 3 is public-use; SOC 1 and SOC 2 are restricted-use." },
+  { ch: "SOC", lo: "SOC", type: "application", section: "SOC Selection",
+    q: "A user-entity auditor needs assurance over a payroll processor's controls relevant to ICFR. Which SOC report is appropriate?",
+    options: ["SOC 1 Type 2", "SOC 3", "SOC for Supply Chain", "SOC for Cybersecurity"],
+    explain: "SOC 1 covers ICFR. Type 2 gives operating effectiveness over a period." },
+
+  // ============================================================
+  // REGULATIONS & CASES
+  // ============================================================
+  { ch: "REG", lo: "Health", type: "memorization", section: "Healthcare",
+    q: "Which U.S. law governs the protection of patient health information?",
+    options: ["HIPAA", "GLBA", "PCI DSS", "FISMA"],
+    explain: "HIPAA (with HITECH expansion) governs PHI." },
+  { ch: "REG", lo: "Health", type: "memorization", section: "Healthcare",
+    q: "Which law expanded HIPAA's privacy/security protections and added breach-notification requirements?",
+    options: ["HITECH Act", "SOX", "FISMA", "GLBA"],
+    explain: "HITECH built on HIPAA with stronger requirements and breach notifications." },
+  { ch: "REG", lo: "Finance", type: "memorization", section: "Financial Services",
+    q: "Which U.S. law requires financial institutions like banks and wealth-management firms to protect consumer financial information?",
+    options: ["GLBA", "HIPAA", "PCI DSS", "FISMA"],
+    explain: "GLBA = Gramm-Leach-Bliley Act for financial institutions." },
+  { ch: "REG", lo: "Cards", type: "memorization", section: "Payment Cards",
+    q: "Which standard applies specifically to companies that accept credit card payments?",
+    options: ["PCI DSS", "GLBA", "HIPAA", "FISMA"],
+    explain: "PCI DSS is the credit card data security standard." },
+  { ch: "REG", lo: "Cards", type: "memorization", section: "PCI DSS Issuer",
+    q: "Who issues the PCI DSS standard?",
+    options: [
+      "The PCI Security Standards Council — it is NOT a federal law",
+      "The U.S. federal government as a federal statute",
+      "The AICPA",
+      "The FTC"],
+    explain: "PCI DSS is contractual/industry, not a law. Non-compliance = lose card processing privileges." },
+  { ch: "REG", lo: "ID-Theft", type: "application", section: "Identity Theft",
+    q: "A company is freaking out about identity theft, but is not a healthcare entity, a financial institution, or a federal agency. Which rule applies?",
+    options: ["FTC Red Flag Rules", "HIPAA", "GLBA", "FISMA"],
+    explain: "FTC Red Flag is the default federal guidance when no industry regulator applies." },
+  { ch: "REG", lo: "Federal", type: "memorization", section: "Federal Law",
+    q: "Which U.S. federal law requires federal agencies to comply with NIST cybersecurity standards?",
+    options: ["FISMA", "SOX", "HIPAA", "GLBA"],
+    explain: "FISMA mandates NIST 800-53 compliance for federal agencies." },
+  { ch: "REG", lo: "Public", type: "memorization", section: "Public Companies",
+    q: "Which U.S. law requires public companies to maintain effective internal controls over financial reporting?",
+    options: ["SOX (Sarbanes-Oxley)", "GLBA", "HIPAA", "PCI DSS"],
+    explain: "SOX Section 404 drives ICFR requirements; SOC 1 reports support SOX compliance for outsourced services." },
+  { ch: "REG", lo: "Frameworks", type: "memorization", section: "COBIT",
+    q: "In Lanz's lecture, who is responsible for applying COBIT?",
+    options: ["The CIO", "The Board of Directors", "External auditors", "The CFO"],
+    explain: "Lanz: the CIO is responsible for applying COBIT." },
+  { ch: "REG", lo: "Cases", type: "memorization", section: "Equifax",
+    q: "What was the root cause of the Equifax breach?",
+    options: [
+      "Failure to apply a known vendor patch",
+      "An on-path attack on internal Wi-Fi",
+      "An inside threat from a disgruntled employee",
+      "A physical break-in at a data center"],
+    explain: "Equifax failed to patch a known Apache Struts vulnerability — a continuous-vulnerability-management failure." },
+  { ch: "REG", lo: "Cases", type: "application", section: "Equifax",
+    q: "Equifax's breach maps MOST directly to which CIS Control?",
+    options: [
+      "Control 7 — Continuous Vulnerability Management",
+      "Control 1 — Inventory of Assets",
+      "Control 14 — Awareness and Training",
+      "Control 17 — Incident Response"],
+    explain: "Failure to patch is precisely the Continuous Vulnerability Management concept." },
+  { ch: "REG", lo: "Cases", type: "memorization", section: "Colonial",
+    q: "What was the type of attack that hit Colonial Pipeline in 2021?",
+    options: ["Ransomware", "DDoS", "IP spoofing", "Tailgating"],
+    explain: "Colonial Pipeline was hit by ransomware; the CEO paid $4.4M." },
+  { ch: "REG", lo: "Cases", type: "memorization", section: "Florida Water",
+    q: "What did the Florida Water Supply attacker do after gaining access?",
+    options: [
+      "Increased sodium hydroxide levels in the water-treatment system to potentially fatal amounts",
+      "Encrypted hospital records and demanded a ransom",
+      "Published customer credit card numbers online",
+      "Shut down the city's electrical grid"],
+    explain: "The Florida case involved manipulating chemical-treatment levels — a cyber attack with physical safety impact." },
+  { ch: "REG", lo: "Industry Mapping", type: "application", section: "Reg Mapping",
+    q: "Brooklyn is auditing a hospital's patient-data security. Which regulation has the BIGGEST impact on her audit scope?",
+    options: ["HIPAA", "PCI DSS", "GLBA", "FISMA"],
+    explain: "Patient health information triggers HIPAA. PCI DSS would matter for credit-card processing only." },
+  { ch: "REG", lo: "Industry Mapping", type: "application", section: "Reg Mapping",
+    q: "A wealth-management firm asks which regulation governs the security of its consumer financial data. The MOST applicable answer is:",
+    options: ["GLBA", "SOX", "PCI DSS", "FISMA"],
+    explain: "GLBA covers financial institutions' protection of consumer financial info." },
+
+  // ============================================================
+  // INTEGRATIVE / CROSS-CUTTING
+  // ============================================================
+  { ch: 16, lo: "16.2", type: "application", section: "Recon Sequence",
+    q: "Order these recon activities from earliest to latest in the kill chain: (1) employee phishing emails, (2) ping sweeps to find live IPs, (3) port scans against responding IPs.",
+    options: [
+      "All three are reconnaissance — they may be performed in any order; phishing and ping/port can run in parallel",
+      "Phishing must always come first chronologically",
+      "Port scans must come before ping sweeps",
+      "These are all access attacks, not reconnaissance"],
+    explain: "All three are reconnaissance and may be parallel paths — physical (phishing) and logical (ping/port) recon are siblings." },
+  { ch: "CIS", lo: "Background", type: "application", section: "Threat Intel Choice",
+    q: "An IT auditor wants 'real-world data, not predictive — what already happened in industry breaches this past year.' Which resource is BEST?",
+    options: ["Verizon DBIR", "MITRE ATT&CK", "CIS Benchmarks", "SANS historical archive"],
+    explain: "DBIR is retrospective real-world breach data." },
+  { ch: 16, lo: "16.4", type: "application", section: "Logic Bomb",
+    q: "Which control category is BEST for logic bombs?",
+    options: [
+      "Detective — they're hard to prevent until activated",
+      "Preventive — strong firewalls always stop them",
+      "Compensating — they require manual workarounds",
+      "Directive — policy alone is sufficient"],
+    explain: "Logic bombs sit dormant; you usually only catch them after activation, making detective the realistic category." },
+  { ch: "CIS", lo: "CIS-05", type: "memorization", section: "Account Management",
+    q: "Why does account management require dedicated administrator accounts separate from daily-use accounts?",
+    options: [
+      "To contain blast radius — malware encountered while logged in as admin would inherit admin privileges",
+      "To allow more administrators to be hired",
+      "To meet HIPAA's licensing rules",
+      "To reduce software costs"],
+    explain: "Separation of accounts contains the impact if the daily-use account is compromised." },
+  { ch: "CIS", lo: "CIS-11", type: "application", section: "Data Recovery",
+    q: "A company has nightly backups but has never restored from them. According to CIS Control 11, this is:",
+    options: [
+      "Insufficient — backups must be tested quarterly, otherwise they're unproven",
+      "Acceptable, since backups are taken regularly",
+      "Acceptable, since most backup software is reliable",
+      "Required only for HIPAA-covered entities"],
+    explain: "CIS requires quarterly testing — untested backups are unproven." },
+  { ch: "REG", lo: "Frameworks", type: "memorization", section: "Frameworks Map",
+    q: "Match: NIST is to risk-management framework as ISO is to:",
+    options: ["International standard", "U.S. federal law", "Credit card standard", "Health-care regulation"],
+    explain: "NIST = U.S. risk-mgmt frameworks (driven by FISMA); ISO = international standards." },
+  { ch: "SOC", lo: "TSC", type: "application", section: "TSC Distinction",
+    q: "A company designates its proprietary algorithms as confidential. Which TSC applies — Privacy or Confidentiality?",
+    options: [
+      "Confidentiality — Privacy is reserved for personal information",
+      "Privacy — it covers anything sensitive",
+      "Both apply equally",
+      "Neither applies — this is a Security issue only"],
+    explain: "Privacy is specifically about personal information; Confidentiality covers anything designated confidential." }
+];
+// Correct answer is at index 0 in every BANK entry.
+
+// ===== UI COMPONENT =====
+
+const CHAPTER_META = {
+  16:    { title: "Cybersecurity",          accent: "#b91c1c" },
+  "CIS": { title: "CIS Controls",           accent: "#0891b2" },
+  "SOC": { title: "SOC & TSC",              accent: "#7c3aed" },
+  "REG": { title: "Regs, Frameworks, Cases", accent: "#15803d" },
+};
+
+const LO_META = {
+  "16.1": "Cybersecurity & Accounting",
+  "16.2": "Reconnaissance Attacks",
+  "16.3": "Access Attacks (Physical & Logical)",
+  "16.4": "Disruptive Attacks (DoS & Malware)",
+  "Background": "Origin, Threat Intel & Frameworks",
+  "Implementation Groups": "IG1 / IG2 / IG3",
+  "Asset Classes": "Six Asset Classes",
+  "Documentation": "4 P's & Steering Committee",
+  "CIS-01": "Asset Inventory",
+  "CIS-02": "Software Inventory",
+  "CIS-03": "Data Protection",
+  "CIS-04": "Secure Configuration",
+  "CIS-05": "Account Management",
+  "CIS-06": "Access Control Management",
+  "CIS-07": "Continuous Vulnerability Management",
+  "CIS-08": "Audit Log Management",
+  "CIS-09": "Email & Web Browser Protections",
+  "CIS-10": "Malware Defenses",
+  "CIS-11": "Data Recovery",
+  "CIS-12": "Network Infrastructure",
+  "CIS-13": "Network Monitoring & Defense",
+  "CIS-14": "Awareness & Training",
+  "CIS-15": "Service Provider Management",
+  "CIS-16": "Application Software Security",
+  "CIS-17": "Incident Response",
+  "CIS-18": "Penetration Testing",
+  "SOC": "SOC Reports",
+  "Type": "Type 1 vs Type 2",
+  "TSC": "Trust Services Criteria",
+  "Health": "HIPAA & HITECH",
+  "Finance": "GLBA",
+  "Cards": "PCI DSS",
+  "ID-Theft": "FTC Red Flag",
+  "Federal": "FISMA",
+  "Public": "SOX",
+  "Frameworks": "Frameworks Map",
+  "Cases": "Equifax, Colonial, Florida Water",
+  "Industry Mapping": "Industry-to-Reg Mapping",
+};
+
+// Answer verification — correct answer is always at options[0]
+(function(){BANK.forEach((q)=>{Object.defineProperty(q,'_x',{value:0,enumerable:false,configurable:false,writable:false});Object.freeze(q.options);Object.freeze(q);});Object.freeze(BANK);})();
+
+const LOS_BY_CHAPTER = (function() {
+  const map = {};
+  BANK.forEach(q => {
+    if (!map[q.ch]) map[q.ch] = [];
+    if (!map[q.ch].includes(q.lo)) map[q.ch].push(q.lo);
+  });
+  return map;
+})();
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickRandom(pool, exceptIndex) {
+  if (pool.length === 0) return null;
+  if (pool.length === 1) return 0;
+  let i = Math.floor(Math.random() * pool.length);
+  while (i === exceptIndex) i = Math.floor(Math.random() * pool.length);
+  return i;
+}
+
+function formatTime(s) {
+  s = Math.max(0, Math.floor(s));
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const sec = s % 60;
+  const pad = n => String(n).padStart(2, "0");
+  return h > 0 ? h + ":" + pad(m) + ":" + pad(sec) : pad(m) + ":" + pad(sec);
+}
+
+function AISQuiz() {
+  const [selectedChapter, setSelectedChapter] = useState("all"); // "all" | 7 | 14 | 19
+  const [selectedLO, setSelectedLO] = useState("all"); // "all" | "7.1" | "14.3" | etc.
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [current, setCurrent] = useState(null);
+  const [selected, setSelected] = useState(null);
+  const [revealed, setRevealed] = useState(false);
+  // Streaks are live counters (persisted separately from the mastered map).
+  // correct/total/byChapter are DERIVED from `answered` so they stay in sync
+  // with the "Mastered this cycle" graphic.
+  const [streakState, setStreakState] = useState(() => {
+    try {
+      const s = JSON.parse(localStorage.getItem("bs_ais_streak_v1"));
+      if (s && typeof s === "object") {
+        return { streak: s.streak || 0, bestStreak: s.bestStreak || 0 };
+      }
+    } catch(e) {}
+    return { streak: 0, bestStreak: 0 };
+  });
+  const [answered, setAnswered] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("bs_ais_answered_v1")) || {}; }
+    catch(e) { return {}; }
+  });
+  const [cycleComplete, setCycleComplete] = useState(false);
+
+  // Per-question timer (resets to 0 each new question) + persisted total time on page.
+  const [timerElapsed, setTimerElapsed] = useState(0);
+  const [timerRunning, setTimerRunning] = useState(false);
+  const [totalElapsed, setTotalElapsed] = useState(() => {
+    try {
+      const v = parseInt(localStorage.getItem("bs_ais_total_v1"), 10);
+      return isFinite(v) && v >= 0 ? v : 0;
+    } catch(e) { return 0; }
+  });
+  const [totalRunning, setTotalRunning] = useState(() => {
+    try {
+      const raw = localStorage.getItem("bs_ais_total_running_v1");
+      if (raw === null) return true;
+      return raw === "true";
+    } catch(e) { return true; }
+  });
+
+  const stats = useMemo(() => {
+    let correct = 0, total = 0;
+    const byChapter = {};
+    for (const key of Object.keys(answered)) {
+      const q = BANK[key];
+      if (!q) continue;
+      const isCorrect = answered[key] === "correct";
+      total++;
+      if (isCorrect) correct++;
+      const ch = q.ch;
+      if (!byChapter[ch]) byChapter[ch] = { correct: 0, total: 0 };
+      byChapter[ch].total++;
+      if (isCorrect) byChapter[ch].correct++;
+    }
+    return { correct, total, byChapter, streak: streakState.streak, bestStreak: streakState.bestStreak };
+  }, [answered, streakState]);
+
+  const filteredPool = useMemo(() => {
+    return BANK.map((q, i) => { const o = { ...q, idx: i }; Object.defineProperty(o,'_x',{value:q._x,enumerable:false,configurable:false,writable:false}); return o; })
+      .filter(q => selectedChapter === "all" || q.ch === selectedChapter)
+      .filter(q => selectedLO === "all" || q.lo === selectedLO)
+      .filter(q => typeFilter === "all" || q.type === typeFilter);
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_ais_answered_v1", JSON.stringify(answered)); } catch(e) {}
+  }, [answered]);
+
+  useEffect(() => {
+    try { localStorage.setItem("bs_ais_streak_v1", JSON.stringify(streakState)); } catch(e) {}
+  }, [streakState]);
+
+  // Timer: reset to 0 and auto-start on each new question; auto-stop on reveal.
+  // Also stop (and prevent running) when the cycle is complete.
+  useEffect(() => {
+    if (cycleComplete) {
+      setTimerRunning(false);
+      return;
+    }
+    if (current && !revealed) {
+      setTimerElapsed(0);
+      setTimerRunning(true);
+    } else if (revealed) {
+      setTimerRunning(false);
+    }
+  }, [current, revealed, cycleComplete]);
+
+  // Per-question timer tick.
+  useEffect(() => {
+    if (!timerRunning) return;
+    const iv = setInterval(() => {
+      setTimerElapsed(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [timerRunning]);
+
+  // Total (cumulative) timer tick — independent of per-question; paused when cycle is complete
+  // or the user presses the total play/pause button.
+  useEffect(() => {
+    if (!totalRunning || cycleComplete) return;
+    const iv = setInterval(() => {
+      setTotalElapsed(prev => {
+        const next = prev + 1;
+        try { localStorage.setItem("bs_ais_total_v1", String(next)); } catch(e) {}
+        return next;
+      });
+    }, 1000);
+    return () => clearInterval(iv);
+  }, [totalRunning, cycleComplete]);
+
+  // Persist totalRunning preference.
+  useEffect(() => {
+    try { localStorage.setItem("bs_ais_total_running_v1", String(totalRunning)); } catch(e) {}
+  }, [totalRunning]);
+
+  const loadNext = () => {
+    if (filteredPool.length === 0) {
+      setCurrent(null);
+      setCycleComplete(false);
+      return;
+    }
+    // Only pick from questions not yet answered correctly — wrong answers stay in the shuffle
+    const unseen = filteredPool.filter(q => answered[q.idx] !== "correct");
+    if (unseen.length === 0) {
+      setCurrent(null);
+      setCycleComplete(true);
+      return;
+    }
+    const pick = unseen[Math.floor(Math.random() * unseen.length)];
+
+    // shuffle options but track where correct went
+    const indexed = pick.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === pick._x);
+
+    setCycleComplete(false);
+    setCurrent({
+      q: pick,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  const jumpToQuestion = (q) => {
+    // Show a specific question (click-through from tracker blocks) — reveal the answer so users can review
+    const indexed = q.options.map((opt, i) => ({ opt, i }));
+    const shuffled = shuffle(indexed);
+    const correctShuffledIndex = shuffled.findIndex(s => s.i === q._x);
+    setCycleComplete(false);
+    setCurrent({
+      q,
+      shuffledOptions: shuffled.map(s => s.opt),
+      correctShuffledIndex,
+    });
+    setSelected(null);
+    setRevealed(false);
+  };
+
+  useEffect(() => {
+    loadNext();
+    // eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
+    // When filters toggle, reset the active question
+    loadNext();
+    // eslint-disable-next-line
+  }, [selectedChapter, selectedLO, typeFilter]);
+
+  useEffect(() => {
+    // Auto-load a question if pool is available and none is active and we're not in complete state
+    if (!current && !cycleComplete && filteredPool.length > 0) {
+      loadNext();
+    }
+    // eslint-disable-next-line
+  }, [answered, cycleComplete]);
+
+  // Keyboard shortcuts: 1-4 select option, Enter/Space advance
+  useEffect(() => {
+    const handleKey = (e) => {
+      if (!current) return;
+      // Don't hijack when user is typing in an input
+      if (["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) return;
+
+      if (!revealed && ["1","2","3","4"].includes(e.key)) {
+        const i = parseInt(e.key, 10) - 1;
+        if (i < current.shuffledOptions.length) {
+          e.preventDefault();
+          handleSelect(i);
+        }
+      } else if (revealed && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault();
+        loadNext();
+      }
+    };
+    window.addEventListener("keydown", handleKey);
+    return () => window.removeEventListener("keydown", handleKey);
+    // eslint-disable-next-line
+  }, [current, revealed]);
+
+  const handleSelect = (i) => {
+    if (revealed) return;
+    setSelected(i);
+    setRevealed(true);
+    const correct = i === current.correctShuffledIndex;
+    setAnswered(prev => ({ ...prev, [current.q.idx]: correct ? "correct" : "wrong" }));
+    setStreakState(prev => {
+      const newStreak = correct ? prev.streak + 1 : 0;
+      return {
+        streak: newStreak,
+        bestStreak: Math.max(prev.bestStreak, newStreak),
+      };
+    });
+  };
+
+  const selectChapter = (ch) => {
+    setSelectedChapter(ch);
+    setSelectedLO("all"); // reset LO filter when chapter changes
+  };
+
+  const resetStats = () => {
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setAnswered({});
+    setCycleComplete(false);
+    setTimerElapsed(0);
+    setTimerRunning(false);
+    setTotalElapsed(0);
+    setTotalRunning(true);
+    try { localStorage.removeItem("bs_ais_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_ais_streak_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_ais_total_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_ais_total_running_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_ais_stats_v1"); } catch(e) {} // legacy cleanup
+    try { localStorage.removeItem("bs_ais_timer_v1"); } catch(e) {} // legacy cleanup
+    loadNext();
+  };
+
+  const startNewCycle = () => {
+    setAnswered({});
+    setStreakState({ streak: 0, bestStreak: 0 });
+    setCycleComplete(false);
+    try { localStorage.removeItem("bs_ais_answered_v1"); } catch(e) {}
+    try { localStorage.removeItem("bs_ais_streak_v1"); } catch(e) {}
+  };
+
+  const accuracy = stats.total > 0 ? Math.round((stats.correct / stats.total) * 100) : 0;
+
+  return (
+    <div className="min-h-screen w-full" style={{
+      background: "linear-gradient(180deg, #fbf9f4 0%, #f4f1ea 100%)",
+      fontFamily: "'Inter', -apple-system, sans-serif",
+      color: "#1c1917",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
+        .font-serif-display { font-family: 'Fraunces', Georgia, serif; font-optical-sizing: auto; }
+        .font-mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+        .option-btn { transition: all 0.18s cubic-bezier(.4,0,.2,1); }
+        .option-btn:not(:disabled):hover { transform: translateX(4px); }
+        .fade-in { animation: fadeIn 0.35s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .dot-grid {
+          background-image: radial-gradient(circle, #d6d3d1 1px, transparent 1px);
+          background-size: 24px 24px;
+        }
+      `}</style>
+
+      <div className="max-w-4xl mx-auto px-5 sm:px-8 py-8 sm:py-12">
+
+        {/* Back link */}
+        <a href="ais-final.html" className="inline-block font-mono text-[10px] uppercase tracking-[0.18em] text-stone-500 hover:text-stone-900 mb-6 no-underline">
+          ← AIS Final
+        </a>
+
+        {/* Header */}
+        <header className="mb-8">
+          <div className="flex items-baseline justify-between flex-wrap gap-4">
+            <div>
+              <div className="font-mono text-xs uppercase tracking-[0.2em] text-stone-500 mb-2">
+                Final · Lanz · Ch 16 + CIS Controls
+              </div>
+              <h1 className="font-serif-display text-4xl sm:text-5xl font-bold leading-[1.05] text-stone-900">
+                AIS Final <span className="italic">Review</span>
+              </h1>
+              <p className="font-serif-display italic text-stone-600 text-lg mt-1">
+                Cybersecurity · CIS · SOC · Regs
+              </p>
+            </div>
+            <div className="flex items-center gap-5 font-mono text-xs">
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Score</div>
+                <div className="text-2xl font-bold text-stone-900">{stats.correct}<span className="text-stone-400">/{stats.total}</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Acc</div>
+                <div className="text-2xl font-bold text-stone-900">{accuracy}<span className="text-stone-400 text-base">%</span></div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Streak</div>
+                <div className="text-2xl font-bold" style={{ color: stats.streak >= 3 ? "#d97706" : "#1c1917" }}>
+                  {stats.streak}{stats.bestStreak > 0 && <span className="text-stone-400 text-sm font-normal"> / {stats.bestStreak}</span>}
+                </div>
+              </div>
+              <div>
+                <div className="text-stone-400 uppercase tracking-wider">Time</div>
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl font-bold text-stone-900 tabular-nums">{formatTime(totalElapsed)}</div>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTotalRunning(r => !r); }}
+                    aria-label={totalRunning ? "Pause total timer" : "Start total timer"}
+                    title={totalRunning ? "Pause total timer" : "Start total timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 22, height: 22, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {totalRunning && !cycleComplete ? (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="10" height="10" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        {/* Topic filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Topic:</span>
+          <button
+            onClick={() => selectChapter("all")}
+            className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+            style={{
+              background: selectedChapter === "all" ? "#1c1917" : "transparent",
+              color: selectedChapter === "all" ? "#fff" : "#78716c",
+              borderColor: selectedChapter === "all" ? "#1c1917" : "#d6d3d1",
+            }}
+          >
+            All topics
+          </button>
+          {[16, "CIS", "SOC", "REG"].map(ch => {
+            const active = selectedChapter === ch;
+            const meta = CHAPTER_META[ch];
+            const chStats = stats.byChapter[ch];
+            const label = (typeof ch === "number") ? ("Ch " + ch + " · " + meta.title) : meta.title;
+            return (
+              <button
+                key={ch}
+                onClick={() => selectChapter(ch)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? meta.accent : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? meta.accent : "#d6d3d1",
+                }}
+              >
+                {label}
+                {chStats && (
+                  <span className="ml-2 font-mono opacity-80">
+                    {chStats.correct}/{chStats.total}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+          <button
+            onClick={resetStats}
+            className="option-btn ml-auto px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-stone-500 hover:text-stone-900 border border-stone-300 rounded-full"
+          >
+            Reset
+          </button>
+        </div>
+
+        {/* LO sub-topic filter — only visible when a specific chapter is selected */}
+        {selectedChapter !== "all" && (
+          <div className="flex flex-wrap items-center gap-2 mb-3 fade-in">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Topic:</span>
+            <button
+              onClick={() => setSelectedLO("all")}
+              className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+              style={{
+                background: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "transparent",
+                color: selectedLO === "all" ? "#fff" : "#78716c",
+                borderColor: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+              }}
+            >
+              All topics
+            </button>
+            {LOS_BY_CHAPTER[selectedChapter].map(lo => {
+              const active = selectedLO === lo;
+              const count = BANK.filter(q => q.lo === lo).length;
+              return (
+                <button
+                  key={lo}
+                  onClick={() => setSelectedLO(lo)}
+                  className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                  style={{
+                    background: active ? CHAPTER_META[selectedChapter].accent : "transparent",
+                    color: active ? "#fff" : "#78716c",
+                    borderColor: active ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+                  }}
+                  title={LO_META[lo]}
+                >
+                  {selectedChapter === 16 ? ("LO " + lo) : lo}{LO_META[lo] ? (" · " + LO_META[lo]) : ""}
+                  <span className="ml-2 font-mono opacity-70">({count})</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
+        {/* Type filter bar */}
+        <div className="flex flex-wrap items-center gap-2 mb-6 pb-6 border-b border-stone-300">
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mr-2">Type:</span>
+          {[
+            { key: "all", label: "All" },
+            { key: "application", label: "Application" },
+            { key: "memorization", label: "Memorization" },
+          ].map(({ key, label }) => {
+            const active = typeFilter === key;
+            const count = BANK.filter(q =>
+              (selectedChapter === "all" || q.ch === selectedChapter) &&
+              (selectedLO === "all" || q.lo === selectedLO) &&
+              (key === "all" || q.type === key)
+            ).length;
+            return (
+              <button
+                key={key}
+                onClick={() => setTypeFilter(key)}
+                className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
+                style={{
+                  background: active ? "#1c1917" : "transparent",
+                  color: active ? "#fff" : "#78716c",
+                  borderColor: active ? "#1c1917" : "#d6d3d1",
+                }}
+              >
+                {label} <span className="font-mono opacity-70 ml-1">({count})</span>
+              </button>
+            );
+          })}
+          <span className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 hidden sm:inline">
+            Keys: 1–4 · Enter
+          </span>
+        </div>
+
+        {/* Progress & status row */}
+        <div className="flex flex-wrap items-center gap-3 mb-6">
+          <div className="flex-1 min-w-[180px]">
+            <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.15em] text-stone-500 mb-1.5">
+              <span>Mastered this cycle</span>
+              <span className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5">
+                  <span className="tabular-nums text-stone-700" style={{ fontSize: 11 }}>{formatTime(timerElapsed)}</span>
+                  <button
+                    type="button"
+                    onClick={() => { if (!cycleComplete) setTimerRunning(r => !r); }}
+                    aria-label={timerRunning ? "Pause timer" : "Start timer"}
+                    title={timerRunning ? "Pause timer" : "Start timer"}
+                    disabled={cycleComplete}
+                    style={{
+                      width: 18, height: 18, padding: 0, border: "1px solid #d6d3d1",
+                      borderRadius: 999, background: "#fff",
+                      cursor: cycleComplete ? "default" : "pointer",
+                      opacity: cycleComplete ? 0.5 : 1,
+                      display: "inline-flex", alignItems: "center", justifyContent: "center",
+                      color: "#1c1917",
+                    }}
+                  >
+                    {timerRunning ? (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6" /><rect x="5" y="1" width="2" height="6" /></svg>
+                    ) : (
+                      <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z" /></svg>
+                    )}
+                  </button>
+                </span>
+                <span>
+                  {filteredPool.filter(q => answered[q.idx] === "correct").length} / {filteredPool.length}
+                </span>
+              </span>
+            </div>
+            <div className="flex gap-[2px] flex-wrap">
+              {filteredPool.map(q => {
+                const s = answered[q.idx];
+                const isCurrent = current && current.q && current.q.idx === q.idx;
+                const bg = s === "correct" ? "#16a34a" : s === "wrong" ? "#dc2626" : "#e7e5e4";
+                const label = s === "correct" ? "Correct" : s === "wrong" ? "Wrong" : "Unseen";
+                return (
+                  <button
+                    key={q.idx}
+                    type="button"
+                    onClick={() => jumpToQuestion(q)}
+                    title={label + " — click to revisit"}
+                    aria-label={"Jump to question: " + label}
+                    style={{
+                      width: 10, height: 10, borderRadius: 2, background: bg,
+                      padding: 0, border: 0, cursor: "pointer",
+                      outline: isCurrent ? "2px solid #1c1917" : "none",
+                      outlineOffset: isCurrent ? 1 : 0,
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {cycleComplete && (
+          <div className="fade-in mb-6 rounded-2xl p-5 border" style={{ background: "#fff", borderColor: "#d6d3d1" }}>
+            <div className="font-serif-display text-xl font-bold text-stone-900 mb-1">All mastered</div>
+            <div className="text-sm text-stone-600 mb-3">
+              You've answered all {filteredPool.length} questions in this filter correctly. Start a new cycle to go through them again.
+            </div>
+            <button
+              onClick={startNewCycle}
+              className="option-btn px-4 py-2 text-sm font-medium rounded-full text-white"
+              style={{ background: "#1c1917" }}
+            >
+              Start new cycle
+            </button>
+          </div>
+        )}
+
+
+        {/* Question card */}
+        {current ? (
+          <div key={stats.total} className="fade-in">
+            {/* Source metadata */}
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
+              <span
+                className="font-mono text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded"
+                style={{
+                  background: CHAPTER_META[current.q.ch].accent,
+                  color: "#fff",
+                }}
+              >
+                {(typeof current.q.ch === "number" ? "Ch " + current.q.ch : current.q.ch) + " · " + (typeof current.q.ch === "number" ? "LO " + current.q.lo : current.q.lo)}
+              </span>
+              <span className="font-mono text-xs text-stone-500">
+                § {current.q.section}
+              </span>
+              <span
+                className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] px-2 py-0.5 rounded border"
+                style={{
+                  borderColor: current.q.type === "application" ? "#d97706" : "#a8a29e",
+                  color: current.q.type === "application" ? "#b45309" : "#78716c",
+                  background: current.q.type === "application" ? "#fef3c7" : "transparent",
+                }}
+              >
+                {current.q.type}
+              </span>
+            </div>
+
+            {/* Question */}
+            <div className="relative mb-7">
+              <div className="absolute -left-3 top-0 bottom-0 w-0.5" style={{ background: CHAPTER_META[current.q.ch].accent, opacity: 0.3 }}/>
+              <h2 className="font-serif-display text-2xl sm:text-[28px] leading-[1.25] text-stone-900 font-semibold pl-3">
+                {current.q.q}
+              </h2>
+            </div>
+
+            {/* Options */}
+            <div className="space-y-2.5 mb-6">
+              {current.shuffledOptions.map((opt, i) => {
+                const isCorrect = i === current.correctShuffledIndex;
+                const isSelected = i === selected;
+                let bg = "#fff";
+                let border = "#e7e5e4";
+                let textColor = "#1c1917";
+                let letterBg = "#f5f5f4";
+                let letterColor = "#78716c";
+
+                if (revealed) {
+                  if (isCorrect) {
+                    bg = "#f0fdf4";
+                    border = "#16a34a";
+                    letterBg = "#16a34a";
+                    letterColor = "#fff";
+                  } else if (isSelected) {
+                    bg = "#fef2f2";
+                    border = "#dc2626";
+                    letterBg = "#dc2626";
+                    letterColor = "#fff";
+                  } else {
+                    textColor = "#a8a29e";
+                  }
+                } else if (isSelected) {
+                  border = "#1c1917";
+                }
+
+                return (
+                  <button
+                    key={i}
+                    onClick={() => handleSelect(i)}
+                    disabled={revealed}
+                    className="option-btn w-full text-left px-4 py-3.5 rounded-lg border flex items-start gap-4 disabled:cursor-default"
+                    style={{ background: bg, borderColor: border, color: textColor }}
+                  >
+                    <span
+                      className="font-mono text-xs font-bold w-6 h-6 flex items-center justify-center rounded shrink-0 mt-0.5"
+                      style={{ background: letterBg, color: letterColor }}
+                    >
+                      {String.fromCharCode(65 + i)}
+                    </span>
+                    <span className="text-[15px] leading-snug flex-1">{opt}</span>
+                    {revealed && isCorrect && (
+                      <span className="text-green-600 font-bold text-lg">✓</span>
+                    )}
+                    {revealed && isSelected && !isCorrect && (
+                      <span className="text-red-600 font-bold text-lg">✕</span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Explanation + next */}
+            {revealed && (
+              <div className="fade-in">
+                <div className="border-t-2 border-dashed border-stone-300 pt-5 mb-5">
+                  <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-stone-500 mb-2">
+                    {selected === current.correctShuffledIndex ? "Correct" : "Answer"}
+                  </div>
+                  <p className="font-serif-display text-[17px] leading-relaxed text-stone-800 italic">
+                    {current.q.explain}
+                  </p>
+                </div>
+                <button
+                  onClick={loadNext}
+                  className="option-btn w-full sm:w-auto px-8 py-3 rounded-lg font-medium text-sm text-white"
+                  style={{ background: "#1c1917" }}
+                >
+                  Next question →
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="text-center py-20 text-stone-500 font-serif-display italic">
+            No questions in the selected scope.
+          </div>
+        )}
+
+        {/* Footer */}
+        <footer className="mt-16 pt-6 border-t border-stone-200 font-mono text-[10px] uppercase tracking-[0.18em] text-stone-400 flex flex-wrap justify-between gap-2">
+          <span>{BANK.length} questions · {filteredPool.length} in scope</span>
+          <span>Continuous review mode</span>
+        </footer>
+      </div>
+    </div>
+  );
+}
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<AISQuiz />);
+  </script>
+</body>
+</html>

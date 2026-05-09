@@ -1,0 +1,1596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://unpkg.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AIS Final Flashcards — Bleifer Study</title>
+  <meta name="description" content="Key-terms flashcards for AIS Final exam — Ch 16 cybersecurity, CIS Controls, SOC reports, regulations" />
+  <meta name="theme-color" content="#fbf9f4" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #fbf9f4; }
+    body {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1c1917;
+      min-height: 100vh;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      user-select: none;
+    }
+    .wrap {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 48px 24px 48px;
+    }
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .brand {
+      font-family: Georgia, serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      text-decoration: none;
+      color: #1c1917;
+      letter-spacing: -0.01em;
+    }
+    .brand .sep { color: #d6d3d1; margin: 0 8px; font-weight: 400; }
+    .brand .mode { color: #78716c; font-weight: 400; font-style: italic; }
+    .back {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: #78716c;
+      text-decoration: none;
+    }
+    .back:hover { color: #1c1917; }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .subtitle {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #78716c;
+      margin-bottom: 32px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+    .chip {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid #e7e5e4;
+      background: #fff;
+      color: #78716c;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .chip:hover { border-color: #a8a29e; color: #1c1917; }
+    .chip.active {
+      background: #1c1917;
+      border-color: #1c1917;
+      color: #fbf9f4;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #a8a29e;
+    }
+
+    .card-stage {
+      perspective: 1400px;
+      margin-bottom: 24px;
+    }
+    .card {
+      position: relative;
+      width: 100%;
+      min-height: 340px;
+      cursor: pointer;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card.flipped { transform: rotateY(180deg); }
+    .face {
+      position: absolute;
+      inset: 0;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 16px;
+      padding: 48px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+    }
+    .face.back { transform: rotateY(180deg); }
+    .face-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #a8a29e;
+      margin-bottom: 20px;
+    }
+    .face .term {
+      font-family: Georgia, serif;
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+    .face .def {
+      font-family: Georgia, serif;
+      font-size: 1.05rem;
+      line-height: 1.55;
+      color: #292524;
+    }
+    .ch-tag-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .ch-tag, .lo-tag, .section-tag {
+      display: inline-block;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: #f5f5f4;
+      color: #78716c;
+    }
+    .lo-tag {
+      background: #1c1917;
+      color: #fbf9f4;
+    }
+    .section-tag {
+      background: transparent;
+      color: #a8a29e;
+      border: 1px solid #e7e5e4;
+    }
+    .lo-filters {
+      margin-top: -12px;
+      margin-bottom: 24px;
+    }
+    .lo-filters .chip {
+      font-size: 10px;
+      padding: 6px 12px;
+    }
+    .flip-hint {
+      position: absolute;
+      bottom: 20px;
+      right: 24px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #d6d3d1;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      justify-content: space-between;
+      align-items: center;
+    }
+    button {
+      font-family: ui-sans-serif, system-ui, sans-serif;
+      font-size: 0.9rem;
+      padding: 12px 24px;
+      border-radius: 10px;
+      border: 1px solid #e7e5e4;
+      background: #fff;
+      color: #1c1917;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover:not(:disabled) { border-color: #1c1917; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.primary {
+      background: #1c1917;
+      color: #fbf9f4;
+      border-color: #1c1917;
+    }
+    button.primary:hover:not(:disabled) { background: #292524; }
+
+    .empty {
+      padding: 80px 24px;
+      text-align: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+    }
+
+    .mc-section {
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid #e7e5e4;
+    }
+    .mc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .mc-title {
+      font-family: Georgia, serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .mc-score {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #78716c;
+    }
+    .mc-score .pct { color: #1c1917; font-weight: 700; }
+    .mc-timer {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 11px;
+      color: #78716c;
+      font-variant-numeric: tabular-nums;
+    }
+    .mc-timer-value { color: #1c1917; letter-spacing: 0.02em; }
+    .mc-timer-sep {
+      color: #a8a29e;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-left: 4px;
+    }
+    .mc-timer-btn {
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      border: 1px solid #d6d3d1;
+      border-radius: 999px;
+      background: #fff;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #1c1917;
+    }
+    .mc-timer-btn:hover { border-color: #1c1917; }
+    .mc-card {
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 16px;
+      padding: 28px 28px 24px;
+    }
+    .mc-prompt-label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #a8a29e;
+      margin-bottom: 12px;
+    }
+    .mc-prompt {
+      font-family: Georgia, serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+      letter-spacing: -0.02em;
+      margin-bottom: 6px;
+    }
+    .mc-prompt-sub {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #78716c;
+      font-size: 0.9rem;
+      margin-bottom: 24px;
+    }
+    .mc-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .mc-option {
+      text-align: left;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #1c1917;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      padding: 14px 18px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .mc-option:hover:not(:disabled) {
+      border-color: #1c1917;
+      background: #fafaf9;
+    }
+    .mc-option .letter {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #a8a29e;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+    .mc-option.correct {
+      border-color: #166534;
+      background: #f0fdf4;
+    }
+    .mc-option.correct .letter { color: #166534; }
+    .mc-option.incorrect {
+      border-color: #991b1b;
+      background: #fef2f2;
+    }
+    .mc-option.incorrect .letter { color: #991b1b; }
+    .mc-option.faded { opacity: 0.55; }
+    .mc-option:disabled { cursor: default; }
+
+    .mc-feedback {
+      margin-top: 20px;
+      padding: 16px 18px;
+      border-radius: 10px;
+      font-family: Georgia, serif;
+      font-size: 0.95rem;
+      line-height: 1.55;
+      display: none;
+    }
+    .mc-feedback.show { display: block; }
+    .mc-feedback.right {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #14532d;
+    }
+    .mc-feedback.wrong {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #7f1d1d;
+    }
+    .mc-feedback .label {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .mc-feedback .term-name { font-weight: 700; }
+
+    .mc-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 20px;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .mc-mode {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mc-mode .chip {
+      font-size: 10px;
+      padding: 6px 12px;
+    }
+
+    .learn-section {
+      margin-top: 40px;
+      padding-top: 40px;
+      border-top: 1px solid #e7e5e4;
+    }
+    .learn-input {
+      width: 100%;
+      font-family: Georgia, serif;
+      font-size: 1.1rem;
+      color: #1c1917;
+      background: #fff;
+      border: 1px solid #e7e5e4;
+      border-radius: 10px;
+      padding: 14px 18px;
+      outline: none;
+      transition: border-color 0.15s, background 0.15s;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      user-select: text;
+    }
+    .learn-input:focus { border-color: #1c1917; }
+    .learn-input:disabled { background: #fafaf9; cursor: default; }
+    .learn-input.correct { border-color: #166534; background: #f0fdf4; }
+    .learn-input.incorrect { border-color: #991b1b; background: #fef2f2; }
+    .learn-input.close { border-color: #b45309; background: #fffbeb; }
+    #devtools-shield {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      background: #fbf9f4;
+      align-items: center;
+      justify-content: center;
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a8a29e;
+      font-size: 1.2rem;
+      text-align: center;
+      padding: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div id="devtools-shield">Please close developer tools to continue studying.</div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <a class="brand" href="index.html">Bleifer Study<span class="sep">/</span><span class="mode">Flashcards</span></a>
+      <a class="back" href="ais-final.html">← AIS Final</a>
+    </div>
+
+    <h1>Key Terms Flashcards</h1>
+    <div class="subtitle">Click a card to flip. Filter by topic. Final exam material — Ch 16, CIS, SOC, regulations.</div>
+
+    <div class="filters" id="filters">
+      <button class="chip active" data-ch="all">All Topics</button>
+      <button class="chip" data-ch="16">Ch 16 · Cybersecurity</button>
+      <button class="chip" data-ch="CIS">CIS Controls</button>
+      <button class="chip" data-ch="SOC">SOC &amp; TSC</button>
+      <button class="chip" data-ch="REG">Regs &amp; Frameworks</button>
+    </div>
+
+    <div class="filters lo-filters" id="lo-filters" style="display:none"></div>
+
+    <div class="progress">
+      <span id="counter">1 / 0</span>
+      <span id="section-label">Key Term</span>
+    </div>
+
+    <div class="card-stage">
+      <div class="card" id="card" onclick="flip()">
+        <div class="face front">
+          <div class="face-label">Term</div>
+          <div class="term" id="term">—</div>
+          <div class="ch-tag-row">
+            <span class="ch-tag" id="ch-tag-front">CH ·</span>
+            <span class="lo-tag" id="lo-tag-front"></span>
+            <span class="section-tag" id="section-tag-front"></span>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+        <div class="face back">
+          <div class="face-label">Definition</div>
+          <div class="def" id="def">—</div>
+          <div class="ch-tag-row">
+            <span class="ch-tag" id="ch-tag-back">CH ·</span>
+            <span class="lo-tag" id="lo-tag-back"></span>
+            <span class="section-tag" id="section-tag-back"></span>
+          </div>
+          <div class="flip-hint">click to flip</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="prev" onclick="prev()">← Previous</button>
+      <button onclick="shuffleDeck()">Shuffle</button>
+      <button class="primary" id="next" onclick="next()">Next →</button>
+    </div>
+
+    <div class="mc-section">
+      <div class="mc-header">
+        <div class="mc-title">Practice Quiz</div>
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <span class="mc-timer">
+            <span class="mc-timer-value" id="mc-timer-value">00:00</span>
+            <button type="button" class="mc-timer-btn" id="mc-timer-btn" aria-label="Start timer" title="Start timer">
+              <svg id="mc-timer-icon" width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><path d="M1 1 L7 4 L1 7 Z"></path></svg>
+            </button>
+            <span class="mc-timer-sep">Total</span>
+            <span class="mc-timer-value" id="mc-timer-total">00:00</span>
+            <button type="button" class="mc-timer-btn" id="mc-total-btn" aria-label="Pause total timer" title="Pause total timer">
+              <svg id="mc-total-icon" width="8" height="8" viewBox="0 0 8 8" fill="currentColor" aria-hidden="true"><rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect></svg>
+            </button>
+          </span>
+          <div class="mc-score">
+            <span id="mc-correct">0</span> / <span id="mc-total">0</span> ·
+            <span class="pct" id="mc-pct">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="mc-controls" style="margin-top:0;margin-bottom:16px;">
+        <div class="mc-mode" id="mc-mode">
+          <button class="chip active" data-mode="term2def">Term → Definition</button>
+          <button class="chip" data-mode="def2term">Definition → Term</button>
+        </div>
+        <button id="mc-reset" onclick="resetMcScore()">Reset Score</button>
+      </div>
+
+      <div class="mc-card">
+        <div class="mc-prompt-label" id="mc-prompt-label">Which definition matches this term?</div>
+        <div class="mc-prompt" id="mc-prompt">—</div>
+        <div class="mc-prompt-sub" id="mc-prompt-sub"></div>
+        <div class="mc-options" id="mc-options"></div>
+        <div class="mc-feedback" id="mc-feedback"></div>
+        <div class="mc-controls">
+          <span class="mc-score" id="mc-filter-label">All topics</span>
+          <button class="primary" id="mc-next" onclick="nextMcQuestion()">Next Question →</button>
+        </div>
+      </div>
+
+      <div class="learn-section">
+        <div class="mc-header">
+          <div class="mc-title">Learn — Write Mode</div>
+          <div class="mc-score">
+            <span id="learn-correct">0</span> / <span id="learn-total">0</span> ·
+            <span class="pct" id="learn-pct">—</span>
+          </div>
+        </div>
+
+        <div class="mc-controls" style="margin-top:0;margin-bottom:16px;">
+          <div class="mc-mode" id="learn-mode">
+            <button class="chip active" data-mode="def2term">Definition → Type Term</button>
+            <button class="chip" data-mode="term2def">Term → Type Definition</button>
+          </div>
+          <button id="learn-reset" onclick="resetLearnScore()">Reset Progress</button>
+        </div>
+
+        <div class="mc-card">
+          <div class="mc-prompt-label" id="learn-prompt-label">Type the term that matches this definition</div>
+          <div class="mc-prompt" id="learn-prompt">—</div>
+          <div class="mc-prompt-sub" id="learn-prompt-sub"></div>
+          <form id="learn-form" autocomplete="off">
+            <input type="text" class="learn-input" id="learn-input" placeholder="Type your answer…" autocomplete="off" autocapitalize="off" spellcheck="false" />
+          </form>
+          <div class="mc-feedback" id="learn-feedback"></div>
+          <div class="mc-controls">
+            <span class="mc-score" id="learn-filter-label">All topics</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <button id="learn-dontknow" onclick="revealLearn()">Don't know</button>
+              <button id="learn-override" onclick="overrideLearn()" style="display:none;">Override — I was right</button>
+              <button class="primary" id="learn-submit" onclick="submitLearn()">Check</button>
+              <button class="primary" id="learn-next" onclick="nextLearnQuestion()" style="display:none;">Next →</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (function(){
+    document.addEventListener('contextmenu', function(e){ e.preventDefault(); });
+    document.addEventListener('keydown', function(e){
+      if(e.key==='F12') { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && e.shiftKey && (e.key==='I'||e.key==='J'||e.key==='C')) { e.preventDefault(); return false; }
+      if((e.ctrlKey||e.metaKey) && (e.key==='u'||e.key==='s')) { e.preventDefault(); return false; }
+    });
+    document.addEventListener('selectstart', function(e){
+      var t = e.target;
+      if (t && t.tagName !== 'INPUT' && t.tagName !== 'TEXTAREA') e.preventDefault();
+    });
+    function checkDevTools(){
+      var shield = document.getElementById('devtools-shield');
+      var w = window.outerWidth - window.innerWidth > 160;
+      var h = window.outerHeight - window.innerHeight > 160;
+      var isOpen = w || h;
+      if(!isOpen){ try { var s=performance.now(); (function(){}).constructor('debugger')(); if(performance.now()-s>100) isOpen=true; } catch(e){} }
+      if(isOpen){ shield.style.display='flex'; document.querySelector('.wrap').style.display='none'; }
+      else { shield.style.display='none'; document.querySelector('.wrap').style.display=''; }
+    }
+    setInterval(checkDevTools, 1000);
+    checkDevTools();
+    console.clear();
+    console.log('%cStop!','color:red;font-size:48px;font-weight:bold;');
+    console.log('%cThis is a study tool. Inspecting the source defeats the purpose of learning.','font-size:16px;');
+  })();
+  </script>
+
+  <script>
+    // === FLASHCARD DATA ===
+    const CARDS = [
+      // ===== CHAPTER 16 — CYBERSECURITY =====
+      {"ch": 16, "lo": "16.1", "section": "Definitions", "term": "cybersecurity", "definition": "The measures a company takes to protect a computer or system — including those on the internet — against unauthorized access or attacks. Requires both prevention and corrective response."},
+      {"ch": 16, "lo": "16.1", "section": "Definitions", "term": "cyber threat", "definition": "A potential cyberattack from individual hackers, criminal groups, or corporate spies aimed at gaining unauthorized access to or damaging a system."},
+      {"ch": 16, "lo": "16.1", "section": "NIST", "term": "National Institute of Standards and Technology (NIST)", "definition": "A U.S. Department of Commerce agency that promotes innovation in science, standards, and technology. Publishes the Cybersecurity Framework (CSF) and the SP 800-53 control catalog."},
+      {"ch": 16, "lo": "16.1", "section": "NIST", "term": "NIST Cybersecurity Framework (CSF)", "definition": "A best-practice framework of functions for addressing cybersecurity risks. v1.1 has five functions (Identify, Protect, Detect, Respond, Recover); v2.0 added a sixth function — Govern."},
+      {"ch": 16, "lo": "16.1", "section": "NIST", "term": "NIST SP 800-53", "definition": "A NIST publication that defines 18 control families (e.g., Access Control, Risk Assessment, System and Communications Protection) used by federal agencies and required by FISMA."},
+      {"ch": 16, "lo": "16.1", "section": "NIST CSF v2.0", "term": "Govern function", "definition": "The sixth NIST CSF function added in v2.0. Establishes and monitors the cybersecurity risk management strategy, expectations, and policy."},
+      {"ch": 16, "lo": "16.2", "section": "Kill Chain", "term": "cyber-kill chain", "definition": "The life cycle of a cyberattack from early information gathering through final damage to the network. Three steps: gather information, access the network, disrupt the network."},
+      {"ch": 16, "lo": "16.2", "section": "Kill Chain", "term": "reconnaissance attack", "definition": "A knowledge-gathering attack — the first stage of the cyber-kill chain — that helps attackers identify targets and plan operations by finding vulnerabilities or exposed information."},
+      {"ch": 16, "lo": "16.2", "section": "Physical vs Logical", "term": "physical attack", "definition": "Any cyberattack — whether for reconnaissance, access, or disruption — that threatens elements a network administrator has no control over: physical security, hardware, and people."},
+      {"ch": 16, "lo": "16.2", "section": "Physical vs Logical", "term": "logical attack", "definition": "Any cyberattack that occurs on a fully digital spectrum and requires no human interaction other than the attacker initiating the attack."},
+      {"ch": 16, "lo": "16.2", "section": "Physical vs Logical", "term": "physical reconnaissance attack", "definition": "A reconnaissance attack that uses human interaction (target, attacker, or both) to generate information about the network. Includes phishing, dumpster diving, and eavesdropping."},
+      {"ch": 16, "lo": "16.2", "section": "Physical vs Logical", "term": "logical reconnaissance attack", "definition": "A reconnaissance attack that uses digital techniques and does not require a human target. The target is a network vulnerability that may eventually allow access."},
+      {"ch": 16, "lo": "16.2", "section": "Phishing", "term": "social engineering", "definition": "Persuading people to perform acts that grant hackers access to confidential information (birth dates, passwords, user IDs). Always physical because the target is always a person."},
+      {"ch": 16, "lo": "16.2", "section": "Phishing", "term": "email phishing", "definition": "A deceptive email request designed to trick a victim into sharing private information. Red flags: incorrect sender domain, vague salutation, poor grammar, urgency, suspicious links, surveys."},
+      {"ch": 16, "lo": "16.2", "section": "Physical Recon", "term": "dumpster diving", "definition": "Looking through someone else's physical trash for sensitive information — passwords, network diagrams, emails. Mitigated by shredding and secure disposal."},
+      {"ch": 16, "lo": "16.2", "section": "Physical Recon", "term": "eavesdropping", "definition": "Also called sniffing — the unauthorized interception of communication. Includes phone calls, emails, and text messages. Mitigated by encryption and secure communication lines (FTP)."},
+      {"ch": 16, "lo": "16.2", "section": "Physical Recon", "term": "File Transfer Protocol (FTP)", "definition": "A standard network protocol that allows users to transfer files securely between the company network and outside parties — used to mitigate eavesdropping risk."},
+      {"ch": 16, "lo": "16.2", "section": "Encryption", "term": "encryption", "definition": "The process of encoding data so that only authorized parties can read it. Used to protect data in transit and at rest, and to mitigate eavesdropping. Note: firewalls cannot read through encrypted traffic, which is why DLP exists."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon", "term": "IP address", "definition": "A unique numerical identifier assigned to each device on a network. Hackers ping IP addresses one at a time to identify which hosts are active."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon", "term": "ping sweep", "definition": "Also called an IP probe — sending a communication to each IP address to identify which hosts are active on the network by listening for response packets."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon", "term": "network port", "definition": "A logical endpoint on a host that sends or receives network communications. Different ports correspond to different services. Port scans identify which ports are open."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon", "term": "port scan", "definition": "A logical reconnaissance technique that follows a ping sweep — narrows results by identifying which ports are open and sending or receiving data on the network."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon", "term": "packet", "definition": "A small portion of a full message being sent over the network. A response packet from a pinged IP indicates the host is active."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon Defense", "term": "vulnerability scan", "definition": "An internal scan that detects and classifies security loopholes in infrastructure before a hacker does. NIST control RA-5."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon Defense", "term": "penetration test", "definition": "Also called pen testing — a test in which the company attempts to hack its own systems to identify and exploit vulnerabilities. NIST control CA-8. Differs from a vulnerability assessment because pen tests EXPLOIT, not just identify."},
+      {"ch": 16, "lo": "16.2", "section": "Logical Recon Defense", "term": "patch", "definition": "An update applied to a system to fix security vulnerabilities. Companies should apply patches as soon as available — Equifax's failure to patch caused its 2017 breach."},
+      {"ch": 16, "lo": "16.3", "section": "Kill Chain", "term": "access attack", "definition": "The second stage of the cyber-kill chain — an attack aimed at gaining unauthorized entry to a system, application, or facility. Comes after reconnaissance and before disruption."},
+      {"ch": 16, "lo": "16.3", "section": "Kill Chain", "term": "physical access attack", "definition": "An access attack that gains entry to hardware or people, either with the assistance of an unknowing victim or through force (e.g., tailgating)."},
+      {"ch": 16, "lo": "16.3", "section": "Kill Chain", "term": "logical access attack", "definition": "An access attack that seeks unauthorized access to a system or application by either exploiting a network vulnerability uncovered during reconnaissance or attempting to force entry through network security."},
+      {"ch": 16, "lo": "16.3", "section": "Physical Access", "term": "tailgating", "definition": "Also called piggybacking — physically gaining unauthorized entry by closely following an authorized person through a security checkpoint and using their credentials."},
+      {"ch": 16, "lo": "16.3", "section": "Physical Access", "term": "accidental tailgating", "definition": "Tailgating in which the authorized user is unaware that an unauthorized person is following them through the security checkpoint."},
+      {"ch": 16, "lo": "16.3", "section": "Physical Access", "term": "polite tailgating", "definition": "Tailgating in which the authorized user is aware of the other person but politely holds the door open for them."},
+      {"ch": 16, "lo": "16.3", "section": "Logical Access", "term": "brute-force attack", "definition": "An attack in which hackers force access to the network by attempting many passwords or phrases until finding the correct one — often using automated programs."},
+      {"ch": 16, "lo": "16.3", "section": "Logical Access", "term": "dictionary attack", "definition": "A type of brute-force attack that uses lists of commonly used words and combinations of words and letters to guess passwords."},
+      {"ch": 16, "lo": "16.3", "section": "Logical Access", "term": "on-path attack", "definition": "Formerly known as a man-in-the-middle attack — actively injecting into an ongoing communication between two endpoints by impersonating each party. Differs from eavesdropping (passive listening)."},
+      {"ch": 16, "lo": "16.3", "section": "Logical Access", "term": "IP spoofing", "definition": "An attack in which the attacker creates IP packets with modified source addresses to disguise their identity and impersonate a legitimate computer on the network."},
+      {"ch": 16, "lo": "16.3", "section": "Logical Access", "term": "normal packet", "definition": "A network packet whose source address is the actual IP address of the sender. Contrast with a spoofed packet."},
+      {"ch": 16, "lo": "16.3", "section": "Logical Access", "term": "spoofed packet", "definition": "A network packet whose source address has been forged or modified to disguise the true sender. Used in IP spoofing attacks to impersonate legitimate hosts."},
+      {"ch": 16, "lo": "16.3", "section": "Logical Access Defense", "term": "multifactor authentication (MFA)", "definition": "Requiring more than one identifier (something you know, have, or are) to log in. Required for externally exposed apps, remote network access, and administrator access."},
+      {"ch": 16, "lo": "16.4", "section": "DoS", "term": "denial-of-service (DoS) attack", "definition": "An attack that prohibits users from using resources by continuously sending fake requests to consume the system's capacity, resulting in loss of availability."},
+      {"ch": 16, "lo": "16.4", "section": "DoS", "term": "distributed denial-of-service (DDoS) attack", "definition": "A large-scale DoS attack that uses multiple machines or IP addresses (a botnet) to force the target to shut down. Harder to stop because each source must be identified."},
+      {"ch": 16, "lo": "16.4", "section": "DoS", "term": "botnet", "definition": "A network of computers infected with malware that function like robots, programmed to do whatever attackers want — commonly used to flood targets in DDoS attacks."},
+      {"ch": 16, "lo": "16.4", "section": "Malware", "term": "malware", "definition": "Short for 'malicious software' — software specifically designed to damage, disrupt, or gain unauthorized access to systems. Contains malicious code."},
+      {"ch": 16, "lo": "16.4", "section": "Malware", "term": "malicious code", "definition": "Code written specifically to cause harm and attack a target system — the harmful payload contained inside malware."},
+      {"ch": 16, "lo": "16.4", "section": "Malware", "term": "ransomware", "definition": "Malware used to hold a system hostage in exchange for a demand, typically monetary payment. Used in the 2021 Colonial Pipeline attack ($4.4M ransom paid)."},
+      {"ch": 16, "lo": "16.4", "section": "Malware", "term": "virus", "definition": "Malware that replicates itself within a system and spreads quickly, causing damage to core system functions. Replication requires human interaction."},
+      {"ch": 16, "lo": "16.4", "section": "Malware", "term": "worm", "definition": "Malware that replicates without human interaction. Has the same destructive power as a virus and poses significant network security risks."},
+      {"ch": 16, "lo": "16.4", "section": "Malware", "term": "logic bomb", "definition": "Malicious code programmed into a system that remains dormant until certain conditions are met. Difficult to detect or prevent until activated."},
+      {"ch": 16, "lo": "16.4", "section": "Malware", "term": "Trojan horse", "definition": "Malware disguised as benign software that carries malicious code (often activated via a logic bomb). Trojans are nonreplicating and commonly used to obtain back-door access."},
+
+      // ===== CIS CONTROLS =====
+      {"ch": "CIS", "lo": "Background", "section": "Origin", "term": "Center for Internet Security (CIS)", "definition": "The nonprofit that maintains the CIS Controls and CIS Benchmarks. Acquired the controls list from the SANS Institute."},
+      {"ch": "CIS", "lo": "Background", "section": "Origin", "term": "SANS Institute", "definition": "The organization that originally created the critical security controls list before transferring it to CIS."},
+      {"ch": "CIS", "lo": "Background", "section": "Threat Intel", "term": "Verizon Data Breach Investigations Report (DBIR)", "definition": "An annual retrospective report analyzing real-world breaches Verizon investigated during the year. Used to learn what already happened — not predictive."},
+      {"ch": "CIS", "lo": "Background", "section": "Threat Intel", "term": "MITRE ATT&CK", "definition": "A predictive database of enterprise adversary techniques and procedures. Used in risk assessments to anticipate attacks before they happen."},
+      {"ch": "CIS", "lo": "Background", "section": "Threat Intel", "term": "CIS Benchmarks", "definition": "Measurable configuration standards published by CIS. The framework brought to the audit committee or board to demonstrate cybersecurity posture."},
+      {"ch": "CIS", "lo": "Background", "section": "Frameworks", "term": "FISMA", "definition": "Federal Information Security Modernization Act — the U.S. federal law requiring federal agencies to comply with NIST cybersecurity standards (e.g., SP 800-53)."},
+      {"ch": "CIS", "lo": "Background", "section": "Frameworks", "term": "ISO 27001", "definition": "An international standard for information security management systems — the global counterpart to NIST 800-53."},
+      {"ch": "CIS", "lo": "Background", "section": "Hierarchy", "term": "safeguard", "definition": "A specific action recommended within a CIS Control. Each control contains multiple safeguards organized by Implementation Group."},
+      {"ch": "CIS", "lo": "Implementation Groups", "section": "IG1", "term": "Implementation Group 1 (IG1)", "definition": "Essential cyber hygiene safeguards every enterprise (especially small-to-mid-sized) should implement. The baseline level — always read this group."},
+      {"ch": "CIS", "lo": "Implementation Groups", "section": "IG2", "term": "Implementation Group 2 (IG2)", "definition": "Safeguards built on IG1 for larger or more regulated enterprises with higher resources and risk exposure."},
+      {"ch": "CIS", "lo": "Implementation Groups", "section": "IG3", "term": "Implementation Group 3 (IG3)", "definition": "The most mature safeguard set, for enterprises that need to defend against sophisticated, targeted adversaries."},
+      {"ch": "CIS", "lo": "Asset Classes", "section": "Asset Classes", "term": "asset class", "definition": "One of six CIS-defined categories of things to inventory and protect: Documentation, Network, Users, Devices, Software, Data."},
+      {"ch": "CIS", "lo": "Asset Classes", "section": "Asset Classes", "term": "Documentation (asset class)", "definition": "An asset class wrapping all controls — plans, policies, processes, procedures. Applies to everything."},
+      {"ch": "CIS", "lo": "Asset Classes", "section": "Asset Classes", "term": "Network (asset class)", "definition": "An asset class that connects users, devices, software, and data. Applies to all controls because every workflow runs on the network."},
+      {"ch": "CIS", "lo": "Asset Classes", "section": "Asset Classes", "term": "Users (asset class)", "definition": "The asset class representing the people who use devices to access data. Includes employee accounts, admin accounts, and service accounts."},
+      {"ch": "CIS", "lo": "Asset Classes", "section": "Asset Classes", "term": "Devices (asset class)", "definition": "The asset class representing physical hardware — laptops, servers, mobile devices, IoT. Hardware is part of Devices, not a separate class."},
+      {"ch": "CIS", "lo": "Asset Classes", "section": "Asset Classes", "term": "Software (asset class)", "definition": "The asset class representing applications and operating systems running on devices. Must be supported (still receiving security patches)."},
+      {"ch": "CIS", "lo": "Asset Classes", "section": "Asset Classes", "term": "Data (asset class)", "definition": "The end-result asset that must be protected. Inventoried, risk-ranked, classified, and encrypted (in transit and at rest)."},
+      {"ch": "CIS", "lo": "Documentation", "section": "4 P's", "term": "plan, policy, process, procedure", "definition": "The CIS documentation hierarchy — from highest (strategic plan) to lowest (specific procedure). Memorize the order."},
+      {"ch": "CIS", "lo": "Documentation", "section": "4 P's", "term": "IT Steering Committee", "definition": "The body that issues IT policies. In IT-specific governance, policies do NOT come from the Board — they come from the Steering Committee."},
+      {"ch": "CIS", "lo": "CIS-01", "section": "Control 1", "term": "Inventory and Control of Enterprise Assets (Control 1)", "definition": "Maintain an accurate inventory of all enterprise assets. 'You can't protect what you don't know you have.' Uses active discovery and DHCP logging."},
+      {"ch": "CIS", "lo": "CIS-02", "section": "Control 2", "term": "Inventory and Control of Software Assets (Control 2)", "definition": "Inventory and govern software. Ensure software is supported (gets patches). Allowlist authorized software (SG 2.5)."},
+      {"ch": "CIS", "lo": "CIS-03", "section": "Control 3", "term": "Data Protection (Control 3)", "definition": "Inventory, classify, encrypt, and segment data. When in doubt, encrypt. Includes Data Loss Prevention to detect sensitive data leaving the network."},
+      {"ch": "CIS", "lo": "CIS-03", "section": "Control 3", "term": "Data Loss Prevention (DLP)", "definition": "A safeguard that examines content (typically at the host, before encryption) to detect sensitive data leaving the organization. Solves the encryption-firewall paradox."},
+      {"ch": "CIS", "lo": "CIS-04", "section": "Control 4", "term": "Secure Configuration (Control 4)", "definition": "Harden enterprise assets and software — configure for security. Disable default accounts. Uninstall unused software (SG 4.8): if it's installed, you're responsible for it."},
+      {"ch": "CIS", "lo": "CIS-04", "section": "Control 4", "term": "hardening", "definition": "Configuring software and hardware for security — disabling unnecessary services, removing default credentials, applying secure baselines."},
+      {"ch": "CIS", "lo": "CIS-05", "section": "Control 5", "term": "Account Management (Control 5)", "definition": "Maintain a hierarchy of account types and review access regularly (every 30 days). Administrator accounts must be separate from daily-use accounts."},
+      {"ch": "CIS", "lo": "CIS-06", "section": "Control 6", "term": "Access Control Management (Control 6)", "definition": "Manage who can access what, using Role-Based Access Control (SG 6.8). Require MFA for externally exposed apps, remote access, and admin access."},
+      {"ch": "CIS", "lo": "CIS-06", "section": "Control 6", "term": "Role-Based Access Control (RBAC)", "definition": "Authorization that restricts access by assigning users to predefined roles. CIS Safeguard 6.8 requires defining and maintaining RBAC."},
+      {"ch": "CIS", "lo": "CIS-07", "section": "Control 7", "term": "Continuous Vulnerability Management (Control 7)", "definition": "The control that scans for and remediates vulnerabilities. Maps directly to the Equifax breach (failure to apply a known patch)."},
+      {"ch": "CIS", "lo": "CIS-08", "section": "Control 8", "term": "Audit Log Management (Control 8)", "definition": "Configure and centralize logs (SG 8.9) so the enterprise knows what's happening. Wrong configuration can disable logs entirely."},
+      {"ch": "CIS", "lo": "CIS-09", "section": "Control 9", "term": "Email and Web Browser Protections (Control 9)", "definition": "Protect against threats delivered through email and web browsers — malicious URLs, attachments, and scripts."},
+      {"ch": "CIS", "lo": "CIS-10", "section": "Control 10", "term": "Malware Defenses (Control 10)", "definition": "Anti-malware tools that detect, prevent, and respond. Signatures must update automatically and daily (SG 10.2) — manual or quarterly defeats the purpose."},
+      {"ch": "CIS", "lo": "CIS-11", "section": "Control 11", "term": "Data Recovery (Control 11)", "definition": "Ability to restore data after a breach or disruption. Requires quarterly testing of backups (SG 11.5) — untested backups are unproven."},
+      {"ch": "CIS", "lo": "CIS-12", "section": "Control 12", "term": "Network Infrastructure Management (Control 12)", "definition": "Keep network infrastructure up to date (SG 12.1) and maintain a current network schematic (SG 12.4) to understand what's connected."},
+      {"ch": "CIS", "lo": "CIS-13", "section": "Control 13", "term": "Network Monitoring and Defense (Control 13)", "definition": "Monitor and defend the network. Encryption + firewalls + segmentation (SG 13.4). Note: firewalls cannot read encrypted packets — that's why DLP exists."},
+      {"ch": "CIS", "lo": "CIS-14", "section": "Control 14", "term": "Security Awareness and Skills Training (Control 14)", "definition": "Train people to recognize threats (especially phishing and social engineering) and follow secure practices. The human-layer defense."},
+      {"ch": "CIS", "lo": "CIS-15", "section": "Control 15", "term": "Service Provider Management (Control 15)", "definition": "Govern third parties holding your data. Walk through the Trust Services Criteria — directly tied to SOC reports."},
+      {"ch": "CIS", "lo": "CIS-16", "section": "Control 16", "term": "Application Software Security (Control 16)", "definition": "Secure applications throughout the SDLC — design, development, testing, deployment. Applications need their own security, not just network protections."},
+      {"ch": "CIS", "lo": "CIS-17", "section": "Control 17", "term": "Incident Response Management (Control 17)", "definition": "Have policies and procedures ready before an incident. SG 17.6 requires alternate communication channels — assume the attacker is inside primary channels."},
+      {"ch": "CIS", "lo": "CIS-18", "section": "Control 18", "term": "Penetration Testing (Control 18)", "definition": "Simulate a real attacker by exploiting vulnerabilities. Engage external testers (SG 18.2) and remediate findings (SG 18.3). Not being ready for a pen test is a weakness."},
+      {"ch": "CIS", "lo": "CIS-18", "section": "Control 18", "term": "vulnerability assessment", "definition": "An assessment that identifies as many weaknesses as possible without exploiting them. Differs from a pen test, which exploits one path to demonstrate impact."},
+      {"ch": "CIS", "lo": "CIS-18", "section": "Control 18", "term": "exploit", "definition": "To actively use a vulnerability to break into a system. The defining feature of a penetration test — if you hear 'exploit,' it's a pen test, not a vuln assessment."},
+
+      // ===== SOC REPORTS & TSC =====
+      {"ch": "SOC", "lo": "SOC", "section": "Service Org", "term": "service organization", "definition": "A company that provides services (often technology services) to other entities. SOC reports are issued for service organizations to give assurance to user entities."},
+      {"ch": "SOC", "lo": "SOC", "section": "Reports", "term": "SOC 1", "definition": "A SOC report on a service organization's internal controls over financial reporting (ICFR). Used by auditors of user entities to support financial-statement audits."},
+      {"ch": "SOC", "lo": "SOC", "section": "Reports", "term": "SOC 2", "definition": "A SOC report on a service organization's controls aligned with the Trust Services Criteria (security, availability, processing integrity, confidentiality, privacy). Restricted-use report."},
+      {"ch": "SOC", "lo": "SOC", "section": "Reports", "term": "SOC 3", "definition": "A public-use, summarized version of a SOC 2 report. Always issued as Type 2."},
+      {"ch": "SOC", "lo": "SOC", "section": "Reports", "term": "SOC for Cybersecurity", "definition": "A SOC report on an entity's cybersecurity risk-management program. Must be based on an established framework — NIST CSF or the Trust Services Criteria."},
+      {"ch": "SOC", "lo": "SOC", "section": "Reports", "term": "SOC for Supply Chain", "definition": "A SOC report on the controls within an entity's production, manufacturing, or distribution system."},
+      {"ch": "SOC", "lo": "Type", "section": "Type", "term": "Type 1 report", "definition": "A SOC report on the design of controls at a single point in time. 'How we would like it to be' — no testing of operating effectiveness."},
+      {"ch": "SOC", "lo": "Type", "section": "Type", "term": "Type 2 report", "definition": "A SOC report on the design AND operating effectiveness of controls over a period (typically 6–12 months). 'What's actually there.'"},
+      {"ch": "SOC", "lo": "TSC", "section": "TSC", "term": "Trust Services Criteria (TSC)", "definition": "The AICPA criteria used in SOC 2 engagements: Security, Availability, Processing Integrity, Confidentiality, Privacy. Security is the only required category."},
+      {"ch": "SOC", "lo": "TSC", "section": "TSC", "term": "Security (TSC)", "definition": "The Trust Services Criterion covering protection against unauthorized access (logical and physical). The only TSC required in every SOC 2."},
+      {"ch": "SOC", "lo": "TSC", "section": "TSC", "term": "Availability (TSC)", "definition": "The Trust Services Criterion covering whether the system is available for operation and use as committed or agreed."},
+      {"ch": "SOC", "lo": "TSC", "section": "TSC", "term": "Processing Integrity (TSC)", "definition": "The Trust Services Criterion covering whether system processing is complete, valid, accurate, timely, and authorized."},
+      {"ch": "SOC", "lo": "TSC", "section": "TSC", "term": "Confidentiality (TSC)", "definition": "The Trust Services Criterion covering whether information designated as confidential is protected as committed or agreed."},
+      {"ch": "SOC", "lo": "TSC", "section": "TSC", "term": "Privacy (TSC)", "definition": "The Trust Services Criterion covering personal information — collection, use, retention, disclosure, and disposal in accordance with privacy commitments."},
+      {"ch": "SOC", "lo": "SOC", "section": "Issuer", "term": "AICPA", "definition": "The American Institute of Certified Public Accountants — issuer of SOC reporting standards and the Trust Services Criteria framework."},
+
+      // ===== REGULATIONS, FRAMEWORKS, CASES =====
+      {"ch": "REG", "lo": "Health", "section": "Health", "term": "HIPAA", "definition": "Health Insurance Portability and Accountability Act — U.S. federal law protecting patient health information (PHI). Triggered for any healthcare entity handling patient data."},
+      {"ch": "REG", "lo": "Health", "section": "Health", "term": "HITECH Act", "definition": "Health Information Technology for Economic and Clinical Health Act — expanded HIPAA's privacy and security protections and added breach notification requirements."},
+      {"ch": "REG", "lo": "Finance", "section": "Finance", "term": "GLBA", "definition": "Gramm-Leach-Bliley Act — U.S. federal law requiring financial institutions (banks, wealth management firms) to protect consumer financial information."},
+      {"ch": "REG", "lo": "Cards", "section": "Cards", "term": "PCI DSS", "definition": "Payment Card Industry Data Security Standard — issued by the PCI Security Standards Council, NOT a law. Mandatory for merchants accepting cards; non-compliance = lose card processing."},
+      {"ch": "REG", "lo": "ID-Theft", "section": "ID Theft", "term": "FTC Red Flag Rules", "definition": "Default federal guidance for identity theft prevention applied when no industry-specific regulator (HIPAA, GLBA, etc.) covers the company."},
+      {"ch": "REG", "lo": "Federal", "section": "Federal", "term": "FISMA", "definition": "Federal Information Security Modernization Act — U.S. law requiring federal agencies to comply with NIST cybersecurity standards including SP 800-53."},
+      {"ch": "REG", "lo": "Public", "section": "Public", "term": "SOX", "definition": "Sarbanes-Oxley Act — U.S. law requiring public companies to maintain effective internal controls over financial reporting. Section 404 drives SOC 1 demand."},
+      {"ch": "REG", "lo": "Frameworks", "section": "Frameworks", "term": "COBIT", "definition": "An IT governance framework. The CIO is responsible for applying COBIT — Lanz emphasized this point."},
+      {"ch": "REG", "lo": "Cases", "section": "Equifax", "term": "Equifax breach", "definition": "2017 data breach exposing names, SSNs, DOBs, addresses, and driver's license info. Root cause: failure to apply a known vendor patch. Maps to CIS Control 7 — Continuous Vulnerability Management."},
+      {"ch": "REG", "lo": "Cases", "section": "Colonial", "term": "Colonial Pipeline attack", "definition": "2021 ransomware attack on a major U.S. fuel pipeline. The CEO chose to pay a $4.4M ransom, raising debate about incentives for future attackers."},
+      {"ch": "REG", "lo": "Cases", "section": "Florida Water", "term": "Florida water supply attack", "definition": "Cyberattack in which a hacker accessed the water treatment system and increased sodium hydroxide levels to potentially fatal amounts — a cyber-to-physical attack."}
+    ];
+    // freeze to deter console tampering
+    CARDS.forEach(c => Object.freeze(c));
+    Object.freeze(CARDS);
+
+    let activeCh = 'all';
+    let activeLo = 'all';
+    let deck = [];
+    let idx = 0;
+    let flipped = false;
+
+    function buildDeck() {
+      deck = CARDS.filter(c =>
+        (activeCh === 'all' || c.ch === activeCh) &&
+        (activeLo === 'all' || c.lo === activeLo)
+      );
+      idx = 0;
+      flipped = false;
+      render();
+      renderLoFilters();
+    }
+
+    function renderLoFilters() {
+      const container = document.getElementById('lo-filters');
+      if (activeCh === 'all') {
+        container.style.display = 'none';
+        container.innerHTML = '';
+        activeLo = 'all';
+        return;
+      }
+      const los = [...new Set(CARDS.filter(c => c.ch === activeCh).map(c => c.lo))].sort();
+      container.style.display = 'flex';
+      container.innerHTML = '';
+      const allBtn = document.createElement('button');
+      allBtn.className = 'chip' + (activeLo === 'all' ? ' active' : '');
+      allBtn.textContent = activeCh === 16 ? 'All LOs' : 'All Sections';
+      allBtn.addEventListener('click', () => { activeLo = 'all'; buildDeck(); buildMcQuestion(); });
+      container.appendChild(allBtn);
+      los.forEach(lo => {
+        const b = document.createElement('button');
+        b.className = 'chip' + (activeLo === lo ? ' active' : '');
+        b.textContent = activeCh === 16 ? ('LO ' + lo) : lo;
+        b.addEventListener('click', () => { activeLo = lo; buildDeck(); buildMcQuestion(); });
+        container.appendChild(b);
+      });
+    }
+
+    function shuffleDeck() {
+      for (let i = deck.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [deck[i], deck[j]] = [deck[j], deck[i]];
+      }
+      idx = 0;
+      flipped = false;
+      render();
+    }
+
+    function flip() {
+      flipped = !flipped;
+      document.getElementById('card').classList.toggle('flipped', flipped);
+    }
+
+    function next() {
+      if (idx < deck.length - 1) {
+        idx++;
+        flipped = false;
+        render();
+      }
+    }
+
+    function prev() {
+      if (idx > 0) {
+        idx--;
+        flipped = false;
+        render();
+      }
+    }
+
+    function render() {
+      const card = document.getElementById('card');
+      card.classList.toggle('flipped', flipped);
+      const cur = deck[idx];
+      if (!cur) {
+        document.getElementById('term').textContent = 'No cards match this filter.';
+        document.getElementById('def').textContent = '—';
+        ['front','back'].forEach(side => {
+          document.getElementById('ch-tag-' + side).textContent = '';
+          document.getElementById('lo-tag-' + side).textContent = '';
+          document.getElementById('section-tag-' + side).textContent = '';
+        });
+        document.getElementById('counter').textContent = '0 / 0';
+        document.getElementById('prev').disabled = true;
+        document.getElementById('next').disabled = true;
+        return;
+      }
+      document.getElementById('term').textContent = cur.term;
+      document.getElementById('def').textContent = cur.definition;
+      const chLabel = (typeof cur.ch === 'number') ? ('CH ' + cur.ch) : cur.ch;
+      const loLabel = (typeof cur.ch === 'number') ? ('LO ' + cur.lo) : cur.lo;
+      ['front','back'].forEach(side => {
+        document.getElementById('ch-tag-' + side).textContent = chLabel;
+        document.getElementById('lo-tag-' + side).textContent = loLabel;
+        document.getElementById('section-tag-' + side).textContent = cur.section;
+      });
+      document.getElementById('counter').textContent = (idx + 1) + ' / ' + deck.length;
+      document.getElementById('section-label').textContent = 'Key Term';
+      document.getElementById('prev').disabled = idx === 0;
+      document.getElementById('next').disabled = idx === deck.length - 1;
+    }
+
+    // filter handlers (chapter filter only)
+    document.querySelectorAll('#filters .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#filters .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        const v = btn.getAttribute('data-ch');
+        if (v === 'all') {
+          activeCh = 'all';
+        } else if (/^\d+$/.test(v)) {
+          activeCh = parseInt(v, 10);
+        } else {
+          activeCh = v;
+        }
+        activeLo = 'all'; // reset LO when chapter changes
+        buildDeck();
+        if (typeof buildMcQuestion === 'function') buildMcQuestion();
+      });
+    });
+
+    // keyboard nav
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') next();
+      if (e.key === 'ArrowLeft') prev();
+      if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); flip(); }
+    });
+
+    buildDeck();
+
+    // === PRACTICE QUIZ ===
+    const MC_STORAGE_KEY = 'bs_flash_mc_v1';
+    function loadMcState() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(MC_STORAGE_KEY));
+        if (raw && typeof raw === 'object') {
+          return {
+            correct: Number(raw.correct) || 0,
+            total: Number(raw.total) || 0,
+            mastered: Array.isArray(raw.mastered) ? raw.mastered : [],
+          };
+        }
+      } catch(e) {}
+      return { correct: 0, total: 0, mastered: [] };
+    }
+    function saveMcState() {
+      try {
+        localStorage.setItem(MC_STORAGE_KEY, JSON.stringify({
+          correct: mcCorrect,
+          total: mcTotal,
+          mastered: Array.from(mcMastered),
+        }));
+      } catch(e) {}
+    }
+    const _mcInit = loadMcState();
+    let mcMode = 'term2def';
+    let mcCorrect = _mcInit.correct;
+    let mcTotal = _mcInit.total;
+    let mcCurrent = null;
+    let mcAnswered = false;
+    let mcMastered = new Set(_mcInit.mastered); // terms answered correctly — removed from shuffle, persisted
+
+    // === TIMER (per-question resets to 0; total time is cumulative + persisted, with its own play/pause) ===
+    const TOTAL_STORAGE_KEY = 'bs_flash_total_v1';
+    const TOTAL_RUNNING_KEY = 'bs_flash_total_running_v1';
+    let timerElapsed = 0;
+    let timerRunning = false;
+    let timerInterval = null;
+    let totalElapsed = (function(){
+      try {
+        const v = parseInt(localStorage.getItem(TOTAL_STORAGE_KEY), 10);
+        return isFinite(v) && v >= 0 ? v : 0;
+      } catch(e) { return 0; }
+    })();
+    let totalRunning = (function(){
+      try {
+        const raw = localStorage.getItem(TOTAL_RUNNING_KEY);
+        if (raw === null) return true;
+        return raw === 'true';
+      } catch(e) { return true; }
+    })();
+    let totalInterval = null;
+
+    function formatTime(s) {
+      s = Math.max(0, Math.floor(s));
+      const h = Math.floor(s / 3600);
+      const m = Math.floor((s % 3600) / 60);
+      const sec = s % 60;
+      const pad = n => String(n).padStart(2, '0');
+      return h > 0 ? h + ':' + pad(m) + ':' + pad(sec) : pad(m) + ':' + pad(sec);
+    }
+    function renderTimer() {
+      const valEl = document.getElementById('mc-timer-value');
+      const iconEl = document.getElementById('mc-timer-icon');
+      const btnEl = document.getElementById('mc-timer-btn');
+      const totalEl = document.getElementById('mc-timer-total');
+      const totalIconEl = document.getElementById('mc-total-icon');
+      const totalBtnEl = document.getElementById('mc-total-btn');
+      if (valEl) valEl.textContent = formatTime(timerElapsed);
+      if (totalEl) totalEl.textContent = formatTime(totalElapsed);
+      if (iconEl) {
+        iconEl.innerHTML = timerRunning
+          ? '<rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect>'
+          : '<path d="M1 1 L7 4 L1 7 Z"></path>';
+      }
+      if (btnEl) {
+        const label = timerRunning ? 'Pause timer' : 'Start timer';
+        btnEl.setAttribute('aria-label', label);
+        btnEl.setAttribute('title', label);
+      }
+      // Total play/pause button: disabled when no active question (all mastered / pool too small).
+      const totalDisabled = !mcCurrent;
+      if (totalIconEl) {
+        totalIconEl.innerHTML = (totalRunning && !totalDisabled)
+          ? '<rect x="1" y="1" width="2" height="6"></rect><rect x="5" y="1" width="2" height="6"></rect>'
+          : '<path d="M1 1 L7 4 L1 7 Z"></path>';
+      }
+      if (totalBtnEl) {
+        const label = totalRunning ? 'Pause total timer' : 'Start total timer';
+        totalBtnEl.setAttribute('aria-label', label);
+        totalBtnEl.setAttribute('title', label);
+        totalBtnEl.disabled = totalDisabled;
+        totalBtnEl.style.opacity = totalDisabled ? '0.5' : '1';
+        totalBtnEl.style.cursor = totalDisabled ? 'default' : 'pointer';
+      }
+    }
+    function startTimer() {
+      if (timerRunning) return;
+      timerRunning = true;
+      timerInterval = setInterval(() => {
+        timerElapsed++;
+        renderTimer();
+      }, 1000);
+      renderTimer();
+    }
+    function resetTimer() {
+      stopTimer();
+      timerElapsed = 0;
+      renderTimer();
+    }
+    function stopTimer() {
+      if (!timerRunning) return;
+      timerRunning = false;
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      renderTimer();
+    }
+    function toggleTimer() {
+      // Don't allow starting the per-question timer when there's no active question.
+      if (!mcCurrent && !timerRunning) return;
+      if (timerRunning) stopTimer(); else startTimer();
+    }
+
+    function startTotalTimer() {
+      if (totalInterval) return;
+      totalInterval = setInterval(() => {
+        totalElapsed++;
+        try { localStorage.setItem(TOTAL_STORAGE_KEY, String(totalElapsed)); } catch(e) {}
+        renderTimer();
+      }, 1000);
+    }
+    function stopTotalTimer() {
+      if (totalInterval) { clearInterval(totalInterval); totalInterval = null; }
+    }
+    function syncTotalTimer() {
+      // Total ticks when totalRunning is true AND there's an active question.
+      if (totalRunning && mcCurrent) startTotalTimer();
+      else stopTotalTimer();
+    }
+    function toggleTotalTimer() {
+      if (!mcCurrent) return; // disabled when all mastered / pool too small
+      totalRunning = !totalRunning;
+      try { localStorage.setItem(TOTAL_RUNNING_KEY, String(totalRunning)); } catch(e) {}
+      syncTotalTimer();
+      renderTimer();
+    }
+
+    document.getElementById('mc-timer-btn').addEventListener('click', toggleTimer);
+    const totalBtnInit = document.getElementById('mc-total-btn');
+    if (totalBtnInit) totalBtnInit.addEventListener('click', toggleTotalTimer);
+    renderTimer();
+
+    function mcPool() {
+      return CARDS.filter(c =>
+        (activeCh === 'all' || c.ch === activeCh) &&
+        (activeLo === 'all' || c.lo === activeLo)
+      );
+    }
+    function mcActivePool() {
+      // target pool: exclude already-mastered terms
+      return mcPool().filter(c => !mcMastered.has(c.term));
+    }
+
+    function pickRandom(arr, n, excludeTerm) {
+      const filtered = arr.filter(c => c.term !== excludeTerm);
+      const copy = filtered.slice();
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
+      }
+      return copy.slice(0, n);
+    }
+
+    function buildMcQuestion() {
+      const fullPool = mcPool();
+      const activePool = mcActivePool();
+      const filterLabel = activeCh === 'all' ? 'All topics' : ((typeof activeCh === 'number' ? 'Ch ' + activeCh : activeCh) + ' only');
+      const masteredInFilter = fullPool.length - activePool.length;
+      document.getElementById('mc-filter-label').textContent =
+        filterLabel + ' · ' + masteredInFilter + ' / ' + fullPool.length + ' mastered';
+
+      if (fullPool.length < 4) {
+        mcCurrent = null;
+        stopTimer();
+        syncTotalTimer();
+        renderTimer();
+        document.getElementById('mc-prompt').textContent = 'Not enough cards in this filter.';
+        document.getElementById('mc-prompt-sub').textContent = 'Choose "All Topics" or a larger topic to practice.';
+        document.getElementById('mc-options').innerHTML = '';
+        document.getElementById('mc-feedback').classList.remove('show');
+        return;
+      }
+
+      if (activePool.length === 0) {
+        mcCurrent = null;
+        stopTimer();
+        syncTotalTimer();
+        renderTimer();
+        document.getElementById('mc-prompt').textContent = 'All mastered!';
+        document.getElementById('mc-prompt-sub').textContent = 'You\u2019ve answered every term in this filter correctly. Reset the score to practice again.';
+        document.getElementById('mc-options').innerHTML = '';
+        document.getElementById('mc-feedback').classList.remove('show');
+        return;
+      }
+
+      const target = activePool[Math.floor(Math.random() * activePool.length)];
+
+      // distractor preference: same section → same LO → same chapter → filtered pool → all cards
+      const tiers = [
+        CARDS.filter(c => c.ch === target.ch && c.section === target.section),
+        CARDS.filter(c => c.ch === target.ch && c.lo === target.lo),
+        CARDS.filter(c => c.ch === target.ch),
+        fullPool,
+        CARDS,
+      ];
+      let distractors = [];
+      const used = new Set([target.term]);
+      for (const tier of tiers) {
+        if (distractors.length >= 3) break;
+        const need = 3 - distractors.length;
+        const picks = pickRandom(tier.filter(c => !used.has(c.term)), need, target.term);
+        picks.forEach(p => used.add(p.term));
+        distractors = distractors.concat(picks);
+      }
+
+      const opts = [target, ...distractors];
+      // shuffle opts
+      for (let i = opts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opts[i], opts[j]] = [opts[j], opts[i]];
+      }
+
+      mcCurrent = { target, opts };
+      mcAnswered = false;
+      syncTotalTimer();
+      renderMc();
+    }
+
+    function renderMc() {
+      if (!mcCurrent) return;
+      // Reset + auto-start timer when a new (unanswered) question is displayed.
+      if (!mcAnswered) {
+        resetTimer();
+        startTimer();
+      }
+      const { target, opts } = mcCurrent;
+      const promptLabel = document.getElementById('mc-prompt-label');
+      const prompt = document.getElementById('mc-prompt');
+      const sub = document.getElementById('mc-prompt-sub');
+
+      const metaLine = ((typeof target.ch === 'number' ? 'Ch ' + target.ch : target.ch) + ' · ' + target.lo + ' · ' + target.section);
+      if (mcMode === 'term2def') {
+        promptLabel.textContent = 'Which definition matches this term?';
+        prompt.textContent = target.term;
+        sub.textContent = metaLine;
+      } else {
+        promptLabel.textContent = 'Which term matches this definition?';
+        prompt.textContent = target.definition;
+        sub.textContent = metaLine;
+      }
+
+      const container = document.getElementById('mc-options');
+      container.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+      opts.forEach((o, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'mc-option';
+        btn.setAttribute('data-idx', i);
+        const text = mcMode === 'term2def' ? o.definition : o.term;
+        btn.innerHTML = '<span class="letter">' + letters[i] + '</span><span>' + escapeHtml(text) + '</span>';
+        btn.addEventListener('click', () => answerMc(i));
+        container.appendChild(btn);
+      });
+
+      document.getElementById('mc-feedback').classList.remove('show');
+    }
+
+    function escapeHtml(s) {
+      return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    function answerMc(i) {
+      if (!mcCurrent || mcAnswered) return;
+      mcAnswered = true;
+      stopTimer();
+      const { target, opts } = mcCurrent;
+      const correctIdx = opts.findIndex(o => o.term === target.term);
+      const isRight = i === correctIdx;
+
+      const buttons = document.querySelectorAll('#mc-options .mc-option');
+      buttons.forEach((b, bi) => {
+        b.disabled = true;
+        if (bi === correctIdx) b.classList.add('correct');
+        else if (bi === i) b.classList.add('incorrect');
+        else b.classList.add('faded');
+      });
+
+      mcTotal++;
+      if (isRight) {
+        mcCorrect++;
+        mcMastered.add(target.term);
+      }
+      saveMcState();
+      updateScore();
+
+      const fb = document.getElementById('mc-feedback');
+      fb.classList.remove('right', 'wrong');
+      fb.classList.add('show');
+      if (isRight) {
+        fb.classList.add('right');
+        fb.innerHTML = '<span class="label">Correct</span>' + (mcMode === 'term2def'
+          ? '<span class="term-name">' + escapeHtml(target.term) + '</span> — ' + escapeHtml(target.definition)
+          : '<span class="term-name">' + escapeHtml(target.term) + '</span> is the term for that definition.');
+      } else {
+        fb.classList.add('wrong');
+        const answerText = mcMode === 'term2def' ? target.definition : target.term;
+        fb.innerHTML = '<span class="label">Not quite</span>The correct answer is <span class="term-name">' + escapeHtml(answerText) + '</span>' +
+          (mcMode === 'term2def' ? '.' : ' — ' + escapeHtml(target.definition));
+      }
+    }
+
+    function nextMcQuestion() {
+      buildMcQuestion();
+    }
+
+    function updateScore() {
+      document.getElementById('mc-correct').textContent = mcCorrect;
+      document.getElementById('mc-total').textContent = mcTotal;
+      const pct = mcTotal === 0 ? '—' : Math.round((mcCorrect / mcTotal) * 100) + '%';
+      document.getElementById('mc-pct').textContent = pct;
+    }
+
+    function resetMcScore() {
+      mcCorrect = 0;
+      mcTotal = 0;
+      mcMastered = new Set();
+      try { localStorage.removeItem(MC_STORAGE_KEY); } catch(e) {}
+      try { localStorage.removeItem(TOTAL_STORAGE_KEY); } catch(e) {}
+      try { localStorage.removeItem(TOTAL_RUNNING_KEY); } catch(e) {}
+      try { localStorage.removeItem('bs_flash_timer_v1'); } catch(e) {} // legacy cleanup
+      totalElapsed = 0;
+      totalRunning = true;
+      resetTimer();
+      updateScore();
+      buildMcQuestion();
+    }
+
+    // mode switch handlers
+    document.querySelectorAll('#mc-mode .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#mc-mode .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        mcMode = btn.getAttribute('data-mode');
+        buildMcQuestion();
+      });
+    });
+
+    updateScore();
+    buildMcQuestion();
+
+    // === LEARN (WRITE) MODE ===
+    const LEARN_STORAGE_KEY = 'bs_flash_learn_v1';
+    function loadLearnState() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(LEARN_STORAGE_KEY));
+        if (raw && typeof raw === 'object') {
+          return {
+            correct: Number(raw.correct) || 0,
+            total: Number(raw.total) || 0,
+            mastered: Array.isArray(raw.mastered) ? raw.mastered : [],
+          };
+        }
+      } catch(e) {}
+      return { correct: 0, total: 0, mastered: [] };
+    }
+    function saveLearnState() {
+      try {
+        localStorage.setItem(LEARN_STORAGE_KEY, JSON.stringify({
+          correct: learnCorrect,
+          total: learnTotal,
+          mastered: Array.from(learnMastered),
+        }));
+      } catch(e) {}
+    }
+    const _learnInit = loadLearnState();
+    let learnMode = 'def2term';
+    let learnCorrect = _learnInit.correct;
+    let learnTotal = _learnInit.total;
+    let learnCurrent = null;
+    let learnAnswered = false;
+    let learnLastWasClose = false;
+    let learnMastered = new Set(_learnInit.mastered);
+
+    function normalizeAnswer(s) {
+      return String(s).toLowerCase()
+        .replace(/[^a-z0-9 ]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // Extract acceptable answer keys — handles "Full Term (ACR)" form.
+    function answerKeysForTerm(term) {
+      const keys = new Set();
+      const base = normalizeAnswer(term);
+      if (base) keys.add(base);
+      const m = term.match(/^(.*?)\s*\(([^)]+)\)\s*$/);
+      if (m) {
+        const left = normalizeAnswer(m[1]);
+        const right = normalizeAnswer(m[2]);
+        if (left) keys.add(left);
+        if (right) keys.add(right);
+      }
+      return Array.from(keys);
+    }
+
+    // Key phrases from a definition — used to lightly grade Term → Type Definition.
+    function keyPhrasesForDefinition(def) {
+      const words = normalizeAnswer(def).split(' ').filter(w => w.length >= 4);
+      const stop = new Set(['that','this','with','from','into','their','which','when','where','what','have','been','such','also','some','other','than','then','they','them','will','would','about','because','these','those','each','more','most','very','upon','does','under','over','between','during','after','before','while','being','only','both','same','while','using','used','uses']);
+      const freq = {};
+      words.forEach(w => { if (!stop.has(w)) freq[w] = (freq[w]||0) + 1; });
+      return Object.keys(freq);
+    }
+
+    function levenshtein(a, b) {
+      if (a === b) return 0;
+      const al = a.length, bl = b.length;
+      if (al === 0) return bl;
+      if (bl === 0) return al;
+      const v0 = new Array(bl + 1);
+      const v1 = new Array(bl + 1);
+      for (let i = 0; i <= bl; i++) v0[i] = i;
+      for (let i = 0; i < al; i++) {
+        v1[0] = i + 1;
+        for (let j = 0; j < bl; j++) {
+          const cost = a.charCodeAt(i) === b.charCodeAt(j) ? 0 : 1;
+          v1[j + 1] = Math.min(v1[j] + 1, v0[j + 1] + 1, v0[j] + cost);
+        }
+        for (let j = 0; j <= bl; j++) v0[j] = v1[j];
+      }
+      return v0[bl];
+    }
+
+    function learnPool() {
+      return CARDS.filter(c =>
+        (activeCh === 'all' || c.ch === activeCh) &&
+        (activeLo === 'all' || c.lo === activeLo)
+      );
+    }
+    function learnActivePool() {
+      return learnPool().filter(c => !learnMastered.has(c.term));
+    }
+
+    function buildLearnQuestion() {
+      const fullPool = learnPool();
+      const activePool = learnActivePool();
+      const filterLabel = activeCh === 'all' ? 'All topics' : ((typeof activeCh === 'number' ? 'Ch ' + activeCh : activeCh) + ' only');
+      const masteredInFilter = fullPool.length - activePool.length;
+      document.getElementById('learn-filter-label').textContent =
+        filterLabel + ' · ' + masteredInFilter + ' / ' + fullPool.length + ' learned';
+
+      const input = document.getElementById('learn-input');
+      const submitBtn = document.getElementById('learn-submit');
+      const nextBtn = document.getElementById('learn-next');
+      const dontBtn = document.getElementById('learn-dontknow');
+      const overrideBtn = document.getElementById('learn-override');
+      const fb = document.getElementById('learn-feedback');
+
+      fb.classList.remove('show','right','wrong');
+      fb.innerHTML = '';
+      input.value = '';
+      input.classList.remove('correct','incorrect','close');
+      input.disabled = false;
+      submitBtn.style.display = '';
+      dontBtn.style.display = '';
+      overrideBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      learnAnswered = false;
+      learnLastWasClose = false;
+
+      if (fullPool.length < 1) {
+        learnCurrent = null;
+        document.getElementById('learn-prompt').textContent = 'No cards in this filter.';
+        document.getElementById('learn-prompt-sub').textContent = '';
+        input.disabled = true;
+        submitBtn.disabled = true;
+        dontBtn.disabled = true;
+        return;
+      }
+      if (activePool.length === 0) {
+        learnCurrent = null;
+        document.getElementById('learn-prompt').textContent = 'All learned!';
+        document.getElementById('learn-prompt-sub').textContent = 'You\u2019ve typed every term correctly. Reset progress to practice again.';
+        input.disabled = true;
+        submitBtn.disabled = true;
+        dontBtn.disabled = true;
+        return;
+      }
+      submitBtn.disabled = false;
+      dontBtn.disabled = false;
+
+      const target = activePool[Math.floor(Math.random() * activePool.length)];
+      learnCurrent = { target };
+
+      const promptLabel = document.getElementById('learn-prompt-label');
+      const prompt = document.getElementById('learn-prompt');
+      const sub = document.getElementById('learn-prompt-sub');
+      const metaLine = ((typeof target.ch === 'number' ? 'Ch ' + target.ch : target.ch) + ' · ' + target.lo + ' · ' + target.section);
+      if (learnMode === 'def2term') {
+        promptLabel.textContent = 'Type the term that matches this definition';
+        prompt.textContent = target.definition;
+        sub.textContent = metaLine;
+        input.placeholder = 'Type the term…';
+      } else {
+        promptLabel.textContent = 'Type the definition for this term';
+        prompt.textContent = target.term;
+        sub.textContent = metaLine;
+        input.placeholder = 'Type the definition (key phrases are enough)…';
+      }
+      setTimeout(() => input.focus(), 0);
+    }
+
+    function gradeLearnAnswer(userRaw) {
+      if (!learnCurrent) return { kind: 'wrong' };
+      const { target } = learnCurrent;
+      const user = normalizeAnswer(userRaw);
+      if (!user) return { kind: 'empty' };
+
+      if (learnMode === 'def2term') {
+        const keys = answerKeysForTerm(target.term);
+        for (const k of keys) {
+          if (user === k) return { kind: 'right' };
+        }
+        // typo tolerance — distance scaled to length
+        let bestDist = Infinity;
+        for (const k of keys) {
+          const d = levenshtein(user, k);
+          if (d < bestDist) bestDist = d;
+        }
+        const longest = Math.max.apply(null, keys.map(k => k.length));
+        const typoTol = longest >= 12 ? 2 : (longest >= 6 ? 1 : 0);
+        if (bestDist <= typoTol) return { kind: 'right' };
+        if (bestDist <= typoTol + 2) return { kind: 'close' };
+        return { kind: 'wrong' };
+      } else {
+        // term -> definition: grade on key-phrase coverage
+        const phrases = keyPhrasesForDefinition(target.definition);
+        if (phrases.length === 0) return { kind: 'right' }; // degenerate
+        const userTokens = new Set(user.split(' '));
+        let hits = 0;
+        phrases.forEach(p => { if (userTokens.has(p)) hits++; });
+        const ratio = hits / phrases.length;
+        if (ratio >= 0.55) return { kind: 'right' };
+        if (ratio >= 0.3) return { kind: 'close' };
+        return { kind: 'wrong' };
+      }
+    }
+
+    function correctAnswerText() {
+      if (!learnCurrent) return '';
+      return learnMode === 'def2term' ? learnCurrent.target.term : learnCurrent.target.definition;
+    }
+
+    function showLearnFeedback(kind, userRaw) {
+      const fb = document.getElementById('learn-feedback');
+      const input = document.getElementById('learn-input');
+      const submitBtn = document.getElementById('learn-submit');
+      const nextBtn = document.getElementById('learn-next');
+      const dontBtn = document.getElementById('learn-dontknow');
+      const overrideBtn = document.getElementById('learn-override');
+
+      input.disabled = true;
+      submitBtn.style.display = 'none';
+      dontBtn.style.display = 'none';
+      nextBtn.style.display = '';
+      fb.classList.remove('right','wrong');
+      fb.classList.add('show');
+
+      if (kind === 'right') {
+        input.classList.add('correct');
+        fb.classList.add('right');
+        fb.innerHTML = '<span class="label">Correct</span>' +
+          '<span class="term-name">' + escapeHtml(learnCurrent.target.term) + '</span> — ' +
+          escapeHtml(learnCurrent.target.definition);
+        overrideBtn.style.display = 'none';
+      } else {
+        input.classList.add(kind === 'close' ? 'close' : 'incorrect');
+        fb.classList.add('wrong');
+        const header = kind === 'close' ? 'Close — but not quite' : 'Not quite';
+        const answer = correctAnswerText();
+        const youWrote = userRaw ? '<div style="margin-top:6px;font-size:0.85rem;opacity:0.85;">You wrote: <em>' + escapeHtml(userRaw) + '</em></div>' : '';
+        fb.innerHTML = '<span class="label">' + header + '</span>' +
+          'The correct answer is <span class="term-name">' + escapeHtml(answer) + '</span>' +
+          (learnMode === 'def2term' ? '.' : '') +
+          youWrote;
+        overrideBtn.style.display = '';
+        learnLastWasClose = true;
+      }
+    }
+
+    function submitLearn() {
+      if (!learnCurrent || learnAnswered) return;
+      const input = document.getElementById('learn-input');
+      const userRaw = input.value;
+      const res = gradeLearnAnswer(userRaw);
+      if (res.kind === 'empty') { input.focus(); return; }
+
+      learnAnswered = true;
+      learnTotal++;
+      if (res.kind === 'right') {
+        learnCorrect++;
+        learnMastered.add(learnCurrent.target.term);
+      }
+      saveLearnState();
+      updateLearnScore();
+      showLearnFeedback(res.kind, userRaw);
+    }
+
+    function revealLearn() {
+      if (!learnCurrent || learnAnswered) return;
+      learnAnswered = true;
+      learnTotal++;
+      saveLearnState();
+      updateLearnScore();
+      showLearnFeedback('wrong', '');
+    }
+
+    function overrideLearn() {
+      // User asserts their answer was correct (typo, alt phrasing, etc.)
+      if (!learnCurrent || !learnAnswered) return;
+      if (learnMastered.has(learnCurrent.target.term)) return;
+      learnCorrect++;
+      learnMastered.add(learnCurrent.target.term);
+      saveLearnState();
+      updateLearnScore();
+      const fb = document.getElementById('learn-feedback');
+      const input = document.getElementById('learn-input');
+      input.classList.remove('incorrect','close');
+      input.classList.add('correct');
+      fb.classList.remove('wrong');
+      fb.classList.add('right');
+      fb.innerHTML = '<span class="label">Marked correct</span>' +
+        '<span class="term-name">' + escapeHtml(learnCurrent.target.term) + '</span> — ' +
+        escapeHtml(learnCurrent.target.definition);
+      document.getElementById('learn-override').style.display = 'none';
+    }
+
+    function nextLearnQuestion() { buildLearnQuestion(); }
+
+    function updateLearnScore() {
+      document.getElementById('learn-correct').textContent = learnCorrect;
+      document.getElementById('learn-total').textContent = learnTotal;
+      const pct = learnTotal === 0 ? '—' : Math.round((learnCorrect / learnTotal) * 100) + '%';
+      document.getElementById('learn-pct').textContent = pct;
+    }
+
+    function resetLearnScore() {
+      learnCorrect = 0;
+      learnTotal = 0;
+      learnMastered = new Set();
+      try { localStorage.removeItem(LEARN_STORAGE_KEY); } catch(e) {}
+      updateLearnScore();
+      buildLearnQuestion();
+    }
+
+    // Learn mode switch handlers
+    document.querySelectorAll('#learn-mode .chip').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('#learn-mode .chip').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        learnMode = btn.getAttribute('data-mode');
+        buildLearnQuestion();
+      });
+    });
+
+    // Submit via Enter key
+    document.getElementById('learn-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (learnAnswered) nextLearnQuestion();
+      else submitLearn();
+    });
+
+    // Rebuild Learn question when chapter/LO filter changes (hook into existing handlers)
+    (function hookLearnIntoFilters() {
+      const origBuildDeck = buildDeck;
+      // buildDeck is already called by filter click handlers; those also call buildMcQuestion().
+      // We piggyback: re-bind filter chip clicks to also run buildLearnQuestion().
+      document.querySelectorAll('#filters .chip').forEach(btn => {
+        btn.addEventListener('click', () => { buildLearnQuestion(); });
+      });
+      // LO filters are rebuilt dynamically — wrap renderLoFilters to re-attach.
+      const origRender = renderLoFilters;
+      window.renderLoFilters = function() {
+        origRender.apply(this, arguments);
+        document.querySelectorAll('#lo-filters .chip').forEach(btn => {
+          btn.addEventListener('click', () => { buildLearnQuestion(); });
+        });
+      };
+      // Also trigger once now so filter chips reflect current state.
+      window.renderLoFilters();
+    })();
+
+    updateLearnScore();
+    buildLearnQuestion();
+  </script>
+</body>
+</html>
