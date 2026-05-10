@@ -38,7 +38,6 @@ page = f'''<!DOCTYPE html>
         <nav class="nav" id="site-nav">
             <a href="index.html">Home</a>
             <a href="resume.html">Resume</a>
-            <a href="blog.html">Writing</a>
             <a href="activity.html">Library</a>
             <a href="contact.html">Contact</a>
             <a href="study/">Study</a>
