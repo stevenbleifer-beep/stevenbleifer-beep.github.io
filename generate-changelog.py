@@ -26,7 +26,7 @@ page = f'''<!DOCTYPE html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Changelog — Steven Bleifer</title>
     <meta name="description" content="Site changelog, generated from git history.">
-    <meta name="theme-color" content="#fbfbfd">
+    <meta name="theme-color" content="#f3ead4">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -40,7 +40,6 @@ page = f'''<!DOCTYPE html>
             <a href="resume.html">Resume</a>
             <a href="blog.html">Writing</a>
             <a href="activity.html">Library</a>
-            <a href="bookmarks.html">Bookmarks</a>
             <a href="contact.html">Contact</a>
             <a href="study/">Study</a>
         </nav>
