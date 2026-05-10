@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Contact — Steven Bleifer</title>
-    <meta name="description" content="Connect with Steven Bleifer on LinkedIn.">
+    <meta name="description" content="Connect with Steven Bleifer on LinkedIn or sign the guestbook.">
     <meta name="theme-color" content="#f3ead4">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -37,6 +37,39 @@
             </div>
         </section>
 
+        <section class="section">
+            <div class="section-header">
+                <h2>Guestbook</h2>
+                <p>Leave a note. Entries are public and visible to all visitors.</p>
+            </div>
+
+            <div class="field">
+                <label for="gb-name">Name</label>
+                <input type="text" id="gb-name" maxlength="30" autocomplete="off">
+            </div>
+
+            <div class="field">
+                <label for="gb-message">Message</label>
+                <textarea id="gb-message" maxlength="200"></textarea>
+            </div>
+
+            <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;" aria-hidden="true">
+                <label>Website: <input type="text" id="gb-website" tabindex="-1" autocomplete="off"></label>
+            </div>
+
+            <p class="field-error" id="gb-error"></p>
+
+            <div class="btn-row">
+                <button class="btn" id="gb-submit" onclick="submitGuestbook()">Sign guestbook</button>
+            </div>
+
+            <div class="mt-32">
+                <h3 style="font-family: var(--sans); font-size: 12px; text-transform: uppercase; letter-spacing: 0.22em; color: var(--accent); font-weight: 700; margin-bottom: 12px;">Recent entries</h3>
+                <div id="gb-entries"><p class="feed-loading">Loading entries…</p></div>
+                <p id="gb-empty" class="muted" style="display:none;">No entries yet. Be the first to sign.</p>
+            </div>
+        </section>
+
         <footer class="footer">
             <p class="mb-0">© 2026 Steven Bleifer</p>
             <div class="footer-links">
@@ -48,6 +81,221 @@
 
     </div>
 </main>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
+
+<script>
+(function() {
+    'use strict';
+
+    var firebaseConfig = {
+        apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
+        authDomain: "stevenbleifer-site.firebaseapp.com",
+        databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
+        projectId: "stevenbleifer-site",
+        storageBucket: "stevenbleifer-site.firebasestorage.app",
+        messagingSenderId: "905082036677",
+        appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    var appCheck = firebase.appCheck();
+    appCheck.activate('6Lf27JYsAAAAAEyCo8IuD5cIQ5qOE6zWJ72my6kQ', true);
+
+    var db = firebase.database();
+
+    var INVISIBLE_RE = /[̀-ͯ​‌‍‎‏⁠⁡⁢⁣⁤﻿­͏؜᠎  ‪-‮⁦-⁩￹-￻]/g;
+    function stripInvisible(s) { return s.replace(INVISIBLE_RE, ''); }
+
+    var LEET_MAP = {
+        '@':'a','4':'a','^':'a','à':'a','á':'a','â':'a','ã':'a','ä':'a',
+        '8':'b','(':'c','ç':'c','ð':'d','3':'e','è':'e','é':'e','ê':'e','ë':'e',
+        '6':'g','#':'h','1':'i','!':'i','|':'i','ì':'i','í':'i','î':'i','ï':'i',
+        '0':'o','ò':'o','ó':'o','ô':'o','õ':'o','ö':'o','5':'s','$':'s',
+        '7':'t','+':'t','ù':'u','ú':'u','û':'u','ü':'u','2':'z',
+        'а':'a','е':'e','і':'i','о':'o','р':'p','с':'c','у':'y','х':'x','Ь':'b','ъ':'b',
+        'В':'b','Н':'h','М':'m','Т':'t','н':'h','м':'m','т':'t','в':'b','к':'k','К':'k',
+        'α':'a','ε':'e','ι':'i','ο':'o','ρ':'p','κ':'k','ν':'v','τ':'t','υ':'u','ω':'w'
+    };
+    function normalizeLeet(text) {
+        var result = '';
+        for (var i = 0; i < text.length; i++) {
+            var ch = text[i].toLowerCase();
+            result += LEET_MAP[ch] || ch;
+        }
+        return result;
+    }
+    function collapseRepeats(text) { return text.replace(/(.)\1{1,}/g, '$1'); }
+
+    var BLOCKED = ['fuck','shit','ass','damn','bitch','bastard','dick','cock','pussy','cunt','nigger','nigga','faggot','fag','retard','retarded','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','asshole','dumbass','jackass','motherfucker','bullshit','goddamn','dildo','porn','rape','nazi','hitler','kkk','stfu','gtfo','lmfao','piss','twat','wanker','tosser','bellend','bollocks','arse','arsehole','shag','bugger','sodoff','prick','tit','tits','boob','boobs','penis','vagina','scrotum','nutsack','cumshot','cum','jizz','fellatio','blowjob','handjob','rimjob','anal','anus','orgy','hentai','milf','gilf','bdsm','bondage','fetish','orgasm','erection','ejaculate','masturbat','pedophil','paedophil','molest','incest','bestiality','necrophil','genocide','terrorist','jihad','supremacist','antisemit'];
+    var BLOCKED_STEMS = ['fuck','shit','bitch','cunt','nigger','nigga','faggot','retard','slut','whore','kike','spic','chink','wetback','beaner','tranny','dyke','wank','piss','twat','cock','dick','bastard','damn','prick','bollock','arsehole','asshole','dumbass','jackass','bullshit','goddamn','motherfuck','pedophil','paedophil','molest','masturb','ejaculat','terrorist'];
+
+    function hasBadWords(text) {
+        var t = text.toLowerCase();
+        var lettersOnly = t.replace(/[^a-z]/g, '');
+        var leetNorm = normalizeLeet(t);
+        var leetLetters = leetNorm.replace(/[^a-z]/g, '');
+        var collapsed = collapseRepeats(lettersOnly);
+        var collapsedLeet = collapseRepeats(leetLetters);
+        var variants = [t, lettersOnly, leetLetters, collapsed, collapsedLeet];
+        for (var i = 0; i < BLOCKED.length; i++) {
+            var w = BLOCKED[i];
+            var re = new RegExp('\\b' + w + '\\b', 'i');
+            if (re.test(t) || re.test(leetNorm)) return true;
+            for (var j = 0; j < variants.length; j++) if (variants[j].indexOf(w) !== -1) return true;
+        }
+        for (var i = 0; i < BLOCKED_STEMS.length; i++) {
+            var stem = BLOCKED_STEMS[i];
+            for (var j = 0; j < variants.length; j++) if (variants[j].indexOf(stem) !== -1) return true;
+        }
+        if (/https?:\/\/|www\.|\.com|\.net|\.org|\.io|\.xyz|\.ru|\.tk|\.ml|\.ga|\.cf|\.gq|bit\.ly|tinyurl|t\.co/i.test(t)) return true;
+        if (/\S+@\S+\.\S+/.test(t)) return true;
+        if (/<\s*script|<\s*img|<\s*iframe|<\s*object|<\s*embed|javascript:|onerror|onload|onclick/i.test(t)) return true;
+        return false;
+    }
+
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+    function sanitize(s) {
+        return s.replace(/<[^>]*>/g, '').replace(/[<>"'&]/g, function(c) {
+            return {'<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;','&':'&amp;'}[c];
+        });
+    }
+
+    var RATE_LIMIT = 3;
+    var RATE_WINDOW = 10 * 60 * 1000;
+    function checkRateLimit() {
+        try {
+            var subs = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
+            var now = Date.now();
+            subs = subs.filter(function(t){ return now - t < RATE_WINDOW; });
+            sessionStorage.setItem('gb_submissions', JSON.stringify(subs));
+            return subs.length < RATE_LIMIT;
+        } catch(e) { return true; }
+    }
+    function recordSubmission() {
+        try {
+            var subs = JSON.parse(sessionStorage.getItem('gb_submissions') || '[]');
+            subs.push(Date.now());
+            sessionStorage.setItem('gb_submissions', JSON.stringify(subs));
+        } catch(e) {}
+    }
+
+    function renderEntries(entries) {
+        var c = document.getElementById('gb-entries');
+        var empty = document.getElementById('gb-empty');
+        if (!entries || !entries.length) {
+            c.innerHTML = '';
+            empty.style.display = 'block';
+            return;
+        }
+        empty.style.display = 'none';
+        var html = '';
+        var show = entries.slice(-20).reverse();
+        for (var i = 0; i < show.length; i++) {
+            var e = show[i];
+            html += '<div class="gb-entry">';
+            html += '<span class="gb-name">' + esc(e.name) + '</span>';
+            html += '<span class="gb-date">' + esc(e.date) + '</span>';
+            html += '<p class="gb-message">' + esc(e.message) + '</p>';
+            html += '</div>';
+        }
+        c.innerHTML = html;
+    }
+
+    function isCleanEntry(e) {
+        if (!e || typeof e.name !== 'string' || typeof e.message !== 'string' || typeof e.date !== 'string') return false;
+        if (e.name.length > 30 || e.message.length > 200) return false;
+        if (hasBadWords(e.name) || hasBadWords(e.message)) return false;
+        if (/<[^>]*>/i.test(e.name) || /<[^>]*>/i.test(e.message)) return false;
+        if (/javascript:|onerror|onload|onclick/i.test(e.name) || /javascript:|onerror|onload|onclick/i.test(e.message)) return false;
+        if (!/[a-zA-Z0-9]/.test(e.name) || !/[a-zA-Z0-9]/.test(e.message)) return false;
+        return true;
+    }
+
+    db.ref('guestbook').orderByChild('timestamp').limitToLast(50).on('value', function(snapshot) {
+        var entries = [];
+        snapshot.forEach(function(child) {
+            var e = child.val();
+            if (isCleanEntry(e)) entries.push(e);
+        });
+        renderEntries(entries);
+    });
+
+    function doSubmit() {
+        var n = document.getElementById('gb-name');
+        var m = document.getElementById('gb-message');
+        var err = document.getElementById('gb-error');
+        var btn = document.getElementById('gb-submit');
+        var honeypot = document.getElementById('gb-website');
+
+        var name = stripInvisible(n.value).trim();
+        var msg = stripInvisible(m.value).trim();
+        err.style.display = 'none';
+
+        if (honeypot && honeypot.value) {
+            n.value = ''; m.value = '';
+            alert('Thanks for signing the guestbook.');
+            return;
+        }
+
+        if (!checkRateLimit()) {
+            err.textContent = 'Slow down — three signatures per ten minutes.';
+            err.style.display = 'block'; return;
+        }
+        if (!name || !msg || !/\S/.test(name) || !/\S/.test(msg)) {
+            err.textContent = 'Please fill in both your name and message.';
+            err.style.display = 'block'; return;
+        }
+        if (!/[a-zA-Z0-9]/.test(name) || !/[a-zA-Z0-9]/.test(msg)) {
+            err.textContent = 'Name and message must contain at least one letter or number.';
+            err.style.display = 'block'; return;
+        }
+        if (name.length > 30 || msg.length > 200) {
+            err.textContent = 'Name max 30 chars, message max 200.';
+            err.style.display = 'block'; return;
+        }
+        if (hasBadWords(name) || hasBadWords(msg)) {
+            err.textContent = 'Please keep it clean — no inappropriate language or links.';
+            err.style.display = 'block'; return;
+        }
+        if (/^(.)\1{4,}$/.test(name.replace(/\s/g,'')) || /^(.)\1{9,}$/.test(msg.replace(/\s/g,''))) {
+            err.textContent = 'Please write a real message.';
+            err.style.display = 'block'; return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = 'Signing…';
+
+        var cleanName = sanitize(name).substring(0, 30);
+        var cleanMsg = sanitize(msg).substring(0, 200);
+        var d = new Date();
+        var entry = {
+            name: cleanName,
+            message: cleanMsg,
+            date: d.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}),
+            timestamp: d.getTime()
+        };
+
+        db.ref('guestbook').push(entry).then(function() {
+            n.value = ''; m.value = '';
+            btn.disabled = false;
+            btn.textContent = 'Sign guestbook';
+            recordSubmission();
+            alert('Thanks for signing the guestbook.');
+        }).catch(function() {
+            err.textContent = 'Couldn\'t save your entry. Please try again.';
+            err.style.display = 'block';
+            btn.disabled = false;
+            btn.textContent = 'Sign guestbook';
+        });
+    }
+
+    Object.defineProperty(window, 'submitGuestbook', { value: doSubmit, writable: false, configurable: false });
+})();
+</script>
 
 </body>
 </html>
