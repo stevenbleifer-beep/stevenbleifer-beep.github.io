@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Library — Steven Bleifer</title>
     <meta name="description" content="What Steven Bleifer is reading and watching, pulled live from Letterboxd and Goodreads.">
     <meta name="theme-color" content="#f3ead4">
@@ -129,7 +130,7 @@
                     dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 }
                 html += '<li>';
-                if (poster) html += '<div class="cover"><img src="' + poster + '" alt=""></div>';
+                if (poster) html += '<div class="cover"><img src="' + poster + '" alt="" referrerpolicy="no-referrer"></div>';
                 else html += '<div class="cover"></div>';
                 html += '<div class="body">';
                 html += '<a class="title" href="' + link + '" target="_blank" rel="noopener">' + escapeHTML(title) + '</a>';
