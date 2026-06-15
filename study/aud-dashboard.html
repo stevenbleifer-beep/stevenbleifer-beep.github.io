@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'" />
+  <meta name="referrer" content="same-origin" />
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+  <title>AUD Study Dashboard — Bleifer Study</title>
+  <meta name="description" content="AUD CPA sprint plan, June 16–29 2026. Daily TBS and MCQ targets with auto-saved progress." />
+  <meta name="theme-color" content="#f8fafc" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { background: #f8fafc; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #1e293b;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+    .back-link {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #94a3b8;
+      text-decoration: none;
+      margin-bottom: 16px;
+    }
+    .back-link:hover { color: #7c3aed; }
+    .day-card { transition: box-shadow 0.15s ease; }
+    .day-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+    .num-input {
+      width: 56px; text-align: center; border: 1px solid #cbd5e1; border-radius: 6px;
+      padding: 4px 2px; font-size: 14px; font-variant-numeric: tabular-nums; font-family: inherit;
+    }
+    .num-input:focus { outline: 2px solid #7c3aed; outline-offset: 1px; }
+    .task-row { cursor: pointer; }
+    .task-row:hover .checkbox { border-color: #7c3aed; }
+    .checkbox:focus-visible { outline: 2px solid #7c3aed; outline-offset: 2px; }
+    .card-head {
+      width: 100%; border: none; background: transparent; padding: 14px 16px;
+      display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left;
+      font-family: inherit;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <a class="back-link" href="./">&larr; Study</a>
+    <noscript>This dashboard needs JavaScript enabled.</noscript>
+  </div>
+
+  <script>
+  (function () {
+    "use strict";
+
+    var PLAN = [
+      { id: "d0616", date: "Tue, Jun 16", iso: "2026-06-16", phase: "Phase 1", unit: "A4",
+        title: "Performing Procedures + Communications",
+        focus: "Weakest TBS zone. Misstatements (your 25% sim) + Procedures to Obtain Evidence.",
+        tbsTarget: 7, tbsDeep: 5, mcqTarget: 45, mcqGoal: null, hours: "4 to 4.5 hrs",
+        breakdown: "~2 hr TBS (deep re-work runs long), ~1.25 hr MCQ, ~30 min video",
+        tasks: [
+          "Concept Videos: Misstatements + Procedures (only if rusty)",
+          "All A4 TBS — deep re-work the Misstatements + Procedures ones",
+          "30 A4 MCQ to lock it in",
+        ] },
+      { id: "d0617", date: "Wed, Jun 17", iso: "2026-06-17", phase: "Phase 1", unit: "A3",
+        title: "Risk, Evidence, and Sampling",
+        focus: "Sampling is a repeat miss across both sims. Hit it hard.",
+        tbsTarget: 7, tbsDeep: 5, mcqTarget: 55, mcqGoal: null, hours: "4 to 4.5 hrs",
+        breakdown: "~2 hr TBS (deep re-work Sampling), ~1.5 hr MCQ",
+        tasks: [
+          "All A3 TBS — deep re-work Sampling, Evidence, Documentation",
+          "40-question A3 practice test",
+        ] },
+      { id: "d0618", date: "Thu, Jun 18", iso: "2026-06-18", phase: "Off", unit: null,
+        title: "Rest day (optional 1 to 2 hrs)",
+        focus: "Primarily rest. If you have an hour and the headspace, keep it light — passive review only, no hard TBS.",
+        tbsTarget: 0, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, optional: true,
+        tasks: [
+          "Optional: 20 to 30 mixed MCQ from A4 (Misstatements, Procedures), untimed",
+          "Optional: re-read the answer explanations on any you miss",
+          "If you're not up for it, do nothing — that's the plan working",
+        ] },
+      { id: "d0619", date: "Fri, Jun 19", iso: "2026-06-19", phase: "Off", unit: null,
+        title: "Rest day (optional 1 to 2 hrs)",
+        focus: "Primarily rest. Light passive review if you have it in you.",
+        tbsTarget: 0, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, optional: true,
+        tasks: [
+          "Optional: 20 to 30 mixed MCQ from A3 (Sampling, Evidence), untimed",
+          "Optional: re-read the answer explanations on any you miss",
+          "No pressure — skipping is fine",
+        ] },
+      { id: "d0620", date: "Sat, Jun 20", iso: "2026-06-20", phase: "Off", unit: null,
+        title: "Rest day (optional 1 to 2 hrs)",
+        focus: "Last rest day before the back half. Stay loose, prime for A1 tomorrow.",
+        tbsTarget: 0, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, optional: true,
+        tasks: [
+          "Optional: skim a reporting Concept Video at 1.5x to pre-load A1 tomorrow",
+          "Optional: 20 mixed MCQ, untimed, nothing heavy",
+          "Rest is still the priority — the back half is demanding",
+        ] },
+      { id: "d0621", date: "Sun, Jun 21", iso: "2026-06-21", phase: "Phase 1", unit: "A1",
+        title: "Audit Reports",
+        focus: "Biggest MCQ leak. Pure rule recall — moves fast. Light on TBS, heavy on MCQ. Leads the back half.",
+        tbsTarget: 4, tbsDeep: 2, mcqTarget: 70, mcqGoal: 80, hours: "3.5 to 4 hrs",
+        breakdown: "~1.75 hr MCQ (the priority), ~1 hr TBS, ~30 min video",
+        tasks: [
+          "Concept Video refresh on report-wording distinctions",
+          "Grind A1 MCQ until above 80% on a practice test",
+          "Do the ~4 A1 TBS (report-wording sims)",
+        ] },
+      { id: "d0622", date: "Mon, Jun 22", iso: "2026-06-22", phase: "Phase 1", unit: "A5",
+        title: "Attestation, Compliance, Government Audits",
+        focus: "Attestation report wording + single audits, both heavily tested in AUD.",
+        tbsTarget: 5, tbsDeep: 3, mcqTarget: 45, mcqGoal: null, hours: "3.5 hrs",
+        breakdown: "~1.5 hr TBS (report wording), ~1.25 hr MCQ",
+        tasks: [
+          "A5 attestation + single-audit TBS (report wording)",
+          "45 A5 MCQ — single audits and compliance reporting",
+        ] },
+      { id: "d0623", date: "Tue, Jun 23", iso: "2026-06-23", phase: "Phase 1", unit: "A6",
+        title: "Review/SSARS, Interim, Ethics",
+        focus: "Independence rules are pure recall — you dropped these both sims. MCQ-heavy.",
+        tbsTarget: 4, tbsDeep: 2, mcqTarget: 55, mcqGoal: null, hours: "3.5 hrs",
+        breakdown: "~1 hr TBS, ~1.5 hr MCQ (independence rules)",
+        tasks: [
+          "A6 review/compilation TBS (report wording)",
+          "55 A6 MCQ — independence rules and interim reviews",
+        ] },
+      { id: "d0624", date: "Wed, Jun 24", iso: "2026-06-24", phase: "Phase 2", unit: "Mixed",
+        title: "Mini Exam + A2 Check + Repair",
+        focus: "Use a Becker Mini Exam if you have one unused (Study Journey shows Mini Exam 1 to 3). If all are used, build a Custom Test instead — setup below. A2 gets confirmed here rather than on its own day.",
+        tbsTarget: 4, tbsDeep: 3, mcqTarget: 30, mcqGoal: null, hours: "3.5 to 4 hrs",
+        breakdown: "~1.5 hr Mini/Custom test, ~30 A2 MCQ to confirm it holds, ~1.5 hr review + TBS repair",
+        tasks: [
+          "Take an unused Mini Exam timed — OR build a Custom Test: ~30 MCQ + 3 TBS, all 6 units, 'Unseen' questions, timer on",
+          "Then run 30 A2 MCQ separately to confirm your strongest unit holds",
+          "Review every miss by unit; re-do the 3 to 4 worst TBS that surface",
+        ] },
+      { id: "d0625", date: "Thu, Jun 25", iso: "2026-06-25", phase: "Phase 3", unit: "All",
+        title: "Final Review Sweep",
+        focus: "Switch dashboard to Final Review now. Breadth check after the depth work.",
+        tbsTarget: 4, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, hours: "3 to 4 hrs",
+        breakdown: "Final Review condensed videos + review questions across all 6 units",
+        tasks: [
+          "Switch Becker to Final Review mode",
+          "Fast pass across all 6 units — focus on rusty topics",
+          "Final Review questions + 3 to 4 condensed TBS",
+        ] },
+      { id: "d0626", date: "Fri, Jun 26", iso: "2026-06-26", phase: "Phase 3", unit: "All",
+        title: "Full Simulated Exam",
+        focus: "Real timed conditions. Check, not study. Flag-and-move any MCQ past 90 seconds.",
+        tbsTarget: 5, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, hours: "4 hrs",
+        breakdown: "~2.5 hr full sim (real exam length), ~1.5 hr review",
+        tasks: [
+          "Full Simulated Exam, real timed conditions (5 TBS load)",
+          "Flag and move any MCQ past 90 seconds — protect TBS time",
+          "Review misses by unit afterward",
+        ] },
+      { id: "d0627", date: "Sat, Jun 27", iso: "2026-06-27", phase: "Phase 3", unit: "Light",
+        title: "Targeted Repair",
+        focus: "Final pass on whatever the Jun 26 sim exposed. No new material.",
+        tbsTarget: 4, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, hours: "2 to 3 hrs",
+        breakdown: "Driven by sim results — patch the weak spots, no new material",
+        tasks: [
+          "Final targeted pass on anything the sim exposed",
+          "Re-do 3 to 4 reporting + sampling TBS to stay warm",
+        ] },
+      { id: "d0628", date: "Sun, Jun 28", iso: "2026-06-28", phase: "Phase 3", unit: "Light",
+        title: "Light Review",
+        focus: "Sharpness over volume. Stop early.",
+        tbsTarget: 2, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, hours: "1 to 1.5 hrs",
+        breakdown: "Light and short on purpose. Rest is the point.",
+        tasks: [
+          "Skim TBS mechanics notes for reporting + sampling",
+          "A few warm-up MCQ, nothing heavy",
+          "Stop early — rest matters",
+        ] },
+      { id: "d0629", date: "Mon, Jun 29", iso: "2026-06-29", phase: "Exam", unit: null,
+        title: "Exam Day",
+        focus: "Flag-and-move discipline. Protect TBS time.",
+        tbsTarget: 0, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, tasks: [], exam: true },
+    ];
+
+    var UNIT_COLORS = {
+      A1: "#c2410c", A2: "#b45309", A3: "#0e7490", A4: "#7c3aed", A5: "#15803d",
+      A6: "#0f766e", Mixed: "#a16207", All: "#1e3a5f", Light: "#64748b",
+    };
+
+    var PHASE_LABELS = {
+      "Phase 1": "Weak-Unit Depth", "Phase 2": "Checkpoint", "Phase 3": "Sweep + Sim",
+      Off: "Off", Exam: "Exam",
+    };
+
+    var STORAGE_KEY = "aud_progress";
+
+    // ---- State + persistence (localStorage) ----
+    var progress = {};
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === "object") progress = parsed;
+      }
+    } catch (e) { /* corrupt or unavailable storage — start fresh */ }
+
+    var openDay = "d0616";
+
+    function persist() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+      catch (e) { /* storage full or blocked — state still holds for the session */ }
+    }
+
+    // Today's local date as ISO (YYYY-MM-DD), so the "today" highlight stays correct.
+    function todayISO() {
+      var d = new Date();
+      var m = String(d.getMonth() + 1).padStart(2, "0");
+      var day = String(d.getDate()).padStart(2, "0");
+      return d.getFullYear() + "-" + m + "-" + day;
+    }
+    var today = todayISO();
+
+    // ---- Safe DOM helper: never uses innerHTML, so no injection surface ----
+    function h(tag, props) {
+      var el = document.createElement(tag);
+      if (props) {
+        for (var k in props) {
+          if (!Object.prototype.hasOwnProperty.call(props, k)) continue;
+          var v = props[k];
+          if (v == null) continue;
+          if (k === "style") { el.setAttribute("style", v); }
+          else if (k === "text") { el.textContent = v; }
+          else if (k === "class") { el.className = v; }
+          else if (k.slice(0, 2) === "on" && typeof v === "function") {
+            el.addEventListener(k.slice(2).toLowerCase(), v);
+          } else if (k in el && k !== "role") {
+            try { el[k] = v; } catch (e) { el.setAttribute(k, v); }
+          } else {
+            el.setAttribute(k, v);
+          }
+        }
+      }
+      for (var i = 2; i < arguments.length; i++) {
+        var child = arguments[i];
+        if (child == null || child === false) continue;
+        if (Array.isArray(child)) {
+          child.forEach(function (c) { if (c != null && c !== false) el.appendChild(typeof c === "object" ? c : document.createTextNode(String(c))); });
+        } else if (typeof child === "object") {
+          el.appendChild(child);
+        } else {
+          el.appendChild(document.createTextNode(String(child)));
+        }
+      }
+      return el;
+    }
+
+    function num(v) { var n = Number(v); return isFinite(n) && n > 0 ? n : 0; }
+
+    function totals() {
+      var t = { tbsDone: 0, tbsTarget: 0, mcqDone: 0, mcqTarget: 0 };
+      PLAN.forEach(function (d) {
+        t.tbsTarget += d.tbsTarget;
+        t.mcqTarget += d.mcqTarget;
+        t.tbsDone += num(progress[d.id + "_tbs"]);
+        t.mcqDone += num(progress[d.id + "_mcq"]);
+      });
+      return t;
+    }
+
+    function dayComplete(d) {
+      if (d.off || d.exam) return false;
+      if (!d.tasks.length) return false;
+      return d.tasks.every(function (_, i) { return !!progress[d.id + "_t" + i]; });
+    }
+
+    function toggleTask(dayId, idx) {
+      var key = dayId + "_t" + idx;
+      progress[key] = !progress[key];
+      persist();
+      render();
+    }
+
+    function setCount(dayId, kind, val) {
+      // Clamp to a non-negative integer; ignore junk.
+      var n = parseInt(val, 10);
+      if (!isFinite(n) || n < 0) n = 0;
+      progress[dayId + "_" + kind] = val === "" ? "" : n;
+      persist();
+      // No re-render here so the input keeps focus while typing; totals update on blur via render.
+    }
+
+    // ---- Components ----
+    function StatBar(label, done, target, color) {
+      var pct = target ? Math.min(100, Math.round((done / target) * 100)) : 0;
+      return h("div", { style: "background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;" },
+        h("div", { style: "display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;" },
+          h("span", { style: "font-size:12px;font-weight:600;color:#64748b;", text: label }),
+          h("span", { style: "font-size:14px;font-weight:700;color:" + color + ";font-variant-numeric:tabular-nums;" },
+            String(done),
+            h("span", { style: "color:#cbd5e1;font-weight:500;", text: "/" + target })
+          )
+        ),
+        h("div", { style: "height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;" },
+          h("div", { style: "width:" + pct + "%;height:100%;background:" + color + ";border-radius:999px;transition:width 0.3s ease;" })
+        )
+      );
+    }
+
+    function Counter(label, dayId, kind) {
+      var stored = progress[dayId + "_" + kind];
+      var input = h("input", {
+        type: "number", min: "0", step: "1", inputmode: "numeric",
+        class: "num-input", placeholder: "0",
+        value: (stored == null ? "" : String(stored)),
+      });
+      input.addEventListener("input", function () { setCount(dayId, kind, input.value); });
+      input.addEventListener("blur", render);
+      return h("div", { style: "display:flex;flex-direction:column;gap:4px;" },
+        h("span", { style: "font-size:11px;color:#64748b;font-weight:600;", text: label }),
+        input
+      );
+    }
+
+    function dayCard(d) {
+      var isOpen = openDay === d.id;
+      var isToday = d.iso === today;
+      var complete = dayComplete(d);
+      var accent = d.off ? "#94a3b8" : d.optional ? "#94a3b8" : d.exam ? "#dc2626" : (UNIT_COLORS[d.unit] || "#1e3a5f");
+
+      var headChildren = [];
+      // Date block
+      headChildren.push(h("div", { style: "flex-shrink:0;width:92px;" },
+        h("div", { style: "font-size:13px;font-weight:700;color:" + (isToday ? "#7c3aed" : "#334155") + ";", text: d.date.split(", ")[1] }),
+        h("div", { style: "font-size:11px;color:#94a3b8;", text: d.date.split(", ")[0] })
+      ));
+      // Badge block
+      var badge = h("div", { style: "flex-shrink:0;" });
+      if (d.unit) {
+        badge.appendChild(h("span", { style: "display:inline-block;background:" + accent + ";color:#fff;font-size:12px;font-weight:700;padding:3px 9px;border-radius:6px;min-width:38px;text-align:center;", text: d.unit }));
+      }
+      if (d.optional) {
+        badge.appendChild(h("span", { style: "display:inline-block;background:#fff;color:#64748b;border:1px dashed #94a3b8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;text-align:center;", text: "REST" }));
+      }
+      headChildren.push(badge);
+      // Title block
+      headChildren.push(h("div", { style: "flex:1;min-width:0;" },
+        h("div", { style: "font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;", text: d.title }),
+        h("div", { style: "font-size:11px;color:#94a3b8;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;", text: PHASE_LABELS[d.phase] })
+      ));
+      // Targets block
+      if (!d.off && !d.exam) {
+        var targetLine = h("div", { style: "font-size:12px;color:#64748b;" });
+        if (d.tbsTarget > 0) {
+          targetLine.appendChild(h("span", { style: "margin-right:8px;" }, h("b", { style: "color:#7c3aed;", text: String(d.tbsTarget) }), " TBS"));
+        }
+        if (d.mcqTarget > 0) {
+          targetLine.appendChild(h("span", {}, h("b", { style: "color:#0e7490;", text: String(d.mcqTarget) }), " MCQ"));
+        }
+        var targetBlock = h("div", { style: "flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums;" }, targetLine);
+        if (d.hours) {
+          targetBlock.appendChild(h("div", { style: "font-size:11px;color:#94a3b8;font-weight:600;margin-top:2px;", text: "⏱ " + d.hours }));
+        }
+        headChildren.push(targetBlock);
+      }
+      if (complete) {
+        headChildren.push(h("span", { style: "flex-shrink:0;color:#15803d;font-size:18px;font-weight:700;", text: "✓" }));
+      }
+
+      var head = h("button", {
+        class: "card-head", type: "button",
+        "aria-expanded": isOpen ? "true" : "false",
+        onClick: function () { openDay = isOpen ? null : d.id; render(); },
+      });
+      headChildren.forEach(function (c) { head.appendChild(c); });
+
+      var card = h("div", {
+        class: "day-card",
+        style: "border:1px solid " + (isOpen ? accent : "#e2e8f0") + ";border-left:4px solid " + accent +
+          ";border-radius:12px;background:" + (d.off || d.optional ? "#f8fafc" : "#fff") +
+          ";overflow:hidden;opacity:" + (d.off ? "0.85" : "1") + ";",
+      }, head);
+
+      // Body — study days
+      if (isOpen && !d.off && !d.exam) {
+        var body = h("div", { style: "padding:0 16px 16px 16px;" });
+        body.appendChild(h("p", { style: "font-size:13px;color:#475569;margin:0 0 14px;line-height:1.5;border-left:2px solid #e2e8f0;padding-left:10px;", text: d.focus }));
+
+        if (d.hours) {
+          var bandTop = h("div", { style: "display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;font-weight:700;margin-bottom:4px;" },
+            h("span", { style: "color:#334155;", text: "⏱ " + d.hours }));
+          if (d.tbsTarget > 0) bandTop.appendChild(h("span", { style: "color:#7c3aed;", text: d.tbsTarget + " TBS" + (d.tbsDeep ? " (" + d.tbsDeep + " deep)" : "") }));
+          if (d.mcqTarget > 0) bandTop.appendChild(h("span", { style: "color:#0e7490;", text: d.mcqTarget + " MCQ" + (d.mcqGoal ? " → " + d.mcqGoal + "%" : "") }));
+          body.appendChild(h("div", { style: "background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin-bottom:14px;" },
+            bandTop,
+            h("div", { style: "font-size:12px;color:#64748b;line-height:1.45;", text: d.breakdown })
+          ));
+        }
+
+        if (d.tbsTarget > 0 || d.mcqTarget > 0) {
+          var counters = h("div", { style: "display:flex;gap:20px;margin-bottom:14px;flex-wrap:wrap;" });
+          if (d.tbsTarget > 0) counters.appendChild(Counter("TBS (target " + d.tbsTarget + (d.tbsDeep ? ", " + d.tbsDeep + " deep" : "") + ")", d.id, "tbs"));
+          if (d.mcqTarget > 0) counters.appendChild(Counter("MCQ (target " + d.mcqTarget + (d.mcqGoal ? ", aim " + d.mcqGoal + "%" : "") + ")", d.id, "mcq"));
+          body.appendChild(counters);
+        }
+
+        var tasks = h("div", { style: "display:flex;flex-direction:column;gap:8px;" });
+        d.tasks.forEach(function (t, i) {
+          var checked = !!progress[d.id + "_t" + i];
+          var box = h("span", {
+            class: "checkbox",
+            style: "flex-shrink:0;width:18px;height:18px;border-radius:5px;border:2px solid " + (checked ? accent : "#cbd5e1") +
+              ";background:" + (checked ? accent : "#fff") + ";color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;",
+            text: checked ? "✓" : "",
+          });
+          var label = h("span", {
+            style: "font-size:14px;line-height:1.45;color:" + (checked ? "#94a3b8" : "#334155") + ";text-decoration:" + (checked ? "line-through" : "none") + ";",
+            text: t,
+          });
+          var row = h("div", {
+            class: "task-row", role: "checkbox", "aria-checked": checked ? "true" : "false", tabindex: "0",
+            style: "display:flex;align-items:flex-start;gap:10px;",
+            onClick: function () { toggleTask(d.id, i); },
+            onKeydown: function (e) { if (e.key === " " || e.key === "Enter") { e.preventDefault(); toggleTask(d.id, i); } },
+          }, box, label);
+          tasks.appendChild(row);
+        });
+        body.appendChild(tasks);
+        card.appendChild(body);
+      }
+
+      // Body — off / exam
+      if (isOpen && (d.off || d.exam)) {
+        card.appendChild(h("div", { style: "padding:0 16px 16px 16px;" },
+          h("p", { style: "font-size:13px;color:#475569;margin:0;line-height:1.5;",
+            text: d.exam
+              ? "Eat, show up, flag-and-move on hard MCQ, protect your TBS time. You did the work."
+              : "No studying today. Rest is part of the plan — the schedule already accounts for it." })
+        ));
+      }
+
+      return card;
+    }
+
+    function render() {
+      var app = document.getElementById("app");
+      app.textContent = "";
+
+      app.appendChild(h("a", { class: "back-link", href: "./" }, "← Study"));
+
+      // Header
+      app.appendChild(h("div", { style: "margin-bottom:8px;" },
+        h("div", { style: "font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#7c3aed;font-weight:700;", text: "AUD · Sprint to the 29th" }),
+        h("h1", { style: "font-size:30px;font-weight:800;margin:4px 0 2px;letter-spacing:-0.02em;", text: "The road to the 29th" }),
+        h("p", { style: "color:#64748b;font-size:15px;margin:0;", text: "Weighted toward TBS in A4 and A3, where your points actually are." })
+      ));
+
+      // Progress bars
+      var t = totals();
+      app.appendChild(h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 24px;" },
+        StatBar("TBS reps", t.tbsDone, t.tbsTarget, "#7c3aed"),
+        StatBar("MCQ logged", t.mcqDone, t.mcqTarget, "#0e7490")
+      ));
+
+      // Day cards
+      var list = h("div", { style: "display:flex;flex-direction:column;gap:10px;" });
+      PLAN.forEach(function (d) { list.appendChild(dayCard(d)); });
+      app.appendChild(list);
+
+      // Footer note
+      app.appendChild(h("div", { style: "margin-top:24px;padding:14px 16px;background:#fef9c3;border:1px solid #fde047;border-radius:10px;font-size:13px;color:#713f12;line-height:1.5;" },
+        h("b", { text: "Two reminders:" }),
+        " Update your exam date in Becker to the 29th, or the dashboard pacing and Final Review will fight this plan. And don't skim TBS to hit the count — a re-worked TBS beats five skimmed. If the Jun 24 Mini Exam shows a unit cratering, the days after it are your room to patch before the Jun 26 sim."
+      ));
+      app.appendChild(h("div", { style: "margin-top:16px;font-size:12px;color:#94a3b8;text-align:center;", text: "Progress saves automatically to this device. Tap a day to expand." }));
+    }
+
+    render();
+  })();
+  </script>
+</body>
+</html>
