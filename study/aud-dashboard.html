@@ -57,33 +57,35 @@
     "use strict";
 
     var PLAN = [
-      { id: "d0616", date: "Tue, Jun 16", iso: "2026-06-16", phase: "Phase 1", unit: "A4",
-        title: "Performing Procedures + Communications",
-        focus: "Weakest TBS zone. Misstatements (your 25% sim) + Procedures to Obtain Evidence.",
-        tbsTarget: 7, tbsDeep: 5, mcqTarget: 45, mcqGoal: null, hours: "4 to 4.5 hrs",
-        breakdown: "~2 hr TBS (deep re-work runs long), ~1.25 hr MCQ, ~30 min video",
+      { id: "d0616", date: "Tue, Jun 16", iso: "2026-06-16", phase: "Phase 1", unit: "A3",
+        title: "Concept Refresh + A3 MCQ",
+        focus: "Front-load MCQ and video review today so tomorrow is a clean TBS-only push on A3 and A4. Sampling is a repeat miss — hit the A3 MCQ hard.",
+        tbsTarget: 0, tbsDeep: 0, mcqTarget: 55, mcqGoal: null, hours: "3 to 3.5 hrs",
+        breakdown: "~1.5 hr A3 MCQ (Sampling, Evidence), ~1 hr concept videos for A3 + A4 to prime tomorrow's TBS",
         tasks: [
-          "Concept Videos: Misstatements + Procedures (only if rusty)",
+          "Concept Videos: A4 Misstatements + Procedures, A3 Sampling + Evidence (only the rusty ones)",
+          "A3 MCQ — 40-question practice test on Sampling, Evidence, Documentation",
+          "Note which TBS topics feel weakest — that's tomorrow's deep-rework list",
+        ] },
+      { id: "d0617", date: "Wed, Jun 17", iso: "2026-06-17", phase: "Phase 1", unit: "A3/A4",
+        title: "A3 + A4 TBS Deep Work",
+        focus: "The heavy TBS day — both your weakest units back to back. Deep re-work, not skim: Misstatements/Procedures (A4) and Sampling/Evidence (A3).",
+        tbsTarget: 14, tbsDeep: 10, mcqTarget: 0, mcqGoal: null, hours: "4.5 to 5 hrs",
+        breakdown: "~2 hr A4 TBS (deep re-work Misstatements + Procedures), ~2 hr A3 TBS (deep re-work Sampling + Evidence)",
+        tasks: [
           "All A4 TBS — deep re-work the Misstatements + Procedures ones",
-          "30 A4 MCQ to lock it in",
-        ] },
-      { id: "d0617", date: "Wed, Jun 17", iso: "2026-06-17", phase: "Phase 1", unit: "A3",
-        title: "Risk, Evidence, and Sampling",
-        focus: "Sampling is a repeat miss across both sims. Hit it hard.",
-        tbsTarget: 7, tbsDeep: 5, mcqTarget: 55, mcqGoal: null, hours: "4 to 4.5 hrs",
-        breakdown: "~2 hr TBS (deep re-work Sampling), ~1.5 hr MCQ",
-        tasks: [
           "All A3 TBS — deep re-work Sampling, Evidence, Documentation",
-          "40-question A3 practice test",
+          "Re-do, don't skim — a re-worked TBS beats five skimmed",
         ] },
-      { id: "d0618", date: "Thu, Jun 18", iso: "2026-06-18", phase: "Off", unit: null,
-        title: "Rest day (optional 1 to 2 hrs)",
-        focus: "Primarily rest. If you have an hour and the headspace, keep it light — passive review only, no hard TBS.",
-        tbsTarget: 0, tbsDeep: 0, mcqTarget: 0, mcqGoal: null, optional: true,
+      { id: "d0618", date: "Thu, Jun 18", iso: "2026-06-18", phase: "Phase 1", unit: "A4",
+        title: "A4 MCQ + Cleanup",
+        focus: "Lock in A4 with MCQ after yesterday's TBS push. Lighter day — breathing room before the weekend rest.",
+        tbsTarget: 0, tbsDeep: 0, mcqTarget: 45, mcqGoal: null, hours: "2 to 2.5 hrs",
+        breakdown: "~1.5 hr A4 MCQ (Misstatements, Procedures), ~30 min review of any A3/A4 TBS that surfaced as weak yesterday",
         tasks: [
-          "Optional: 20 to 30 mixed MCQ from A4 (Misstatements, Procedures), untimed",
-          "Optional: re-read the answer explanations on any you miss",
-          "If you're not up for it, do nothing — that's the plan working",
+          "45 A4 MCQ — Misstatements and Procedures to Obtain Evidence",
+          "Re-read explanations on every miss",
+          "Optional: re-do 1 to 2 TBS from yesterday that still feel shaky",
         ] },
       { id: "d0619", date: "Fri, Jun 19", iso: "2026-06-19", phase: "Off", unit: null,
         title: "Rest day (optional 1 to 2 hrs)",
@@ -188,7 +190,7 @@
 
     var UNIT_COLORS = {
       A1: "#c2410c", A2: "#b45309", A3: "#0e7490", A4: "#7c3aed", A5: "#15803d",
-      A6: "#0f766e", Mixed: "#a16207", All: "#1e3a5f", Light: "#64748b",
+      A6: "#0f766e", "A3/A4": "#4f46e5", Mixed: "#a16207", All: "#1e3a5f", Light: "#64748b",
     };
 
     var PHASE_LABELS = {
