@@ -346,7 +346,10 @@
                 <label><input type="checkbox" id="set-sound" checked> Chime when a timer ends</label>
                 <label><input type="checkbox" id="set-auto"> Start the next timer automatically</label>
                 <label><input type="checkbox" id="set-notify"> Desktop notifications</label>
+                <label><input type="checkbox" id="set-awake" checked> Keep the screen awake</label>
             </div>
+
+            <p class="faint mt-16" id="awake-note" style="font-size: 14px;">The screen is held awake only while a timer is running. Needs Safari on iPadOS 16.4 or later; iOS drops the hold if you switch apps or turn on Low Power Mode.</p>
 
             <p class="mt-24"><button type="button" class="btn secondary" id="restore">Restore defaults</button></p>
         </section>
@@ -367,7 +370,7 @@
 (function() {
     'use strict';
 
-    var DEFAULTS = { focus: 25, short: 5, long: 15, every: 4, sound: true, auto: false, notify: false };
+    var DEFAULTS = { focus: 25, short: 5, long: 15, every: 4, sound: true, auto: false, notify: false, awake: true };
     var LABELS = { focus: 'Focus', short: 'Short break', long: 'Long break' };
     var SETTINGS_KEY = 'sb_pomodoro_settings';
     var STATS_KEY = 'sb_pomodoro_stats';
@@ -389,7 +392,8 @@
         every: document.getElementById('set-every'),
         sound: document.getElementById('set-sound'),
         auto: document.getElementById('set-auto'),
-        notify: document.getElementById('set-notify')
+        notify: document.getElementById('set-notify'),
+        awake: document.getElementById('set-awake')
     };
 
     var baseTitle = document.title;
@@ -402,6 +406,9 @@
     var completedInCycle = 0;
     var ticker = null;
     var audioCtx = null;
+    var wakeLock = null;      // active WakeLockSentinel, if the screen is being held awake
+    var wakePending = false;  // a request is in flight
+    var wakeWanted = false;   // a timer is running, so the screen should stay on
 
     ring.style.strokeDasharray = CIRCUMFERENCE;
 
@@ -480,6 +487,33 @@
 
     function hint(text) { hintEl.textContent = text; }
 
+    /* ---------- screen wake lock ---------- */
+
+    // iOS only grants a wake lock to a visible page, and in practice wants a user
+    // gesture — starting a timer is one, so that is where the hold begins.
+    function requestWake() {
+        if (!settings.awake || !('wakeLock' in navigator)) { return; }
+        if (wakeLock || wakePending || document.hidden) { return; }
+        wakePending = true;
+        navigator.wakeLock.request('screen').then(function(lock) {
+            wakePending = false;
+            // Bail out if the timer stopped while the request was in flight.
+            if (!wakeWanted || !settings.awake) { lock.release().catch(function() {}); return; }
+            wakeLock = lock;
+            lock.addEventListener('release', function() { wakeLock = null; });
+        }).catch(function() {
+            // Denied, unsupported, or Low Power Mode — the timer still runs.
+            wakePending = false;
+        });
+    }
+
+    function releaseWake() {
+        if (!wakeLock) { return; }
+        var lock = wakeLock;
+        wakeLock = null;
+        lock.release().catch(function() {});
+    }
+
     /* ---------- timer ---------- */
 
     function tick() {
@@ -499,6 +533,8 @@
         endsAt = Date.now() + remaining;
         running = true;
         ticker = setInterval(tick, 250);
+        wakeWanted = true;
+        requestWake();
         render();
         hint('Space to start or pause · R to reset');
     }
@@ -509,6 +545,8 @@
         running = false;
         clearInterval(ticker);
         ticker = null;
+        wakeWanted = false;
+        releaseWake();
         render();
     }
 
@@ -626,6 +664,7 @@
         inputs.sound.checked = settings.sound;
         inputs.auto.checked = settings.auto;
         inputs.notify.checked = settings.notify;
+        inputs.awake.checked = settings.awake;
     }
 
     function readDuration(key, lo, hi) {
@@ -666,6 +705,14 @@
     inputs.auto.addEventListener('change', function() {
         settings.auto = inputs.auto.checked;
         save(SETTINGS_KEY, settings);
+    });
+
+    inputs.awake.addEventListener('change', function() {
+        settings.awake = inputs.awake.checked;
+        save(SETTINGS_KEY, settings);
+        // Ticking the box is itself a gesture, so a running timer can grab the lock now.
+        if (settings.awake) { if (wakeWanted) { requestWake(); } }
+        else { releaseWake(); }
     });
 
     inputs.notify.addEventListener('change', function() {
@@ -734,7 +781,10 @@
 
     // A backgrounded tab can throttle the interval; resync as soon as it returns.
     document.addEventListener('visibilitychange', function() {
-        if (!document.hidden && running) { tick(); }
+        if (document.hidden) { return; }
+        if (running) { tick(); }
+        // iOS releases the lock whenever the page is hidden; take it back on return.
+        if (wakeWanted) { requestWake(); }
     });
 
     window.addEventListener('beforeunload', function(e) {
@@ -743,7 +793,14 @@
         e.returnValue = '';
     });
 
+    if (!('wakeLock' in navigator)) {
+        inputs.awake.disabled = true;
+        document.getElementById('awake-note').textContent =
+            'This browser cannot keep the screen awake. On iPad, use Safari on iPadOS 16.4 or later.';
+    }
+
     applySettingsToInputs();
+    if (inputs.awake.disabled) { inputs.awake.checked = false; }
     remaining = duration(mode);
     renderDots();
     renderStats();
