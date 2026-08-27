@@ -27,13 +27,13 @@
     },
     "visitorCount": {
       ".read": true,
-      ".write": true,
-      ".validate": "newData.isNumber() && newData.val() === data.val() + 1"
+      ".write": "newData.exists()",
+      ".validate": "newData.isNumber() && (data.exists() ? newData.val() === data.val() + 1 : newData.val() === 1)"
     },
     "bleiferAi": {
       "views": {
         ".read": true,
-        ".write": true,
+        ".write": "newData.exists()",
         ".validate": "newData.isNumber() && (data.exists() ? newData.val() === data.val() + 1 : newData.val() === 1)"
       },
       "presence": {
