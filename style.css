@@ -616,26 +616,6 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 40px 0; }
   padding: 28px 0;
 }
 
-/* ---------- Guestbook ---------- */
-.gb-entry {
-  padding: 16px 0;
-  border-top: 1px solid var(--border);
-}
-
-.gb-entry:last-child { border-bottom: 1px solid var(--border); }
-
-.gb-entry .gb-name { font-weight: 600; color: var(--text); }
-.gb-entry .gb-date {
-  color: var(--accent);
-  font-size: 11px;
-  margin-left: 10px;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-.gb-entry .gb-message { margin: 6px 0 0; color: var(--text); }
-
 /* ---------- Business card ---------- */
 .card-block {
   background: var(--surface);

@@ -2,21 +2,53 @@
   "rules": {
     "guestbook": {
       ".read": true,
-      ".indexOn": ["timestamp"],
+      ".indexOn": [
+        "timestamp"
+      ],
       "$entryId": {
         ".write": "!data.exists()",
         ".validate": "newData.hasChildren(['name', 'message', 'date', 'timestamp']) && newData.child('name').isString() && newData.child('name').val().length >= 1 && newData.child('name').val().length <= 30 && newData.child('name').val().matches(/\\S/) && newData.child('message').isString() && newData.child('message').val().length >= 1 && newData.child('message').val().length <= 200 && newData.child('message').val().matches(/\\S/) && newData.child('date').isString() && newData.child('date').val().length <= 30 && newData.child('timestamp').isNumber() && newData.child('timestamp').val() <= now && newData.child('timestamp').val() > now - 60000",
-        "name": { ".validate": true },
-        "message": { ".validate": true },
-        "date": { ".validate": true },
-        "timestamp": { ".validate": true },
-        "$other": { ".validate": false }
+        "name": {
+          ".validate": true
+        },
+        "message": {
+          ".validate": true
+        },
+        "date": {
+          ".validate": true
+        },
+        "timestamp": {
+          ".validate": true
+        },
+        "$other": {
+          ".validate": false
+        }
       }
     },
     "visitorCount": {
       ".read": true,
       ".write": true,
       ".validate": "newData.isNumber() && newData.val() === data.val() + 1"
+    },
+    "bleiferAi": {
+      "views": {
+        ".read": true,
+        ".write": true,
+        ".validate": "newData.isNumber() && (data.exists() ? newData.val() === data.val() + 1 : newData.val() === 1)"
+      },
+      "presence": {
+        ".read": true,
+        "$sessionId": {
+          ".write": true,
+          ".validate": "newData.hasChildren(['ts']) && newData.child('ts').isNumber() && newData.child('ts').val() <= now && newData.child('ts').val() > now - 60000",
+          "ts": {
+            ".validate": true
+          },
+          "$other": {
+            ".validate": false
+          }
+        }
+      }
     },
     "$other": {
       ".read": false,
