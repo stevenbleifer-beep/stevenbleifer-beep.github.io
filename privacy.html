@@ -12,8 +12,10 @@
 <header class="topbar">
     <div class="topbar-inner">
         <a href="index.html" class="brand">Steven Bleifer</a>
-        <nav class="nav">
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
             <a href="index.html">Home</a>
+            <a href="pomodoro.html">Pomodoro</a>
         </nav>
     </div>
 </header>
