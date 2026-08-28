@@ -669,18 +669,6 @@ hr { border: 0; border-top: 1px solid var(--border); margin: 40px 0; }
   .card-block dt { margin-top: 12px; }
 }
 
-/* ---------- Counter ---------- */
-.counter {
-  text-align: center;
-  font-size: 11px;
-  color: var(--accent);
-  margin: 64px 0 0;
-  letter-spacing: 0.22em;
-  font-variant-numeric: tabular-nums;
-  text-transform: uppercase;
-  font-weight: 700;
-}
-
 /* ---------- Footer ---------- */
 .footer {
   margin-top: 96px;

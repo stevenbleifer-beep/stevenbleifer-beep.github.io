@@ -96,8 +96,6 @@
             </div>
         </section>
 
-        <p class="counter">Visitor № <span id="visitor-count">000000</span></p>
-
         <footer class="footer">
             <p class="mb-0">© 2026 Steven Bleifer</p>
             <div class="footer-links">
@@ -133,39 +131,6 @@
         }
         out.style.display = 'block';
     };
-})();
-</script>
-
-<!-- Firebase visitor counter -->
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-check-compat.js"></script>
-<script>
-(function() {
-    var firebaseConfig = {
-        apiKey: "AIzaSyA5tENtcv1dlgKdfkueuHh7RdPVLRon7Os",
-        authDomain: "stevenbleifer-site.firebaseapp.com",
-        databaseURL: "https://stevenbleifer-site-default-rtdb.firebaseio.com",
-        projectId: "stevenbleifer-site",
-        storageBucket: "stevenbleifer-site.firebasestorage.app",
-        messagingSenderId: "905082036677",
-        appId: "1:905082036677:web:bffccd9bf2ff1e323babac"
-    };
-    firebase.initializeApp(firebaseConfig);
-    var appCheck = firebase.appCheck();
-    appCheck.activate('6LdsrZstAAAAAK1X-KZJGzBK6hendXzgJJqQ5_ZK', true);
-    var db = firebase.database();
-    var alreadyCounted = sessionStorage.getItem('sb_counted');
-    var counterRef = db.ref('visitorCount');
-    function render(v) {
-        document.getElementById('visitor-count').textContent = String((v || 8241) - 8241).padStart(6, '0');
-    }
-    if (!alreadyCounted) {
-        counterRef.transaction(function(current) { return (current || 8241) + 1; })
-            .then(function(result) { render(result.snapshot.val()); sessionStorage.setItem('sb_counted', 'true'); });
-    } else {
-        counterRef.once('value').then(function(snapshot) { render(snapshot.val()); });
-    }
 })();
 </script>
 
