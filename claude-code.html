@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Built with Claude Code — Steven Bleifer</title>
+    <meta name="description" content="Projects I've built with Claude Code — this site, CPA and AIS study tools, a pomodoro timer, a vinyl ripping pipeline, and a long detour through old hard drives and vintage iOS devices.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="claude-code.html" class="active">Projects</a>
+            <a href="vinyl.html">Vinyl</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow">Side projects · 2026</p>
+            <h1>Built with Claude Code.</h1>
+            <p class="lead">I'm an accountant, not a software engineer. Over the past few months I've used Claude Code to build the things I actually wanted to exist — this site, my study tools, and a handful of stubbornly analog problems involving records, old hard drives, and iPods that predate the App Store.</p>
+            <div class="pill-row">
+                <span class="pill">178 commits</span>
+                <span class="pill">Since February 2026</span>
+                <span class="pill">Zero formal training</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>How I actually use it</h2>
+            </div>
+            <p>The pattern that works for me is not "describe the thing and accept what comes back." It's closer to working with someone competent who has never seen my setup: I say what I want, it looks at what's really there, and it tells me which of my assumptions were wrong before writing anything.</p>
+            <p>That last part is where most of the value has been. Nearly every project below turned up something I had wrong at the start — a folder that isn't named what it appears to be named, a backup that was running but useless, an iPad that turned out to be a different iPad. None of those were guessable from my description of the problem. All of them would have broken the finished thing.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>This site</h2>
+            </div>
+            <p>Everything you're looking at. It started in February 2026 as a single page and is now 178 commits of accumulated tinkering, all hand-rolled — no framework, no build step, no dependencies. Just HTML, one stylesheet, and a bit of JavaScript.</p>
+            <p>Things it does that aren't obvious from the outside: the <a href="changelog.html">changelog</a> generates itself from git history, filtering out the automated commits so only real changes show up. The <a href="activity.html">Library</a> page pulls live from Letterboxd and Goodreads. There's a search box on the home page that indexes every page. And a guestbook runs on a Firebase realtime database with App Check enforced through reCAPTCHA — which sounds tidy written down and took an embarrassingly long debugging session, because Firebase had auto-created a key that didn't appear in any console I could reach and therefore couldn't have domains added to it.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Study tools</h2>
+            </div>
+            <p>The most genuinely useful category, because these were built against real deadlines.</p>
+            <p>An <strong>AUD sprint dashboard</strong> for the CPA exam — a day-by-day plan for a two-week run at the Auditing section, with daily simulation and multiple-choice targets weighted toward the units I was weakest in. Checkboxes and counters save to the device, so progress survives closing the tab. It got rearranged more than a dozen times as my actual pace diverged from the plan, which is the honest use case for something like this.</p>
+            <p>For <strong>Accounting Information Systems</strong> at Stern, a full set per exam: study guide, practice test, review quiz, key-term flashcards, hardest-questions drill, and exam-style questions — one set for chapters 7, 14 and 19, another for the cybersecurity final on chapter 16 and the CIS Controls.</p>
+            <p>Separately, for the <strong>FAR</strong> section, a study guide and a formulas-and-mnemonics sheet built from my own lecture notes and handwritten exam reviews — including the handwritten error logs, which are pure ink and had to be rendered as images to be read at all. Both were written to print cleanly, because the point was to have them on paper.</p>
+            <p class="muted">One thing worth flagging: the notes those were built from stop short of several tested topics, and the study guide says so explicitly rather than quietly filling the gaps. A study tool that pretends to complete coverage it doesn't have is worse than no tool.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Pomodoro</h2>
+            </div>
+            <p>A <a href="pomodoro.html">focus timer</a>, built because every one I tried was either an app I didn't want to install or a website covered in ads.</p>
+            <p>Configurable focus, short-break and long-break lengths, a long break every <em>n</em> cycles, optional auto-continue between phases, a sound and a browser notification when a phase ends, a label for what you're working on, and a running count of sessions, minutes and cycles. It also holds a wake lock so the screen doesn't sleep mid-session — which was added after the obvious happened.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Ripping vinyl</h2>
+            </div>
+            <p>An automated pipeline that takes a record from a turntable into a 95,000-track iTunes library running on a headless 2012 MacBook Pro — checking the files, verifying every byte across two machines, and importing atomically so iTunes can never catch a half-written album.</p>
+            <p>It has its own page, including the four bugs that only surfaced against real music and the backup problem I found by accident while building it. <a href="vinyl.html">Read about the vinyl pipeline →</a></p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The music library</h2>
+            </div>
+            <p>The library that pipeline feeds didn't assemble itself. It's about 95,700 tracks, consolidated from old iPods, dead drives, and a second library inherited from family — roughly 168 GB merged in by artist and album, deliberately without importing that library's own database, ratings or play counts, since doing so would have replaced mine rather than added to it.</p>
+            <p>Consolidating something that size surfaces problems you'd never notice track by track. <strong>1,073 audio files existed on disk with no library entry at all</strong> — whole albums, silently absent from the database while sitting right there in the folder. Auditing for that is harder than it sounds: the library's XML escapes ampersands, stores paths in a different Unicode normalisation than the filesystem returns, and is case-inconsistent about folder names. Each of those produced hundreds of false positives before being handled, and one of them would have caused real duplicates if I'd trusted it.</p>
+            <p>I also built a 500-track "best of 2007–2011" playlist — 33 hours, structured as 25 complete album blocks followed by 200 singles. The interesting problem there was that <strong>there is no listening history anywhere in the library</strong>, so popularity had to come from an external ranking. And ranking by year tag alone is a trap: remasters, live albums and vinyl reissues carry the reissue's date, so the first pass confidently proposed <em>Bohemian Rhapsody</em> and <em>Highway to Hell</em> as hits of 2009.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Old hard drives</h2>
+            </div>
+            <p>A stack of unlabelled external drives, worked through one at a time to find out what was on them. This started as a hunt for old iOS app files and turned into a small archaeology project.</p>
+            <p>What they turned out to be: a 500 GB drive with fifteen partitions, no recognisable filesystems, and power-of-two sizes — a <strong>PlayStation 4 disk</strong>, encrypted against a console motherboard that no longer exists, and therefore permanently unreadable. A High Sierra system drive with no apps but a 53 GB photo library spanning 1980 to 2018. A nearly-empty Windows data partition. A 750 GB FileVault-locked drive that kept dropping off the USB bus and is still unopened.</p>
+            <p>And one 160 GB drive from an old family PC that had exactly what I was looking for: <strong>49 iOS app files</strong> from the right era, every one verified compatible with the device I wanted them on. Along with about 19,000 photos and videos, which are now in a single album rather than scattered across drives nobody could read.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Devices that predate the App Store</h2>
+            </div>
+            <p>The reason for the app hunt. An <strong>iPod touch 4</strong>, running iOS 6.1.6, jailbroken so it can install software Apple stopped signing over a decade ago.</p>
+            <p>The same treatment for an <strong>iPhone 4S</strong>, downgrading from iOS 9 to 6.1.3 — a version Apple still signs, which is what makes it recoverable if it goes wrong. That one is genuinely difficult: the downgrade needs a specific low-level device mode that can only be reached from a jailbroken phone, and getting there means jailbreaking the version you're trying to leave. It's still not finished.</p>
+            <p>And an iPad I was certain was an iPad 2. It's an iPad 3 — and that distinction decides everything, because the trick that makes the 4S recoverable doesn't exist for the iPad 3. Apple never shipped the release it needs in a form that can still be installed. Being told that before spending an evening on it was worth more than any code.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What I'd tell someone starting</h2>
+            </div>
+            <p>Make it look at your actual setup before it writes anything. Every project here had at least one assumption that was wrong at the start, and finding those first is cheaper than debugging them later.</p>
+            <p>Ask it to test the failure cases, not the working one. The vinyl pipeline is only trustworthy because we killed a transfer halfway through and watched what it did.</p>
+            <p>And read what it produces. Two of the bugs in the vinyl project were in code that looked completely reasonable and did the opposite of what it said. Generating code turns out to be the fast part; knowing what to check is the actual work.</p>
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="changelog.html">Changelog</a>
+                <a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+        </footer>
+
+    </div>
+</main>
+
+</body>
+</html>
