@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Ripping Vinyl — Steven Bleifer</title>
+    <meta name="description" content="Building an automated pipeline to get vinyl records from a turntable into a 95,000-track iTunes library running on a 2012 MacBook Pro.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow">Personal project · 2026</p>
+            <h1>Ripping vinyl.</h1>
+            <p class="lead">Getting records off a turntable and into a 95,000-track music library — which meant building a pipeline between a brand-new laptop and a fourteen-year-old one that refuses to die.</p>
+            <div class="pill-row">
+                <span class="pill">Apple Lossless</span>
+                <span class="pill">Two Macs</span>
+                <span class="pill">~290 MB per album</span>
+                <span class="pill">7 seconds end to end</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The problem</h2>
+            </div>
+            <p>I have a music library of about <strong>95,000 tracks</strong> — roughly a terabyte, assembled over twenty years and consolidated from old iPods, dead hard drives, and a couple of libraries inherited from family. It lives in iTunes. Not Apple Music, not the modern Music app: <em>iTunes</em>, the last version Apple shipped before splitting it apart in 2019.</p>
+            <p>That matters more than it sounds. A library this size is really a database, and the modern Music app is built around streaming. iTunes is the last piece of Apple software that treats a large collection of files you actually own as the main event. So the library stays where iTunes still runs — on macOS Mojave, which means a machine that can still boot it.</p>
+            <p>Meanwhile I'd been buying records, and wanted them in the same library as everything else. Which raised the question of how, exactly, a record gets from a turntable into a database on a computer released in 2012.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Two machines, two jobs</h2>
+            </div>
+            <p>The obvious answer was to do everything on the old machine. It has a real analog line-in, it already holds the library, and it's plugged in and running anyway. I tried that first, and it mostly worked — I ripped about ninety albums that way.</p>
+            <p>But a 2012 laptop is a slow place to do audio work. Declicking a side takes minutes. The recording software fought with the operating system. And doing the fiddly, interactive part of the job — setting track breaks, cleaning up pops, typing in track listings — on a machine that predates the software you're running is an exercise in patience.</p>
+            <p>So the setup split in two. <strong>Capture moves to the new laptop</strong>, through a USB audio interface, where the software is fast and the screen is in front of me. <strong>The old machine becomes a library server</strong>: headless, lid closed, always on, doing nothing but running iTunes and holding a terabyte of music.</p>
+            <p>Which left the actual problem: moving a finished album from one to the other, reliably, without me having to think about it.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>How it works</h2>
+            </div>
+            <p>iTunes has a folder called <em>Automatically Add to iTunes</em>. Drop files in and they get imported and filed by their tags. That's the hook the whole thing hangs on — but it's also the dangerous part, because iTunes watches that folder continuously and will happily import a file that's still being written to it. Half a song, imported and filed, and you won't notice until you play it.</p>
+            <p>So nothing ever gets written into that folder directly. Instead:</p>
+            <ul class="timeline">
+                <li><span class="date">Step 1</span><span class="desc">Record the side, split it into tracks, tag it.</span></li>
+                <li><span class="date">Step 2</span><span class="desc">Export to a staging folder as Apple Lossless — one folder per album.</span></li>
+                <li><span class="date">Step 3</span><span class="desc">A script checks every file before anything moves: is it really lossless, does it have an artist, an album, a title, a track number.</span></li>
+                <li><span class="date">Step 4</span><span class="desc">Copy the album across under a temporary name, so an interrupted transfer can never look finished.</span></li>
+                <li><span class="date">Step 5</span><span class="desc">Checksum every file on both machines and compare. Only on a perfect match does it get its real name.</span></li>
+                <li><span class="date">Step 6</span><span class="desc">One atomic move into the watch folder. iTunes sees a complete album appear, all at once, or nothing at all.</span></li>
+            </ul>
+            <p>That last step is the whole trick. Because the staging area and the watch folder live on the same disk, moving between them isn't a copy — it's a rename, which the filesystem does instantly and indivisibly. There is no moment where a half-copied album exists in that folder for iTunes to find.</p>
+            <p>The two laptops are wired together directly rather than going over Wi-Fi, which turns out to be worth about <strong>four times the speed</strong>: a full album crosses in around three seconds instead of twelve. If that cable is ever unplugged, the script notices and falls back to the network on its own.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What went wrong</h2>
+            </div>
+            <p>The interesting part of any project like this is the gap between the plan and reality. Four things caught me out.</p>
+
+            <p><strong>The folder had a different name than it appears to have.</strong> The watch folder shows up in Finder as "Automatically Add to iTunes." On disk it's actually called <code>Automatically Add to iTunes.localized</code> — Finder hides the suffix. Every script that used the obvious path failed until I looked at the raw directory listing.</p>
+
+            <p><strong>The standard way to read music tags didn't work.</strong> macOS has a built-in tool for reading metadata, and it returned nothing at all for the files I'd just exported. The reason is that it reads from the system search index, and a file written thirty seconds ago hasn't been indexed yet. The check meant to catch untagged albums was rejecting every album, including perfectly good ones. I ended up writing a small parser that reads the tags directly out of the file.</p>
+
+            <p><strong>A one-character bug rejected everything.</strong> I'd written a check to refuse filenames containing a line break — an edge case that would corrupt the verification step. The way I'd written it, the thing I was searching for evaluated to an empty string, and every filename contains an empty string. So the check matched everything and refused every file. Neither of these bugs was visible by reading the code; both showed up the first time it ran against real music.</p>
+
+            <p><strong>And the first successful run made fifteen duplicates.</strong> Everything worked exactly as designed — the album transferred, verified, imported. It was just an album I'd already ripped three weeks earlier. I'd built guards against the pipeline colliding with <em>itself</em>, and none against the pipeline colliding with the library. Now it asks iTunes whether it already has the album before it sends anything.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Testing it properly</h2>
+            </div>
+            <p>The test I cared about most was the ugly one: what happens if the connection dies halfway through an album.</p>
+            <p>So I started a 1.4 GB transfer and killed the connection mid-flight. The result was exactly what it should have been — the script stopped and reported failure, nothing reached iTunes, the local copy stayed where it was, and the partial transfer sat on the far side under its temporary name where it couldn't be mistaken for a finished album. Running it again picked up where it left off, re-checked every file, and completed.</p>
+            <p>That's the difference between a script that works and a script you can trust. The first one works when nothing goes wrong.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The thing I wasn't looking for</h2>
+            </div>
+            <p>While setting this up I checked the backup situation on the machine holding the library, expecting to tick a box. Time Machine was on, it was running hourly, and the library was included. All good.</p>
+            <p>Except the backup drive held <strong>thirteen days of history</strong>. A healthy Time Machine keeps daily backups for a month and weekly ones going back further; this one had no weeklies at all. The drive was too small for what it was backing up, so every new backup was quietly deleting an old one to make room. It had been doing that for months.</p>
+            <p>Nothing was broken, and nothing was lost. But the only copy of a twenty-year library was protected by a safety net less than two weeks deep, and I'd have had no reason to look if I hadn't been building something else. A bigger drive is on its way, and the old one becomes a second copy that lives unplugged.</p>
+            <p class="muted">The lesson I'd actually take from this project isn't about audio. It's that "the backup is running" and "the backup is any good" are different claims, and only one of them is easy to check.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Where it stands</h2>
+            </div>
+            <p>One command, run from the laptop I record on. It sends everything waiting, refuses anything untagged or already in the library, verifies every file, and tells me what it did. A second command reports whether the whole system is healthy — connection, iTunes, queue, disk space, and how recent the last good backup is.</p>
+            <p>An album takes about seven seconds to go from finished export to sitting in the library, and I don't have to think about any of the steps in between. Which was the entire point.</p>
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="changelog.html">Changelog</a>
+                <a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+        </footer>
+
+    </div>
+</main>
+
+</body>
+</html>
