@@ -84,10 +84,12 @@ main { padding: 56px 0 96px; }
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
   height: 58px;
 }
 
 .brand {
+  white-space: nowrap;
   font-family: var(--serif);
   font-weight: 400;
   font-size: 22px;
@@ -98,9 +100,10 @@ main { padding: 56px 0 96px; }
 
 .brand:hover { color: var(--accent); text-decoration: none; }
 
-.nav { display: flex; gap: 28px; align-items: center; }
+.nav { display: flex; gap: 20px; align-items: center; }
 
 .nav a {
+  white-space: nowrap;
   color: var(--text-muted);
   text-decoration: none;
   font-size: 12px;
@@ -125,7 +128,7 @@ main { padding: 56px 0 96px; }
   padding: 6px;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 860px) {
   .nav { display: none; flex-direction: column; gap: 0; position: absolute; top: 58px; left: 0; right: 0; background: var(--bg); border-bottom: 2px solid var(--text); padding: 8px 24px 16px; }
   .nav.open { display: flex; }
   .nav a { padding: 12px 0; font-size: 13px; border-bottom: 1px solid var(--border-light); }
