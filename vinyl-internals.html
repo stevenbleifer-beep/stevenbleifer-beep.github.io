@@ -34,11 +34,11 @@
         <section class="hero">
             <p class="eyebrow"><a href="vinyl.html">← Ripping vinyl</a></p>
             <h1>How it works.</h1>
-            <p class="lead">The technical version. About 590 lines of bash and Python that move an album between two Macs without ever letting iTunes see a half written file. Written up properly because a few people asked.</p>
+            <p class="lead">The technical version. About 1,170 lines of shell and Python that move an album between two Macs without ever letting iTunes see a half written file, plus a C sensor reader and a small Swift app to watch the whole thing. Written up properly because a few people asked.</p>
             <div class="pill-row">
-                <span class="pill">326 lines bash</span>
-                <span class="pill">86 lines python</span>
-                <span class="pill">179 lines status</span>
+                <span class="pill">1,174 lines shell + python</span>
+                <span class="pill">397 lines Swift</span>
+                <span class="pill">120 lines C</span>
                 <span class="pill">No dependencies</span>
             </div>
         </section>
@@ -290,6 +290,81 @@ done &lt; &lt;(<u>cd "$dir" &amp;&amp;</u> find . -type f -print0 | sort -z)</pr
 
         <section class="section">
             <div class="section-header">
+                <h2>Knowing when an export has finished</h2>
+            </div>
+            <p>launchd can watch a directory and run something when it changes, which is how the pipeline starts itself. The problem is that it fires on the <em>first</em> file of an export, not the last. Running the send immediately would ship a half exported album.</p>
+            <p>There's a nastier version of the same problem underneath. <code>WatchPaths</code> watches the directory node, so it fires when a file is created or removed. It does <strong>not</strong> fire while an existing file is still being written to. So counting files is useless: you'd see twelve tracks, decide the export was done, and copy a file that was still growing.</p>
+            <p>So once triggered, the watcher stops trusting launchd and polls for itself. It fingerprints the whole folder and waits for that fingerprint to stop changing:</p>
+<pre>fingerprint() {
+    find "$STAGING" -type f ! -name '.DS_Store' -exec stat -f '%N %z %m' {} + 2>/dev/null \
+        | LC_ALL=C sort | shasum -a 256 | awk '{print $1}'
+}</pre>
+            <p>Name, <strong>size</strong> and <strong>mtime</strong> for every file. Size is the part that matters: a track still being written changes its size on every flush, so the fingerprint keeps moving even though no new file has appeared and launchd has gone quiet. It waits for a full quiet period of no change before doing anything, with an hour long ceiling in case something is genuinely stuck.</p>
+            <p>Concurrency is handled by using <code>mkdir</code> as the lock, since it either creates the directory or fails, atomically. A stale lock older than two hours gets cleared, so a crashed run can't wedge it permanently.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Confirming iTunes actually imported it</h2>
+            </div>
+            <p>The atomic move puts the album where iTunes will find it. That is not the same as iTunes having imported it, and the gap is bigger than you'd guess. Transferring and verifying a 290 MB album takes about <strong>7 seconds</strong>. iTunes then takes roughly <strong>two more minutes</strong> to notice and ingest it.</p>
+            <p>So after the move it polls the library until the track count reaches what it sent:</p>
+<pre>await_import() {
+    local artist="$1" album="$2" want="$3" waited=0 have
+    while [ "$waited" -lt "$IMPORT_TIMEOUT" ]; do
+        have=$(library_count "$artist" "$album")
+        case "$have" in
+            ''|*[!0-9]*) ;;
+            *) [ "$have" -ge "$want" ] &amp;&amp; { printf '%s' "$have"; return 0; } ;;
+        esac
+        sleep 5
+        waited=$((waited + 5))
+    done
+    printf '%s' "${have:-0}"
+    return 1
+}</pre>
+            <p>Non-numeric answers are ignored rather than treated as zero, so a momentary AppleScript error doesn't abort the wait. On timeout it reports the real count it saw, still files the local copy so nothing is lost, and says to check iTunes is running. Then a notification gives the album and the elapsed time.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Deleting things safely</h2>
+            </div>
+            <p>A daily job clears out the folder of already sent albums. Deletion is the one place in this whole system where being wrong is expensive, so it inverts the usual bias.</p>
+            <p>For each album it reads the artist and album out of the files, asks iTunes how many tracks it holds for that pair, and only removes the local copy when iTunes has <strong>at least as many tracks as are on disk</strong>. Files go to the Trash, never <code>rm</code>.</p>
+            <p>Note the asymmetry with the duplicate check described earlier. That one <em>fails open</em>: if it can't reach iTunes it proceeds, because the worst case is a duplicate. This one <em>fails closed</em>: unreachable machine, unreadable tags, missing artist, partial import all mean keep the files and exit successfully. A skipped cleanup costs disk space. A wrong one costs a recording. Same query, opposite default, and that's deliberate.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Reading sensors without root</h2>
+            </div>
+            <p><code>powermetrics</code> reports temperatures but demands root, which I didn't want a background monitor asking for. The SMC's user client, though, is readable by anyone. So there's a small C program on the old machine that talks to it directly through IOKit and prints JSON.</p>
+            <p>It opens the <code>AppleSMC</code> service, asks for a key's metadata, then reads its bytes, and decodes the two fixed point formats Apple uses. Temperatures are <code>sp78</code>, one signed integer byte plus a fractional byte. Fan speeds are <code>fpe2</code>, fourteen integer bits and two fractional:</p>
+<pre><i>// sp78: signed fixed point, 8 integer bits, 7 fractional.</i>
+return (double)b[0] + (double)b[1] / 256.0;
+
+<i>// fpe2: unsigned fixed point, 14 integer bits, 2 fractional.</i>
+return (double)(((int)b[0] &lt;&lt; 6) | ((int)b[1] &gt;&gt; 2));</pre>
+            <p>Different Macs populate different sensor keys, so it tries <code>TC0P</code>, <code>TC0D</code>, <code>TC0E</code> and a couple of others and takes the first that returns something plausible, then reads <code>FNum</code> to find out how many fans exist before asking each one for its speed.</p>
+            <p>One compilation detail. It has to build on Mojave, and <code>kIOMasterPortDefault</code> was renamed <code>kIOMainPortDefault</code> in macOS 12. Since the old machine will never run anything newer, the source carries a small shim so it compiles either way:</p>
+<pre>#ifndef kIOMainPortDefault
+#define kIOMainPortDefault kIOMasterPortDefault
+#endif</pre>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The menu bar app</h2>
+            </div>
+            <p>A SwiftUI <code>MenuBarExtra</code>, about 400 lines, deliberately thin. It contains no knowledge of the pipeline at all. A separate Python collector gathers everything into a single JSON blob, using <strong>one ssh round trip</strong> for all the remote data, and the app just decodes and draws it every sixty seconds.</p>
+            <p>That split means anything I want to monitor can be added without touching Swift, and the collector can be run by hand to see exactly what the app sees.</p>
+            <p>Two things caught me out. Menu bar symbols are template tinted, so colour doesn't survive: health has to be encoded in the <em>shape</em> of the icon, not its colour. And a GUI app inherits almost no environment, so the collector has to be handed an explicit <code>PATH</code> or every <code>ssh</code>, <code>df</code> and <code>tmutil</code> call fails.</p>
+            <p>It also appends a line to its own log on every refresh. That's what let me work out why the icon showed an error while the data underneath was fine: the first ssh after launch is cold enough to blow through a six second connect timeout, so it briefly reported the machine unreachable. It now retries once at ten seconds before believing it.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>What I'd flag if someone reviewed it</h2>
             </div>
             <ul>
@@ -300,6 +375,8 @@ done &lt; &lt;(<u>cd "$dir" &amp;&amp;</u> find . -type f -print0 | sort -z)</pr
                 <li>Albums are processed one at a time. Fine at 104 MB/s, and the checksum pass on the old CPU is the actual bottleneck. It would parallelise cleanly.</li>
                 <li>The log is append only with no rotation. Trivial, but it grows forever.</li>
                 <li>There's a variable declared and never used. Dead.</li>
+                <li>The watcher's quiet period is a fixed sixty seconds. If VinylStudio ever stalls longer than that mid export it would send a partial album. A smarter version would check that no process still holds the files open.</li>
+                <li>The monitor polls on a timer whether or not anything has changed, which wakes an ssh connection every minute forever. Event driven would be tidier.</li>
             </ul>
         </section>
 

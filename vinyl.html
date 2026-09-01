@@ -139,10 +139,31 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>Making it hands off</h2>
+            </div>
+            <p>It started as a command I had to remember to run. It isn't anymore. Exporting from VinylStudio is now the only thing I do.</p>
+            <p>Something watches the export folder and notices when files appear. It can't just start immediately though, because the folder changes the moment the <em>first</em> track is written, not the last. So it waits until the folder has stopped changing for a full minute before it does anything. It checks every file's size and modification time, not just how many files there are, because a track that's still being written doesn't create a new file, it just quietly grows.</p>
+            <p>Then it sends the album, and instead of stopping there, it waits for iTunes to actually import it and tells me. That distinction turned out to matter more than I expected. Handing the files to iTunes takes about seven seconds. iTunes noticing them and importing takes roughly another two minutes. So "it's been sent" and "it's in my library" are quite far apart, and only one of those is the thing I actually care about.</p>
+            <p>When it's done I get a notification saying which album went in and how long the whole thing took.</p>
+            <p>There's also a cleanup job that runs once a day. It goes through the folder of albums that have already been sent, asks iTunes whether it really has each one, and only then moves the local copy to the trash. Everything about it is built to keep files rather than delete them. If the old machine is unreachable, or the tags are unreadable, or iTunes only has eleven of twelve tracks, it keeps everything and tries again tomorrow. A skipped cleanup costs me some disk space. A wrong one costs me a recording.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Watching it from the menu bar</h2>
+            </div>
+            <p>Once it was all running by itself I realised I had no idea whether it was actually running by itself. So I built a small app that sits in the menu bar and tells me.</p>
+            <p>It shows what's waiting to send, whether anything failed to import, whether the two background jobs are actually loaded, and when each of them last ran. It also reaches over to the old MacBook Pro and reports how long it's been up, how long iTunes has been open, disk space, when the last backup finished, and the CPU temperature and fan speeds.</p>
+            <p>Getting temperatures was the fiddly bit. The normal tool for it needs admin rights, which I didn't want a background app asking for. So there's a small C program on the old machine that reads the sensors directly through IOKit, compiled on the machine itself. It doesn't need any privileges at all. As I write this the old laptop is sitting at 48°C with both fans at about 2000 rpm, which for a fourteen year old machine running full time in a closed lid seems fine.</p>
+            <p>The icon changes shape depending on whether anything needs attention, so most of the time I never open it. Which is the point.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>Where it's at now</h2>
             </div>
-            <p>One command, run from the laptop I record on. It sends whatever is waiting, refuses anything untagged or already in the library, checks every file, and tells me what it did. A second command tells me if the whole setup is healthy: connection, iTunes, queue, disk space, and how recent the last good backup is.</p>
-            <p>An album takes about seven seconds to go from finished export to sitting in the library and I don't have to think about any of the steps in between. Which was the whole point.</p>
+            <p>I export an album from VinylStudio and then forget about it. A couple of minutes later my phone and laptop tell me it's in the library. A week after that the local copy cleans itself up, but only once iTunes has confirmed it really has the album. If anything goes wrong the menu bar icon changes and I go look.</p>
+            <p>I still have the manual commands, and I still use them when I want to watch it work. But the normal case is now that I don't think about any of it, which was the whole point.</p>
         </section>
 
         <footer class="footer">

@@ -36,7 +36,7 @@
             <h1>Built with Claude Code.</h1>
             <p class="lead">I'm an accountant, not a programmer. Over the last few months I've been using Claude Code to build the stuff I actually wanted to exist. This site, my study tools, and a bunch of fairly stubborn problems involving records, old hard drives, and iPods older than the App Store.</p>
             <div class="pill-row">
-                <span class="pill">178 commits</span>
+                <span class="pill">188 commits</span>
                 <span class="pill">Since February 2026</span>
                 <span class="pill">No CS background</span>
             </div>
@@ -83,7 +83,18 @@
                 <h2>Ripping vinyl</h2>
             </div>
             <p>A pipeline that gets a record from my turntable into a 95,000 track iTunes library on a headless 2012 MacBook Pro. It checks the files, verifies every byte across both machines, and imports in a way that iTunes can't catch halfway through.</p>
-            <p>It has its own page with the four things that broke and the backup problem I found by accident while building it. <a href="vinyl.html">Read about the vinyl pipeline →</a></p>
+            <p>It runs itself now. Exporting from VinylStudio is the only thing I do. Something notices the export, waits until it's actually finished writing, sends it, waits for iTunes to genuinely import it rather than just accept the files, and then notifies me with how long it took. A daily job cleans up the local copies afterwards, but only ever for albums iTunes confirms it has.</p>
+            <p>It has its own page with the four things that broke along the way and the backup problem I found by accident while building it. <a href="vinyl.html">Read about the vinyl pipeline →</a> There's also a <a href="vinyl-internals.html">technical write up</a> if you want the atomic renames and the shell quoting.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>A menu bar app to watch it all</h2>
+            </div>
+            <p>Once the vinyl pipeline was running on its own, I had no way of knowing whether it still was. So I built a small Mac app that lives in the menu bar and keeps an eye on the whole thing.</p>
+            <p>It shows what's queued, whether anything failed to import, whether the background jobs are actually loaded, and when each last ran. It also reaches across to the old MacBook Pro for uptime, how long iTunes has been open, disk space, backup age, CPU temperature and fan speeds. The icon changes when something needs looking at, so mostly I ignore it.</p>
+            <p>The temperature part needed a detour. The usual tool for reading Mac sensors wants admin rights, so instead there's a small C program on the old machine that reads them directly through IOKit and needs no privileges at all. I had to compile it on the machine itself, since the API was renamed in a later version of macOS than that laptop will ever run.</p>
+            <p>The app itself is deliberately thin. All the actual logic stays in a script that gathers everything into one blob of data, and the app just draws it. That way I can change what gets monitored without touching any Swift.</p>
         </section>
 
         <section class="section">
