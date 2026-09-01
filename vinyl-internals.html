@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Vinyl Pipeline Internals — Steven Bleifer</title>
+    <meta name="description" content="How the vinyl ripping pipeline actually works: atomic renames, remote path quoting, a hand written MP4 tag parser, and two bugs that read fine on the page.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="claude-code.html">Projects</a>
+            <a href="vinyl.html" class="active">Vinyl</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow"><a href="vinyl.html">← Ripping vinyl</a></p>
+            <h1>How it works.</h1>
+            <p class="lead">The technical version. About 590 lines of bash and Python that move an album between two Macs without ever letting iTunes see a half written file. Written up properly because a few people asked.</p>
+            <div class="pill-row">
+                <span class="pill">326 lines bash</span>
+                <span class="pill">86 lines python</span>
+                <span class="pill">179 lines status</span>
+                <span class="pill">No dependencies</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The constraint</h2>
+            </div>
+            <p>iTunes watches a folder and imports whatever shows up in it. It uses FSEvents, it scans on launch, and it does not wait for whoever is writing to finish. If it catches a file mid write you get half a track, imported and filed, and you don't find out for months.</p>
+            <p>iTunes is closed source. I can't change it, there's no lock protocol, and there's no way to tell it a file is finished. So the whole design comes down to one requirement: make the album showing up in that folder a single event that can't be observed halfway through.</p>
+            <p>There's exactly one tool for that. <code>rename(2)</code> is atomic within a filesystem. The destination name either doesn't exist yet or refers to the finished thing. There is no in between state a reader can catch.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The state machine</h2>
+            </div>
+            <p>Every album is a small state machine and the states are path names. Each transition is either a rename on one machine or a verified copy between the two, so if it dies at any point the state it left behind is unambiguous on the next run.</p>
+<pre><i># local                             remote</i>
+_Staging/&lt;album&gt;
+     |  rsync --partial
+     v
+                                   _Inbox/<b>.incoming-</b>&lt;album&gt;   <i>in flight, never complete</i>
+     |  sha256 both ends
+     v
+                                   _Inbox/&lt;album&gt;               <i>verified, not yet visible</i>
+     |  <b>rename(2)</b>, same device
+     v
+                                   AutoAdd/&lt;album&gt;              <i>iTunes may now see it</i>
+     |  local mv
+     v
+_Sent/&lt;album&gt;
+</pre>
+            <p>The dotted prefix does real work. A transfer that gets killed leaves <code>.incoming-&lt;album&gt;</code>, which is a name you can tell apart from a finished album just by looking at it. The next run resumes into it instead of guessing. Nothing else in the tree can be mistaken for a completed state.</p>
+            <p>Worth saying what it deliberately doesn't do. It never writes into the watch folder and renames inside it, because the write itself would be visible. The staging folder is a sibling on the same disk specifically so that the only thing iTunes can witness is the rename.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Checking both folders are on the same disk</h2>
+            </div>
+            <p><code>mv</code> quietly changes behaviour depending on where things are. Within one filesystem it calls <code>rename(2)</code>. Across filesystems it falls back to copy then delete, which is exactly the visible partial write the whole thing exists to avoid. That failure is silent and it breaks correctness, so it gets checked rather than assumed.</p>
+<pre>INBOX_DEV=$(ssh "$HOST" "stat -f %d $(rq "$RHOME/Music/_Inbox")")
+AUTOADD_DEV=$(ssh "$HOST" "stat -f %d $(rq "$AUTOADD")")
+
+<i># per album, before moving any bytes:</i>
+if [ "$INBOX_DEV" != "$AUTOADD_DEV" ]; then
+    say "    abort: _Inbox ($INBOX_DEV) and watch folder ($AUTOADD_DEV) are on"
+    say "           different filesystems - the mv would not be atomic"
+    return 1
+fi</pre>
+            <p>The device ID gets read once per run rather than per album. If the library ever moves to an external drive the whole thing refuses to run instead of silently becoming unsafe.</p>
+            <div class="callout warn">
+                <span class="lbl">Known weakness</span>
+                <p>The check that the destination doesn't exist and the move itself are two separate operations.</p>
+<pre>ssh "$HOST" "[ ! -e $(rq "$dest") ] &amp;&amp; mv -- $(rq "$inbox_final") $(rq "$dest")"</pre>
+                <p>In between those two, something else could create the destination, and then <code>mv</code> would move the source <em>inside</em> it rather than alongside. macOS actually has the right call for this, <code>renamex_np</code> with <code>RENAME_EXCL</code>, which fails atomically if the destination already exists. <code>mv</code> doesn't expose it, so using it would mean a small C helper or a Python ctypes call. The window is milliseconds and the only other writer is iTunes draining the folder, so I've left it. But it is a real race and not a solved one.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Quoting paths for the other machine</h2>
+            </div>
+            <p>Both rsync versions hand the remote path to a shell on the far side. The new Mac ships openrsync, the old one ships rsync 2.6.9, and neither implements <code>--protect-args</code>, which was added in rsync 3.0. So there's no way to ask the protocol to pass a path through untouched. What that looks like:</p>
+<pre>$ rsync host:'/tmp/x/Test Album' dest/
+<u>rsync: link_stat "/tmp/x/Test" failed: No such file or directory (2)</u>
+<u>rsync: link_stat "$HOME/Album" failed: No such file or directory (2)</u></pre>
+            <p>The far side split on the space and then resolved the leftover fragment against the home directory. Every real album name has a space in it, so this isn't an edge case, it happens every time. The fix is to send a path that survives one round of shell parsing at the other end.</p>
+<pre><i># Quote a path so the REMOTE shell sees exactly one argument.</i>
+rq() { printf "'%s'" "$(printf '%s' "$1" | sed "s/'/'\\\\''/g")"; }</pre>
+            <p>This is standard POSIX single quote wrapping. Wrap the whole thing in single quotes, and rewrite any embedded single quote as close, escaped literal, reopen. Single quotes suppress every other kind of expansion, so it covers everything: spaces, dollar signs, backticks, globs, newlines, emoji, leading dashes. Every remote path goes through it, including inside ssh command strings.</p>
+            <p>There's a second escaper for the AppleScript bridge, where the problem is different. That one is about breaking out of a string literal rather than word splitting.</p>
+<pre>as_esc() { printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'; }</pre>
+            <p>Backslashes first, then quotes. Doing it the other way round would double escape the backslashes that the second pass just added.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Verification</h2>
+            </div>
+            <p>rsync already checksums its own transfers, so this layer is belt and braces. It's cheap though, and it covers the one thing rsync doesn't: something changing the destination after the transfer finished.</p>
+<pre>local_sums() {
+    (cd "$1" &amp;&amp; LC_ALL=C find . -type f ! -name '.DS_Store' ! -name '._*' \
+        ! -iname '*.jpg' ! -iname '*.jpeg' ! -iname '*.png' -print0 \
+        | LC_ALL=C sort -z | xargs -0 shasum -a 256)
+}</pre>
+            <p>Four things in there matter:</p>
+            <ul>
+                <li><code>LC_ALL=C</code> on both <code>find</code> and <code>sort</code>. Sort order depends on locale and the two machines run different macOS versions. Without pinning it the two sorted lists can come out in different orders and you get mismatches that aren't real.</li>
+                <li>Relative paths. The <code>cd</code> is inside a subshell so each line reads <code>./NN - Title.m4a</code>, identical on both machines. Absolute paths would differ by home directory and never match.</li>
+                <li>The same exclusion list on both sides. The remote function repeats the identical predicate. If those ever drift, verification fails on a file that was never sent, and it looks exactly like corruption.</li>
+                <li><code>-print0</code>, <code>sort -z</code> and <code>xargs -0</code> all the way through, so filenames never get re-split on whitespace.</li>
+            </ul>
+            <p>The comparison is just <code>diff</code> on the two outputs, which catches both "this checksum is wrong" and "this file is missing" in one go. It's also why preflight refuses filenames containing a newline. The verification is line based, so a newline in a filename could hide a mismatch inside what looks like a valid line. The parser and the thing checking it have to agree on their assumptions.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Why not the built in tag reader</h2>
+            </div>
+            <p>Preflight has to reject untagged files. The obvious tool is Spotlight's <code>mdls</code>.</p>
+<pre>$ mdls -name kMDItemAuthors -name kMDItemAlbum "01 - Track.m4a"
+kMDItemAlbum   = <u>(null)</u>
+kMDItemAuthors = <u>(null)</u></pre>
+            <p><code>mdls</code> reads the Spotlight index, not the file. A file written thirty seconds ago hasn't been indexed. Files in temp directories never get indexed. A volume can have indexing switched off entirely. So it returns null for a perfectly well tagged file, and the check would have thrown out every album.</p>
+            <p>So tags get read out of the container directly instead. 86 lines, standard library only.</p>
+<pre>CONTAINERS = {b'moov', b'udta', b'meta', b'ilst'}
+WANT = {b'\xa9ART': 'artist', b'\xa9alb': 'album',
+        b'\xa9nam': 'title',  b'trkn':   'track'}
+
+def atoms(f, start, end):
+    <i>"""Yield (kind, payload_start, payload_end) for atoms in [start, end)."""</i>
+    pos = start
+    while pos + 8 &lt;= end:
+        f.seek(pos)
+        hdr = f.read(8)
+        if len(hdr) &lt; 8: return
+        size = struct.unpack('&gt;I', hdr[:4])[0]
+        kind = hdr[4:8]
+        body = pos + 8
+        if size == 1:                      <i># 64-bit extended size</i>
+            size = struct.unpack('&gt;Q', f.read(8))[0]
+            body = pos + 16
+        elif size == 0:                    <i># runs to end of container</i>
+            size = end - pos
+        if size &lt; 8 or pos + size &gt; end: return
+        yield kind, body, pos + size
+        pos += size</pre>
+            <p>An MP4 is a tree of length prefixed boxes, each one <code>[u32 size][4 char type][payload]</code>. Tags live at <code>moov</code> then <code>udta</code> then <code>meta</code> then <code>ilst</code> then the tag atom then <code>data</code>.</p>
+            <p>Three details it has to get right:</p>
+            <ul>
+                <li><strong><code>meta</code> is a FullBox.</strong> It carries a four byte version and flags word before its children, unlike the containers around it. If you recurse at the wrong offset you land in the middle of an atom and the whole walk goes out of sync. This is the classic bug in hand written MP4 parsers.</li>
+                <li><strong>A size of 1 means the real 64 bit length follows the header</strong>, so the payload starts eight bytes later than usual. A size of 0 means the atom runs to the end of its parent. Both are rare in audio files and both are handled.</li>
+                <li><strong><code>trkn</code> is binary, not text.</strong> Two padding bytes, then the track number and the total as 16 bit integers. Decoding it as UTF-8 the way the text atoms are decoded gives you garbage instead of a number.</li>
+            </ul>
+            <p>It seeks instead of reading, so the cost depends on the number of atoms and not the size of the file. A 25 MB track and a 250 MB side capture parse in the same time. Bounds get checked against the enclosing atom at every level, so a truncated or malformed file ends the walk rather than looping or reading past the end. Tested against a file carrying 210 KB of embedded cover art, which is the case that breaks parsers that assume tag atoms are small.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Preflight, and a scoping trap</h2>
+            </div>
+            <p>The gate rejects anything that isn't a <code>.m4a</code>, anything <code>afinfo</code> doesn't report as ALAC, anything missing artist, album, title or track number, and any filename with a newline in it. Artwork files sitting next to the tracks get skipped rather than rejected, because iTunes uses the art embedded in the files and a loose jpg in the watch folder would just end up in "Not Added".</p>
+            <p>It also has to hand the album's artist and title back out for the duplicate check, and that only works because of how the loop gets its input.</p>
+<pre>while IFS= read -r -d '' f; do
+    ...
+    [ -n "$ALBUM_ARTIST" ] || ALBUM_ARTIST="$artist"
+done &lt; <b>&lt;(</b>LC_ALL=C find "$dir" -type f ... -print0 | LC_ALL=C sort -z<b>)</b></pre>
+            <p>That's process substitution, not a pipe. Writing it as <code>find | while</code> would run the loop body in a subshell and every assignment would be thrown away at the closing <code>done</code>. It's a well known bash trap and it fails silently. Redirecting from <code>&lt;(...)</code> keeps the loop in the current shell so the variables survive.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The duplicate check</h2>
+            </div>
+            <p>The other two collision checks only look at the pipeline's own state. Neither one knows what the library already has, which is how the first real run quietly made fifteen duplicates of an album that had been imported three weeks earlier under a different folder name. So this one asks iTunes directly.</p>
+<pre>library_count() {
+    artist=$(as_esc "$1"); album=$(as_esc "$2")
+    printf '%s\n' \
+        'with timeout of 120 seconds' \
+        'tell application "iTunes"' \
+        "  return (count of (every file track of library playlist 1 whose album is \"$album\" and artist is \"$artist\")) as string" \
+        'end tell' \
+        'end timeout' \
+    | ssh -o BatchMode=yes "$HOST" 'osascript -'
+}</pre>
+            <p>The script gets built locally and piped over ssh into <code>osascript -</code> reading stdin, which avoids a whole second layer of shell quoting. The <code>whose</code> clause is an indexed query rather than a scan, so it comes back in about a second against 95,000 tracks. Looping in AppleScript instead would take minutes. The <code>with timeout</code> wrapper is there because a busy iTunes returns an AppleEvent error rather than just blocking.</p>
+            <div class="callout warn">
+                <span class="lbl">Deliberate tradeoff</span>
+                <p>If the query returns anything that isn't a number, because ssh failed or iTunes isn't scriptable at that moment, it warns and carries on.</p>
+<pre>case "$have" in
+    ''|*[!0-9]*) say "    warning: could not query iTunes; duplicate check skipped" ;;
+    0) ;;
+    *)  say "    abort: iTunes already holds $have track(s) ..." ; return 1 ;;
+esac</pre>
+                <p>Failing open like that means a temporary ssh problem silently switches off the guard. Failing closed would block real imports any time iTunes was busy. Since the failure mode here is duplicates, which are annoying but easy to spot and easy to undo, rather than losing data, open seemed like the right call. It's still the weakest part of the whole safety argument.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What happens when things fail</h2>
+            </div>
+<pre>set -uo pipefail   <i># note: no -e</i></pre>
+            <p><code>-e</code> is deliberately left off. Every operation that can fail gets checked explicitly, because the behaviour I wanted is lopsided. Stop hard inside one album, but keep going across albums. One bad album shouldn't block the queue, and a failed checksum should never fall through into the import.</p>
+<pre>for dir in "$STAGING"/*; do
+    [ -d "$dir" ] || continue
+    case "${dir##*/}" in .*) continue ;; esac
+    if send_album "$dir"; then ok=$((ok+1)); else failed=$((failed+1)); fi
+done
+say "--- $ok succeeded, $failed failed ---"
+[ "$failed" -eq 0 ] || exit 1</pre>
+            <p>Non-zero exit if anything failed, each album isolated, and every rejection logged with the specific reason. <code>-u</code> stays on to catch mistyped variable names and <code>pipefail</code> is there so a failure in the first half of a pipeline doesn't get hidden by a successful <code>sort</code>.</p>
+            <p>There's one asymmetry the script calls out rather than hiding. If the import works but the local move into <code>_Sent</code> fails, the album is in the library but still sitting in the staging folder. It says so explicitly and tells you to move it by hand, because otherwise the next run would be blocked by the duplicate check, which is correct but confusing without the message.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Two bugs that read fine</h2>
+            </div>
+            <p>Both of these were written confidently, both looked correct on the page, and both got caught the first time the script ran against real input. Neither is findable without running it.</p>
+
+            <div class="callout">
+                <span class="lbl">Bug 1: the empty pattern</span>
+<pre>case "$base" in
+    *"<u>$(printf '\n')</u>"*) reject ;;   <i># meant to catch a newline in a filename</i>
+esac</pre>
+                <p>Command substitution strips every trailing newline, so <code>$(printf '\n')</code> is an empty string. The pattern becomes <code>*""*</code>, which is just <code>*</code>, which matches every filename there is. A check meant to catch a pathological edge case rejected all fifteen tracks of a perfectly good album.</p>
+                <p>The fix is ANSI-C quoting, <code>*$'\n'*</code>, which is a literal and doesn't get substituted.</p>
+                <p>My first attempt to test the fix had the same bug in the test. I built the test string as <code>b="bad$(printf '\n')name"</code>, which also strips the newline, so the string contained no newline and the test passed for entirely the wrong reason. Confirmed it properly with <code>b=$'bad\nname.m4a'</code> and a length check.</p>
+            </div>
+
+            <div class="callout">
+                <span class="lbl">Bug 2: cd across process substitution</span>
+<pre>while IFS= read -r -d '' f; do
+    afinfo "$f"          <i># f is "./01 - Track.m4a"</i>
+done &lt; &lt;(<u>cd "$dir" &amp;&amp;</u> find . -type f -print0 | sort -z)</pre>
+                <p>The <code>cd</code> only applies inside the process substitution subshell. The loop body runs in whatever directory the caller was in, so every relative path resolved against the wrong base and <code>afinfo</code> reported <code>Fail: AudioFileOpenURL failed</code> for all fifteen files. From the error message alone that is indistinguishable from genuinely corrupt audio.</p>
+                <p>Fix is to use <code>find "$dir"</code> and get absolute paths. The checksum functions keep the <code>cd</code>, because they actually need relative paths so the two machines can be compared, and they can keep it because there the <code>cd</code> and the thing consuming it are inside the same subshell. Same construct, opposite requirement, and there's now a comment explaining it in both places.</p>
+            </div>
+
+            <p>Both of these live in the gap between what the code says and what the shell actually does, and neither one is visible without running it against real input. Which is the argument for having a dry run mode at all.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>How it got tested</h2>
+            </div>
+            <p>Against real data rather than fixtures, including a deliberately horrible album name combining a leading dash, an emoji, an ampersand, an apostrophe and a double space, in both the folder name and the filenames.</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Case</th><th>Method</th><th>Result</th></tr></thead>
+                <tbody>
+                    <tr><td>Happy path</td><td>15 tracks, 290 MB</td><td>7.0 s end to end</td></tr>
+                    <tr><td>Integrity</td><td>independent digest of digests, both machines</td><td>identical</td></tr>
+                    <tr><td><strong>Interruption</strong></td><td>killed rsync's ssh transport at ~40% of 1.4 GB</td><td>aborted, exit 1, nothing imported</td></tr>
+                    <tr><td><strong>Resume</strong></td><td>re-ran against the 31 of 75 file partial</td><td>completed, 75 verified, 22 s</td></tr>
+                    <tr><td>Idempotence</td><td>two runs back to back</td><td>no-op, exit 0</td></tr>
+                    <tr><td>Collision guards</td><td>seeded each of the three collision states</td><td>all aborted before transferring</td></tr>
+                    <tr><td>Failover</td><td>pointed the fast alias at a dead address</td><td>fell back to wifi</td></tr>
+                    <tr><td>The gate</td><td>non-m4a, non-audio, untagged files</td><td>each rejected with its own reason</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The interruption one is the test that matters. Killing the transport mid transfer left exactly the state it was designed to leave: the temporary folder holding 31 of 75 files, the watch folder untouched, the source still in staging. Re-running resumed via <code>--partial</code>, rechecked all 75 checksums and finished. That single test is what turns the resume behaviour from a hope into a claim.</p>
+            <p>There's also an environment variable that redirects the final rename to a scratch folder on the same disk, so the whole path can be exercised without anything landing in the real library. It prints a banner when it's active.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What I'd flag if someone reviewed it</h2>
+            </div>
+            <ul>
+                <li>The race in the final move. Real, not mitigated, and only properly fixable by dropping to <code>renamex_np</code> with <code>RENAME_EXCL</code>.</li>
+                <li>The duplicate check fails open. An ssh blip silently disables the strongest protection the whole thing has.</li>
+                <li>The step that finalises the name in the landing folder uses <code>[ -e final ] || mv tmp final</code>. If <code>final</code> appeared during the transfer, the rename gets skipped, the verified copy is orphaned, and the folder that was already there is what gets imported. Very unlikely with one writer, still wrong.</li>
+                <li>The device ID gets sampled once per run rather than per album. A volume swapped mid run would go unnoticed.</li>
+                <li>Albums are processed one at a time. Fine at 104 MB/s, and the checksum pass on the old CPU is the actual bottleneck. It would parallelise cleanly.</li>
+                <li>The log is append only with no rotation. Trivial, but it grows forever.</li>
+                <li>There's a variable declared and never used. Dead.</li>
+            </ul>
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="vinyl.html">Ripping vinyl</a>
+                <a href="claude-code.html">Projects</a>
+                <a href="index.html">Home</a>
+            </div>
+        </footer>
+
+    </div>
+</main>
+
+</body>
+</html>

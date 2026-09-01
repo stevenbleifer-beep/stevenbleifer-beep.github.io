@@ -80,6 +80,7 @@
             </ul>
             <p>That last step is the trick, and it took me a while to understand why it matters. Because the staging folder and the watch folder are on the same disk, moving between them isn't really a copy. It's a rename, and the filesystem does that instantly and all at once. There's no moment where half an album is sitting there for iTunes to grab.</p>
             <p>The two laptops are wired directly together instead of going over wifi, which turns out to be worth about four times the speed. An album crosses in three seconds instead of twelve. If I unplug the cable it notices and falls back to wifi on its own.</p>
+            <p>If you want the actual mechanics, the atomic rename, the checksumming, the MP4 tag parser I had to write, there's a <a href="vinyl-internals.html">technical write up of how it works</a>.</p>
         </section>
 
         <section class="section">
