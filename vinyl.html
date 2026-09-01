@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Ripping Vinyl — Steven Bleifer</title>
-    <meta name="description" content="Building an automated pipeline to get vinyl records from a turntable into a 95,000-track iTunes library running on a 2012 MacBook Pro.">
+    <meta name="description" content="Building an automated pipeline to get vinyl records from a turntable into a 95,000-track iTunes library, and onto an iPod Classic instead of a streaming service.">
     <meta name="theme-color" content="#f3ead4">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -111,6 +111,24 @@
             <p>Except the backup drive held <strong>thirteen days of history</strong>. A healthy Time Machine keeps daily backups for a month and weekly ones going back further; this one had no weeklies at all. The drive was too small for what it was backing up, so every new backup was quietly deleting an old one to make room. It had been doing that for months.</p>
             <p>Nothing was broken, and nothing was lost. But the only copy of a twenty-year library was protected by a safety net less than two weeks deep, and I'd have had no reason to look if I hadn't been building something else. A bigger drive is on its way, and the old one becomes a second copy that lives unplugged.</p>
             <p class="muted">The lesson I'd actually take from this project isn't about audio. It's that "the backup is running" and "the backup is any good" are different claims, and only one of them is easy to check.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Onto the iPod</h2>
+            </div>
+            <p>There's a reason for the whole arrangement, and it isn't nostalgia. Everything in this library syncs to a pair of <strong>iPod Classics</strong> — the last iPods Apple made with a hard drive and no network connection at all.</p>
+            <p>So a record I rip goes into the library, and from there onto a device that plays music and does nothing else. Nothing gets recommended to me. Nothing disappears when a licensing deal expires. An album is where I left it, in the order the artist put it in, and it stays that way whether or not I keep paying anyone.</p>
+            <p>That's the actual goal. The pipeline exists so that owning music stays as convenient as renting it.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>How it was built</h2>
+            </div>
+            <p>I built this with <strong>Claude Code</strong>, working through it in stages — checking what was actually on the machines first, then the transfer method, then the folder structure, then the script itself — rather than asking for the whole thing at once and hoping.</p>
+            <p>That order mattered. The slow part was never writing code; it was the things you can only find by looking at the real machines. That the watch folder has a hidden suffix. That the standard tool for reading music tags returns nothing for a file written thirty seconds ago. That my backup drive had been quietly discarding history for months. None of that is guessable from a description of the problem, and all of it would have broken the finished thing.</p>
+            <p>The bugs were the instructive part. Two of them were in code that read perfectly well — a check that matched every file instead of none, and a path that resolved against the wrong folder. Both were written confidently. Both were caught the first time the thing ran against real music instead of a test file. Which is roughly the lesson: generating the code is the fast part, and deciding what to verify is the actual work.</p>
         </section>
 
         <section class="section">
