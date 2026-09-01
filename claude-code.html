@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Built with Claude Code — Steven Bleifer</title>
-    <meta name="description" content="Projects I've built with Claude Code — this site, CPA and AIS study tools, a pomodoro timer, a vinyl ripping pipeline, and a long detour through old hard drives and vintage iOS devices.">
+    <meta name="description" content="Notes on the things I've built with Claude Code: this site, CPA and AIS study tools, a pomodoro timer, a vinyl ripping pipeline, and a long detour through old hard drives and iPods.">
     <meta name="theme-color" content="#f3ead4">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -32,13 +32,13 @@
     <div class="container">
 
         <section class="hero">
-            <p class="eyebrow">Side projects · 2026</p>
+            <p class="eyebrow">Notes · 2026</p>
             <h1>Built with Claude Code.</h1>
-            <p class="lead">I'm an accountant, not a software engineer. Over the past few months I've used Claude Code to build the things I actually wanted to exist — this site, my study tools, and a handful of stubbornly analog problems involving records, old hard drives, and iPods that predate the App Store.</p>
+            <p class="lead">I'm an accountant, not a programmer. Over the last few months I've been using Claude Code to build the stuff I actually wanted to exist. This site, my study tools, and a bunch of fairly stubborn problems involving records, old hard drives, and iPods older than the App Store.</p>
             <div class="pill-row">
                 <span class="pill">178 commits</span>
                 <span class="pill">Since February 2026</span>
-                <span class="pill">Zero formal training</span>
+                <span class="pill">No CS background</span>
             </div>
         </section>
 
@@ -46,79 +46,81 @@
             <div class="section-header">
                 <h2>How I actually use it</h2>
             </div>
-            <p>The pattern that works for me is not "describe the thing and accept what comes back." It's closer to working with someone competent who has never seen my setup: I say what I want, it looks at what's really there, and it tells me which of my assumptions were wrong before writing anything.</p>
-            <p>That last part is where most of the value has been. Nearly every project below turned up something I had wrong at the start — a folder that isn't named what it appears to be named, a backup that was running but useless, an iPad that turned out to be a different iPad. None of those were guessable from my description of the problem. All of them would have broken the finished thing.</p>
+            <p>The thing that works for me isn't describing what I want and taking whatever comes back. It's closer to working with someone who knows what they're doing but has never seen my setup. I say what I want, it goes and looks at what's actually there, and it tells me which of my assumptions were wrong before writing anything.</p>
+            <p>That last bit is where most of the value has been. Nearly every project below turned up something I had wrong at the start. A folder that isn't named what it looks like it's named. A backup that was running but useless. An iPad that turned out to be a different iPad. None of that comes up if you just describe the problem, and all of it would have broken the finished thing.</p>
         </section>
 
         <section class="section">
             <div class="section-header">
                 <h2>This site</h2>
             </div>
-            <p>Everything you're looking at. It started in February 2026 as a single page and is now 178 commits of accumulated tinkering, all hand-rolled — no framework, no build step, no dependencies. Just HTML, one stylesheet, and a bit of JavaScript.</p>
-            <p>Things it does that aren't obvious from the outside: the <a href="changelog.html">changelog</a> generates itself from git history, filtering out the automated commits so only real changes show up. The <a href="activity.html">Library</a> page pulls live from Letterboxd and Goodreads. There's a search box on the home page that indexes every page. And a guestbook runs on a Firebase realtime database with App Check enforced through reCAPTCHA — which sounds tidy written down and took an embarrassingly long debugging session, because Firebase had auto-created a key that didn't appear in any console I could reach and therefore couldn't have domains added to it.</p>
+            <p>Everything you're looking at. It started in February 2026 as one page and it's now 178 commits of tinkering. No framework, no build step, nothing to install. Just HTML, one stylesheet, and a bit of JavaScript.</p>
+            <p>A few things it does that you wouldn't guess from looking at it. The <a href="changelog.html">changelog</a> writes itself from git history and filters out the automated commits so only real changes show up. The <a href="activity.html">Library</a> page pulls live from Letterboxd and Goodreads. There's a search box on the home page that indexes every page.</p>
+            <p>There's also a guestbook running on a Firebase database with App Check turned on through reCAPTCHA. That sounds tidy written down and it cost me an entire evening, because Firebase had auto created a key that didn't show up in any console I could get to, which meant I couldn't add domains to it and couldn't figure out why every call was failing.</p>
         </section>
 
         <section class="section">
             <div class="section-header">
-                <h2>Study tools</h2>
+                <h2>Study stuff</h2>
             </div>
-            <p>The most genuinely useful category, because these were built against real deadlines.</p>
-            <p>An <strong>AUD sprint dashboard</strong> for the CPA exam — a day-by-day plan for a two-week run at the Auditing section, with daily simulation and multiple-choice targets weighted toward the units I was weakest in. Checkboxes and counters save to the device, so progress survives closing the tab. It got rearranged more than a dozen times as my actual pace diverged from the plan, which is the honest use case for something like this.</p>
-            <p>For <strong>Accounting Information Systems</strong> at Stern, a full set per exam: study guide, practice test, review quiz, key-term flashcards, hardest-questions drill, and exam-style questions — one set for chapters 7, 14 and 19, another for the cybersecurity final on chapter 16 and the CIS Controls.</p>
-            <p>Separately, for the <strong>FAR</strong> section, a study guide and a formulas-and-mnemonics sheet built from my own lecture notes and handwritten exam reviews — including the handwritten error logs, which are pure ink and had to be rendered as images to be read at all. Both were written to print cleanly, because the point was to have them on paper.</p>
-            <p class="muted">One thing worth flagging: the notes those were built from stop short of several tested topics, and the study guide says so explicitly rather than quietly filling the gaps. A study tool that pretends to complete coverage it doesn't have is worse than no tool.</p>
+            <p>Probably the most useful category, mostly because these got built against real deadlines.</p>
+            <p>There's an <strong>AUD sprint dashboard</strong> for the CPA exam. A day by day plan for a two week run at the Auditing section, with daily simulation and multiple choice targets weighted toward whatever I was worst at. The checkboxes save to the device so closing the tab doesn't lose anything. I rearranged it something like a dozen times as my actual pace drifted from the plan, which is honestly the real use case.</p>
+            <p>For <strong>Accounting Information Systems</strong> at Stern I built a full set for each exam: study guide, practice test, review quiz, flashcards, a drill of the hardest questions, and exam style questions. One set for chapters 7, 14 and 19, another for the cybersecurity final on chapter 16 and the CIS Controls.</p>
+            <p>And for <strong>FAR</strong> there's a study guide and a formulas and mnemonics sheet, built from my own lecture notes plus my handwritten exam reviews. The handwritten ones are pure ink with no text in them at all, so they had to be rendered as images before anything could read them. Both are set up to print properly because the whole point was having them on paper.</p>
+            <p class="muted">One thing worth saying: the notes those came from don't cover several topics that actually get tested, and the study guide says so instead of quietly filling in the gaps. A study tool that pretends to cover more than it does is worse than not having one.</p>
         </section>
 
         <section class="section">
             <div class="section-header">
-                <h2>Pomodoro</h2>
+                <h2>The pomodoro timer</h2>
             </div>
-            <p>A <a href="pomodoro.html">focus timer</a>, built because every one I tried was either an app I didn't want to install or a website covered in ads.</p>
-            <p>Configurable focus, short-break and long-break lengths, a long break every <em>n</em> cycles, optional auto-continue between phases, a sound and a browser notification when a phase ends, a label for what you're working on, and a running count of sessions, minutes and cycles. It also holds a wake lock so the screen doesn't sleep mid-session — which was added after the obvious happened.</p>
+            <p>A <a href="pomodoro.html">focus timer</a>, built because every one I tried was either an app I didn't want to install or a website buried in ads.</p>
+            <p>You can set the focus, short break and long break lengths, get a long break every so many cycles, have it roll into the next phase automatically, and it plays a sound and fires a browser notification when a phase ends. There's a label for what you're working on and a running count of sessions, minutes and cycles. It also holds the screen awake while a timer is running, which got added after the obvious thing happened.</p>
         </section>
 
         <section class="section">
             <div class="section-header">
                 <h2>Ripping vinyl</h2>
             </div>
-            <p>An automated pipeline that takes a record from a turntable into a 95,000-track iTunes library running on a headless 2012 MacBook Pro — checking the files, verifying every byte across two machines, and importing atomically so iTunes can never catch a half-written album.</p>
-            <p>It has its own page, including the four bugs that only surfaced against real music and the backup problem I found by accident while building it. <a href="vinyl.html">Read about the vinyl pipeline →</a></p>
+            <p>A pipeline that gets a record from my turntable into a 95,000 track iTunes library on a headless 2012 MacBook Pro. It checks the files, verifies every byte across both machines, and imports in a way that iTunes can't catch halfway through.</p>
+            <p>It has its own page with the four things that broke and the backup problem I found by accident while building it. <a href="vinyl.html">Read about the vinyl pipeline →</a></p>
         </section>
 
         <section class="section">
             <div class="section-header">
                 <h2>The music library</h2>
             </div>
-            <p>The library that pipeline feeds didn't assemble itself. It's about 95,700 tracks, consolidated from old iPods, dead drives, and a second library inherited from family — roughly 168 GB merged in by artist and album, deliberately without importing that library's own database, ratings or play counts, since doing so would have replaced mine rather than added to it.</p>
-            <p>Consolidating something that size surfaces problems you'd never notice track by track. <strong>1,073 audio files existed on disk with no library entry at all</strong> — whole albums, silently absent from the database while sitting right there in the folder. Auditing for that is harder than it sounds: the library's XML escapes ampersands, stores paths in a different Unicode normalisation than the filesystem returns, and is case-inconsistent about folder names. Each of those produced hundreds of false positives before being handled, and one of them would have caused real duplicates if I'd trusted it.</p>
-            <p>I also built a 500-track "best of 2007–2011" playlist — 33 hours, structured as 25 complete album blocks followed by 200 singles. The interesting problem there was that <strong>there is no listening history anywhere in the library</strong>, so popularity had to come from an external ranking. And ranking by year tag alone is a trap: remasters, live albums and vinyl reissues carry the reissue's date, so the first pass confidently proposed <em>Bohemian Rhapsody</em> and <em>Highway to Hell</em> as hits of 2009.</p>
+            <p>The library that pipeline feeds didn't come from nowhere. It's about 95,700 tracks pulled together from old iPods, dead drives, and a second library I inherited from family. Roughly 168 GB of that got merged in by artist and album, deliberately without importing the other library's own database or ratings or play counts, because that would have replaced mine instead of adding to it.</p>
+            <p>Putting something that size together turns up problems you'd never notice one track at a time. There were <strong>1,073 audio files sitting on disk with no library entry at all</strong>. Whole albums, missing from the database while the files were right there in the folder.</p>
+            <p>Finding those was harder than it sounds. The library's XML escapes ampersands, stores paths in a different unicode normalisation than the filesystem gives you, and isn't consistent about capitalisation in folder names. Each of those threw up hundreds of false positives before it got handled, and one of them would have created real duplicates if I'd trusted the first answer.</p>
+            <p>I also built a 500 track "best of 2007 to 2011" playlist. About 33 hours, put together as 25 full album blocks and then 200 singles. The interesting problem there was that <strong>there's no listening history anywhere in the library</strong>, so popularity had to come from an outside ranking. And ranking by the year tag alone is a trap, because remasters and live albums and vinyl reissues all carry the reissue date. The first pass confidently suggested Bohemian Rhapsody and Highway to Hell as hits of 2009.</p>
         </section>
 
         <section class="section">
             <div class="section-header">
-                <h2>Old hard drives</h2>
+                <h2>A stack of old hard drives</h2>
             </div>
-            <p>A stack of unlabelled external drives, worked through one at a time to find out what was on them. This started as a hunt for old iOS app files and turned into a small archaeology project.</p>
-            <p>What they turned out to be: a 500 GB drive with fifteen partitions, no recognisable filesystems, and power-of-two sizes — a <strong>PlayStation 4 disk</strong>, encrypted against a console motherboard that no longer exists, and therefore permanently unreadable. A High Sierra system drive with no apps but a 53 GB photo library spanning 1980 to 2018. A nearly-empty Windows data partition. A 750 GB FileVault-locked drive that kept dropping off the USB bus and is still unopened.</p>
-            <p>And one 160 GB drive from an old family PC that had exactly what I was looking for: <strong>49 iOS app files</strong> from the right era, every one verified compatible with the device I wanted them on. Along with about 19,000 photos and videos, which are now in a single album rather than scattered across drives nobody could read.</p>
+            <p>A pile of unlabelled external drives, gone through one at a time to find out what was on them. This started as a hunt for old iOS app files and turned into something closer to archaeology.</p>
+            <p>What they turned out to be: a 500 GB drive with fifteen partitions, no recognisable filesystems and sizes that were all powers of two. That one's a <strong>PlayStation 4 drive</strong>, encrypted against a console motherboard that doesn't exist anymore, so it's permanently unreadable. Then a High Sierra system drive with no apps on it but a 53 GB photo library going back to 1980. A nearly empty Windows partition. And a 750 GB FileVault drive that kept falling off the USB bus and is still sitting there unopened.</p>
+            <p>Then one 160 GB drive out of an old family PC had exactly what I was after. <strong>49 iOS app files</strong> from the right era, every one checked as compatible with the device I wanted them on. Plus about 19,000 photos and videos, which are now in one album instead of scattered across drives nobody could read.</p>
         </section>
 
         <section class="section">
             <div class="section-header">
-                <h2>Devices that predate the App Store</h2>
+                <h2>Old iPods and phones</h2>
             </div>
-            <p>The reason for the app hunt. An <strong>iPod touch 4</strong>, running iOS 6.1.6, jailbroken so it can install software Apple stopped signing over a decade ago.</p>
-            <p>The same treatment for an <strong>iPhone 4S</strong>, downgrading from iOS 9 to 6.1.3 — a version Apple still signs, which is what makes it recoverable if it goes wrong. That one is genuinely difficult: the downgrade needs a specific low-level device mode that can only be reached from a jailbroken phone, and getting there means jailbreaking the version you're trying to leave. It's still not finished.</p>
-            <p>And an iPad I was certain was an iPad 2. It's an iPad 3 — and that distinction decides everything, because the trick that makes the 4S recoverable doesn't exist for the iPad 3. Apple never shipped the release it needs in a form that can still be installed. Being told that before spending an evening on it was worth more than any code.</p>
+            <p>The reason for the app hunt. An <strong>iPod touch 4</strong> running iOS 6.1.6, jailbroken so it can install software Apple stopped signing more than a decade ago.</p>
+            <p>Same idea with an <strong>iPhone 4S</strong>, going from iOS 9 back down to 6.1.3, which is a version Apple still signs. That's what makes it recoverable if it goes wrong. This one is genuinely hard: the downgrade needs a specific low level mode you can only reach from a jailbroken phone, so you have to jailbreak the exact version you're trying to get off. Still not finished.</p>
+            <p>And an iPad I was completely sure was an iPad 2. It's an iPad 3, and that difference decides everything, because the thing that makes the 4S recoverable doesn't exist for the iPad 3. Apple never shipped the release it would need in a form you can still install. Being told that before I spent an evening on it was worth more than any code.</p>
         </section>
 
         <section class="section">
             <div class="section-header">
-                <h2>What I'd tell someone starting</h2>
+                <h2>What I've figured out</h2>
             </div>
-            <p>Make it look at your actual setup before it writes anything. Every project here had at least one assumption that was wrong at the start, and finding those first is cheaper than debugging them later.</p>
-            <p>Ask it to test the failure cases, not the working one. The vinyl pipeline is only trustworthy because we killed a transfer halfway through and watched what it did.</p>
-            <p>And read what it produces. Two of the bugs in the vinyl project were in code that looked completely reasonable and did the opposite of what it said. Generating code turns out to be the fast part; knowing what to check is the actual work.</p>
+            <p>Make it look at your actual setup before it writes anything. Every project here had at least one assumption that was wrong at the start, and finding those first is a lot cheaper than debugging them later.</p>
+            <p>Ask it to test the things that go wrong, not the thing that goes right. The vinyl pipeline is only worth trusting because we killed a transfer halfway through and watched what happened.</p>
+            <p>And read what comes out. Two of the bugs in the vinyl project were in code that looked completely reasonable and did the opposite of what it said. Writing the code turns out to be the fast part. Knowing what to check is where the actual work is.</p>
         </section>
 
         <footer class="footer">
