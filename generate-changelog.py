@@ -42,6 +42,7 @@ page = f'''<!DOCTYPE html>
             <a href="activity.html">Library</a>
             <a href="claude-code.html">Projects</a>
             <a href="vinyl.html">Vinyl</a>
+            <a href="displays.html">Displays</a>
             <a href="contact.html">Contact</a>
             <a href="study/">Study</a>
             <a href="pomodoro.html">Pomodoro</a>
