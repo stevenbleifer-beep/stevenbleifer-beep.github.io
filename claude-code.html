@@ -100,6 +100,15 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>Two displays as one stereo pair</h2>
+            </div>
+            <p>I got a second Studio Display and wanted the left one to be the left channel rather than each of them playing its own copy of the stereo mix. macOS has no setting for that, so it takes an aggregate audio device and a channel map that nothing in the interface explains.</p>
+            <p>Aggregate devices also have no volume control at all, which kills the volume keys, so this needed another menu bar app. It writes volume to both displays at once, intercepts the volume keys, and carries brightness, True Tone and Night Shift for both panels together. Brightness had to work the other way round, because those keys never reach an event tap at all — macOS handles them below that and only moves one display, so the app watches for the change and mirrors it.</p>
+            <p>The interesting part was a delay between the two panels that made everything sound smeared. The two displays are different generations and report latencies 37 milliseconds apart, which looked like a straightforward arithmetic fix. It wasn't, twice over. <a href="displays.html">Read about the display setup →</a></p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>The music library</h2>
             </div>
             <p>The library that pipeline feeds didn't come from nowhere. It's about 95,700 tracks and it's three separate collections merged into one: my dad's, my brother's, and mine. Plus a lot of stuff pulled off old iPods and drives that had died. The merging was done folder by folder, artist and album, deliberately without importing anyone else's database or ratings or play counts, because that would have replaced my library instead of adding to it.</p>
