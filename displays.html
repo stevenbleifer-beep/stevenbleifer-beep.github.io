@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Two Displays, One Stereo Pair — Steven Bleifer</title>
+    <meta name="description" content="Turning two Apple Studio Displays into a single stereo pair, and the 37 millisecond delay that turned out not to be what it looked like.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="claude-code.html">Projects</a>
+            <a href="vinyl.html">Vinyl</a>
+            <a href="displays.html" class="active">Displays</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow">Notes · September 2026</p>
+            <h1>Two displays, one stereo pair.</h1>
+            <p class="lead">I got a second Studio Display and wanted the left one to be the left channel. macOS has no setting for that. Getting there meant an aggregate audio device, a menu bar app to give it a volume control, and a long argument with a 37 millisecond delay that turned out not to be the thing I thought it was.</p>
+            <div class="pill-row">
+                <span class="pill">Two Studio Displays</span>
+                <span class="pill">Aggregate device</span>
+                <span class="pill">800 frames of correction</span>
+                <span class="pill">Tuned by ear</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What I actually wanted</h2>
+            </div>
+            <p>Two identical-looking displays sitting side by side, each with six speakers in it. Played as two separate devices they each produce their own stereo image, about two feet apart, which sounds like two radios playing the same song. What I wanted was obvious: the left panel is the left channel, the right panel is the right channel, one wide stereo pair.</p>
+            <p>macOS does not have a checkbox for this. The Sound settings panel lets you pick one output device. Two displays are two devices.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Aggregate, not multi-output</h2>
+            </div>
+            <p>Audio MIDI Setup can combine devices two ways, and only one of them works here.</p>
+            <p>A <strong>Multi-Output Device</strong> mirrors the same signal to everything in it. Both displays would play full stereo. That's for playing the same thing in two rooms, not for splitting channels.</p>
+            <p>An <strong>Aggregate Device</strong> concatenates the channels instead. Each Studio Display presents eight output channels, so the aggregate has sixteen: one to eight is the first display, nine to sixteen is the second. Then "Configure Speakers" lets you say which of those sixteen is Left and which is Right.</p>
+            <div class="callout">
+                <span class="lbl">The part that isn't in any menu</span>
+                <p>Both displays are named "Studio Display Speakers". Identically. macOS numbers them by connection order, not by where they physically sit, and nothing in the interface tells you which is which. I mapped them, listened, and had them backwards. There is no way to know except to play something hard-panned and use your ears.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Which channel to feed each panel</h2>
+            </div>
+            <p>Each display takes an eight channel feed: front left, front right, front centre, LFE, back pair, top pair. The stereo mapping only lets you pick one of those per side, so the question is which one makes a whole display sing.</p>
+            <p>Front centre seemed right. It's the middle, it should engage the whole array. It sounded terrible. Not quiet, just vague, like the sound was coming from the general direction of the desk rather than from anywhere. My guess is that feeding a display its centre channel makes its internal processing spread the signal across all six drivers, so neither panel behaves like a point source and there's nothing for a stereo image to hang on.</p>
+            <p>Front left on the left display and front right on the right display images far better. Same speakers, same volume, completely different sense of where things are.</p>
+            <p>I'd actually tried the corner channels early on and dismissed them as thin. That test was run while left and right were still swapped, so it was never a fair comparison. Worth re-running experiments after you fix the thing that was confounding them.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Aggregate devices have no volume</h2>
+            </div>
+            <p>The moment the aggregate became the output, the volume keys stopped working and the menu bar slider went grey. macOS doesn't provide volume control for aggregate devices at all. Not a bug, just not implemented.</p>
+            <p>So the setup needed a small app: a menu bar item that writes volume to both displays at once through CoreAudio, keeping them locked to the same value, and intercepts the volume keys so they behave normally.</p>
+            <p>It grew from there. It now also carries brightness, True Tone, Night Shift and auto-brightness for both panels together, and it selects the aggregate automatically when the displays reappear after undocking.</p>
+            <div class="callout warn">
+                <span class="lbl">Volume keys yes, brightness keys no</span>
+                <p>Volume keys arrive as ordinary system-defined events and can be intercepted. Brightness keys never reach a session event tap at all on Apple silicon — macOS handles them further down, and only adjusts one display. I spent a while assuming my code was broken before logging every event that arrived and finding there were none. So brightness works the other way round: let macOS handle the key, watch for the change, and copy it to the other display.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The delay</h2>
+            </div>
+            <p>With everything mapped correctly it still sounded smeared. Centred vocals wouldn't lock between the screens, and on video it was an audible echo between left and right.</p>
+            <p>CoreAudio reports each device's latency, and the two displays were nowhere near each other:</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Display</th><th>Reported latency</th><th>Channel</th></tr></thead>
+                <tbody>
+                    <tr><td>2022 Studio Display</td><td>1056 frames — 22.3 ms</td><td>Right</td></tr>
+                    <tr><td>Newer Thunderbolt 5 Studio Display</td><td>2861 frames — 59.9 ms</td><td>Left</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>A 1805 frame gap. 37.6 milliseconds, which is far past the point where two sounds stop fusing into one and start sounding like an echo.</p>
+            <p>An aggregate device stores a per-member <code>latency-out</code> value for exactly this, so the fix looked like arithmetic: add 1805 frames to the fast display and they line up.</p>
+            <p>It sounded worse. Noticeably worse.</p>
+            <p>That value doesn't delay a device. It <em>declares</em> that a device has extra latency, so the system compensates by sending its audio earlier. I'd applied it to the display that was already early and doubled the error. Same number, wrong display.</p>
+            <p>Moving the 1805 frames to the slow display helped a lot but wasn't right either. So I stopped reasoning about it and built a small script that steps through candidate offsets, playing a click burst at each one, and listened.</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Offset</th><th>Verdict</th></tr></thead>
+                <tbody>
+                    <tr><td>0 frames</td><td>echo</td></tr>
+                    <tr><td>1805 frames on the fast display</td><td>clearly worse</td></tr>
+                    <tr><td>1805 frames on the slow display</td><td>better, still there</td></tr>
+                    <tr><td>1400 frames</td><td>tighter</td></tr>
+                    <tr><td><strong>800 frames</strong></td><td><strong>tightest, beat 600 below and 1000 above</strong></td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The measurement said 1805. The right answer was 800. macOS compensates for part of the gap on its own, just not all of it, and no amount of reading numbers would have told me how much. The only reason 800 is trustworthy is that it beat its neighbours on both sides, which is the difference between a minimum and the edge of a range you happened to stop at.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>It wasn't the daisy chain</h2>
+            </div>
+            <p>Both displays run off one Thunderbolt port, chained. So the obvious story was that the downstream display picks up latency going through the first one's controller, and the fix is to give each display its own port.</p>
+            <p>I was about to recommend rearranging the desk when I checked the USB tree properly. Only the newer display exposes Desk View cameras, which identifies it, and its speaker interface number matches one of the two audio device IDs. The newer display is the one plugged <em>straight into the Mac</em>. The 2022 display is the one hanging off the back of it.</p>
+            <p>The downstream display is the fast one. The chain isn't the cause. These are two different generations of hardware and the newer one simply has slower audio, presumably because it does more processing before anything reaches a speaker. Re-cabling would have cost dock bandwidth and fixed nothing.</p>
+            <div class="callout">
+                <span class="lbl">Worth writing down</span>
+                <p>Three plausible explanations, in order: macOS doesn't compensate, macOS fully compensates, the daisy chain causes it. All three were wrong. The thing that actually resolved it was a script that plays a click and a person saying which one sounds tighter.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Where it landed</h2>
+            </div>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>Device</td><td>Aggregate, both displays, drift correction on the non-clock member</td></tr>
+                    <tr><td>Channels</td><td>Left → left display front left · Right → right display front right</td></tr>
+                    <tr><td>Timing</td><td>800 frames of compensation on the slower display</td></tr>
+                    <tr><td>Volume</td><td>Menu bar app, both displays locked together, volume keys intercepted</td></tr>
+                    <tr><td>Brightness</td><td>Native keys, mirrored to the second display within 250 ms</td></tr>
+                    <tr><td>After undocking</td><td>Everything persists; the aggregate is reselected automatically</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The tuning lives in coreaudiod's own settings file rather than anywhere I control, which turned out to be good news: unplug the dock, plug it back in, and it all comes back without intervention. I tested that rather than assuming it.</p>
+            <p>The whole thing is two displays doing something Apple never advertised they could do, held together by about four hundred lines of Swift and a number I could only find by listening.</p>
+        </section>
+
+        <footer class="footer">
+            <p class="mb-0">© 2026 Steven Bleifer</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="changelog.html">Changelog</a>
+                <a href="https://www.linkedin.com/in/stevenbleifer/" target="_blank" rel="noopener">LinkedIn</a>
+            </div>
+        </footer>
+
+    </div>
+</main>
+
+</body>
+</html>
