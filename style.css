@@ -792,3 +792,19 @@ pre u { text-decoration: none; color: var(--accent-hover); font-weight: 600; }
 .callout.warn .lbl { color: var(--accent); }
 .callout p:last-child { margin-bottom: 0; }
 .callout pre { margin: 10px 0 0; background: var(--bg); }
+
+/* Screenshots on write-up pages. */
+.shot { margin: 0 0 22px; }
+.shot img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+.shot figcaption {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-faint);
+  padding-top: 8px;
+}

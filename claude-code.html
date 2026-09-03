@@ -22,6 +22,7 @@
             <a href="claude-code.html" class="active">Projects</a>
             <a href="vinyl.html">Vinyl</a>
             <a href="displays.html">Displays</a>
+            <a href="itunes-remote.html">iTunes</a>
             <a href="contact.html">Contact</a>
             <a href="study/">Study</a>
             <a href="pomodoro.html">Pomodoro</a>
@@ -105,6 +106,14 @@
             <p>I got a second Studio Display and wanted the left one to be the left channel rather than each of them playing its own copy of the stereo mix. macOS has no setting for that, so it takes an aggregate audio device and a channel map that nothing in the interface explains.</p>
             <p>Aggregate devices also have no volume control at all, which kills the volume keys, so this needed another menu bar app. It writes volume to both displays at once, intercepts the volume keys, and carries brightness, True Tone and Night Shift for both panels together. Brightness had to work the other way round, because those keys never reach an event tap at all — macOS handles them below that and only moves one display, so the app watches for the change and mirrors it.</p>
             <p>The interesting part was a delay between the two panels that made everything sound smeared. The two displays are different generations and report latencies 37 milliseconds apart, which looked like a straightforward arithmetic fix. It wasn't, twice over. <a href="displays.html">Read about the display setup →</a></p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>A remote control for iTunes</h2>
+            </div>
+            <p>The library lives on a 2012 MacBook Pro that runs iTunes 12.9.5 and nothing else, headless in another room. So it got an HTTP API and a native Mac client drawn to look like iTunes 10 — the column browser, Cover Flow, the green display, the lot.</p>
+            <p>The hard part was the iPod. iTunes syncs from a selection of ticked playlists and artists that nothing outside iTunes can read: no AppleScript terms, an accessibility tree with zero elements, and an undocumented binary database. The app keeps its own selection instead and writes it into a playlist the iPod syncs. Before switching anything over I inventoried the device, which is how I found that the playlists I had ticked accounted for only 30% of what was on it — the rest came from individually ticked artists, and the obvious approach would have wiped it. <a href="itunes-remote.html">Read about the iTunes remote →</a></p>
         </section>
 
         <section class="section">

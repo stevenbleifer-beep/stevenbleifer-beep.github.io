@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>iTunes Remote — Steven Bleifer</title>
+    <meta name="description" content="A remote control for iTunes 12.9.5 on a headless 2012 MacBook Pro, drawn to look like iTunes 10 — and the problem of an iPod sync selection that nothing outside iTunes can read.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="claude-code.html">Projects</a>
+            <a href="vinyl.html">Vinyl</a>
+            <a href="displays.html">Displays</a>
+            <a href="itunes-remote.html" class="active">iTunes</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow">Notes · September 2026</p>
+            <h1>A remote control for iTunes, in the shape of iTunes.</h1>
+            <p class="lead">My music library lives on a 2012 MacBook Pro that runs iTunes 12.9.5 and nothing else. It has no keyboard I want to use and no screen I want to look at. So I gave it an API and wrote a client for the Mac I actually sit at — drawn to look like iTunes 10, because that is the iTunes I want back.</p>
+            <div class="pill-row">
+                <span class="pill">93,829 tracks</span>
+                <span class="pill">Python daemon, no dependencies</span>
+                <span class="pill">Native AppKit client</span>
+                <span class="pill">160 GB iPod classic</span>
+            </div>
+        </section>
+
+        <figure class="shot">
+            <img src="images/itunes-remote/cover-flow.png" alt="The client showing Cover Flow: album covers reflected on black, the source list on the left, the green LCD at the top." width="1600" height="1013" loading="lazy">
+            <figcaption>Cover Flow, the source list, the green display. Everything here is read from iTunes on the other machine.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Two halves</h2>
+            </div>
+            <p>The <strong>daemon</strong> is Python with nothing outside the standard library. It parses the iTunes XML library into memory — 100,648 entries in about 23 seconds — and serves it as JSON over HTTP behind a bearer token. Reads come from that in-memory copy and answer in milliseconds. Writes go through AppleScript to iTunes itself; nothing ever touches the library files on disk.</p>
+            <p>The <strong>client</strong> is a native AppKit app, about 6,000 lines of Swift, every control drawn by hand: the pinstripe chrome, the pill buttons, the recessed green display with its scrubber, the column browser, all four view modes, a mini player. There is no interface builder file and no framework.</p>
+            <div class="callout">
+                <span class="lbl">Why it is worth being careful about reads</span>
+                <p>Every AppleScript call to iTunes takes the same single Apple Events lock. One slow call blocks every other request behind it. Most of this project's performance work was about never needing that lock: keep the library in memory, cache album art on disk, and read embedded artwork straight out of the audio files rather than asking iTunes to export it.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The sync selection problem</h2>
+            </div>
+            <p>The interesting part of this project is the iPod.</p>
+            <p>iTunes syncs an iPod from a selection — which playlists, artists, albums and genres you have ticked on the device's Music pane. I wanted to change that selection from the other room. It turns out nothing outside iTunes can read it, let alone set it:</p>
+            <ul>
+                <li>iTunes' AppleScript dictionary has no terms for it.</li>
+                <li>The accessibility tree is empty. iTunes 12's window reports <em>zero</em> UI elements, even with <code>AXEnhancedUserInterface</code> forced on.</li>
+                <li>It lives in the binary <code>.itl</code> database, which is undocumented and not safe to write.</li>
+            </ul>
+            <p>Synthetic clicks on the real checkboxes do work — I proved it, ticked The Beatles and put it back — but a tool that clicks at coordinates breaks the moment anything moves, and can tick the wrong thing. Not worth it.</p>
+            <p>So the app does not try to mirror iTunes' selection. It keeps <em>its own</em>, and projects it onto a playlist it owns. Playlist membership is fully scriptable and fast: a whole list of tracks crosses in one Apple Event. Point the iPod at that one playlist and it carries exactly what the app says.</p>
+            <div class="callout warn">
+                <span class="lbl">The check that saved the whole thing</span>
+                <p>Before changing anything I took a read-only inventory of the iPod. The 36 playlists I had ticked accounted for only 7,098 of its 23,273 distinct tracks. The other 16,175 — about 70% of the device — came from individually ticked artists, which iTunes does not expose. Switching to "sync one playlist" without checking would have silently wiped most of my iPod. Instead the playlists stay ticked and the app's playlist carries the rest.</p>
+            </div>
+        </section>
+
+        <figure class="shot">
+            <img src="images/itunes-remote/sync-music.png" alt="The Sync Music pane: four checkbox lists for playlists, artists, genres and albums, over a capacity bar." width="1600" height="1013" loading="lazy">
+            <figcaption>The Sync Music pane, rebuilt. Four independent lists, the way iTunes' own pane works — ticking an artist means that artist, and the iPod gets the union of everything ticked. A dot on the right marks what is on the device today.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Counting is harder than it looks</h2>
+            </div>
+            <p>Three parts of this setup report the size of the same iPod and all three disagree. None of them is wrong.</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Number</th><th>Where</th><th>What it counts</th></tr></thead>
+                <tbody>
+                    <tr><td>24,153</td><td>This app's status line</td><td>Songs actually on the iPod, read back after the sync</td></tr>
+                    <tr><td>24,184</td><td>iTunes' own heading</td><td>What iTunes expects to sync, folding identical files into one</td></tr>
+                    <tr><td>24,310</td><td>This app's heading</td><td>Library entries the selection covers, counting each separately</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The first gap is duplicate copies — re-downloaded purchases that are byte-identical. The second is the handful iTunes counts but never actually writes: two files it silently refuses, and duplicates it drops during the sync itself.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Matching iTunes exactly</h2>
+            </div>
+            <p>A surprising amount of the work was making lists come out in iTunes' order, because "close" is instantly visible when you have both windows open side by side.</p>
+            <p>The column browser was the worst of it. My artist count was 4,470 against iTunes' 2,909. iTunes files compilations under a single <em>Compilations</em> row, groups by the hidden Sort Artist field, and folds accents and punctuation together. Then a subtler bug: rows were <em>grouped</em> by Sort Artist but <em>labelled</em> with the display name, so "The Beatles" was keyed as "beatles" — 265 of 2,905 rows selected nothing at all when clicked. Now a click matches either form.</p>
+            <p>Sorting has its own rules. Leading articles drop, so The Beatles files under B. Quotation marks are ignored wherever they fall, so "Weird Al" Yankovic is under W and 'N Sync under N. Other punctuation is skipped: (Sandy) Alex G under S, R.E.M. as "rem". Accents fold. Anything starting with a digit goes after Z.</p>
+            <div class="callout">
+                <span class="lbl">The one that looked like a rendering bug</span>
+                <p>The whole app looked slightly soft next to real iTunes 10, and no amount of adjusting my drawing fixed it. It isn't the drawing. macOS removed subpixel antialiasing in Mojave, in 2018. Text on a modern Mac is greyscale-antialiased and genuinely blurrier than the same text was in 2010. Nothing in an app can bring it back.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Watching a sync from the other room</h2>
+            </div>
+            <p>iTunes 10 stacked a small pair of arrows on its display when it had more than one thing to show, and clicking them cycled between the song and whatever job was running. I wanted that back, because writing a sync playlist of 24,000 tracks takes minutes and a frozen-looking window is no fun.</p>
+            <p>The daemon now tracks what it is writing and serves it. A playlist rebuild knows its own size, so the bar is determinate. An actual iPod sync does not — iTunes reports no progress whatsoever — so a watcher thread reads the song count off the device every few seconds and the bar is a barber pole until the count stops moving.</p>
+        </section>
+
+        <figure class="shot">
+            <img src="images/itunes-remote/lcd.png" alt="Close-up of the green display reading 'Writing the sync playlist for iPod classic, 300 of 384 selections, 20,896 tracks so far' with a blue progress bar and a pair of small arrows." width="1600" height="208" loading="lazy">
+            <figcaption>The display mid-rebuild. The stacked arrows on the right cycle back to Now Playing while the job carries on.</figcaption>
+        </figure>
+
+        <figure class="shot">
+            <img src="images/itunes-remote/sync-progress.png" alt="The whole window during a sync, the display showing progress while Cover Flow stays visible behind it." width="1600" height="1013" loading="lazy">
+            <figcaption>The same thing in context. Everything else stays usable while the sync runs.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Things it turned out to need</h2>
+            </div>
+            <p>A headless machine raises modal dialogs at nobody. iTunes will happily sit behind a sync warning forever, blocking every AppleScript call, with no one in front of it. The daemon reads whatever dialog is open and the client can dismiss it remotely — that alone explained a class of mysterious hangs.</p>
+            <p>iTunes 12.9.5 also cannot AirPlay to a modern Mac at all; it fails with error −15022. So "Play on This Mac" skips AirPlay entirely: the daemon streams the file over HTTP with range support and the client decodes it locally.</p>
+            <p>And ejecting an iPod fails with "in use by another application" if <em>anything</em> still has a file open on the volume — including the app's own background polling. An eject now tells every reader to stand off first.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Built with Claude Code</h2>
+            </div>
+            <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
+            <p>The source is on <a href="https://github.com/stevenbleifer-beep">GitHub</a> in a private repository.</p>
+        </section>
+
+        <p class="muted"><a href="claude-code.html">← Back to projects</a></p>
+
+    </div>
+</main>
+
+</body>
+</html>
