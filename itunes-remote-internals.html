@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>iTunes Remote Internals — Steven Bleifer</title>
+    <meta name="description" content="How iTunes Remote actually works: one Apple Events lock, a 163 MB XML library with a write journal, an unreadable sync selection, and iTunes' real sort rules.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="claude-code.html">Projects</a>
+            <a href="vinyl.html">Vinyl</a>
+            <a href="displays.html">Displays</a>
+            <a href="itunes-remote.html" class="active">iTunes</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow"><a href="itunes-remote.html">← iTunes Remote</a></p>
+            <h1>How it works.</h1>
+            <p class="lead">The technical version. Roughly 13,800 lines across a dependency-free Python daemon, 26 AppleScripts and a native AppKit client — all of it arranged around one hard constraint: there is exactly one way to talk to iTunes, it is slow, and only one thing can use it at a time.</p>
+            <div class="pill-row">
+                <span class="pill">4,011 lines Python</span>
+                <span class="pill">9,770 lines Swift</span>
+                <span class="pill">26 AppleScripts</span>
+                <span class="pill">No dependencies</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The one bottleneck everything else is shaped around</h2>
+            </div>
+            <p>iTunes 12.9.5 has no API. The only supported way in is Apple Events, which in practice means spawning <code>osascript</code> on a 2012 MacBook Pro. A trivial call — "what is playing?" — costs a few hundred milliseconds. A call that touches 25,000 playlist entries costs minutes.</p>
+            <p>Worse, Apple Events into a single app are not usefully concurrent. Two scripts in flight at once produce timeouts and, occasionally, half-applied writes. So every script in the daemon runs behind one lock:</p>
+<pre><i># daemon/itunes_remote/applescript.py</i>
+RS = "\x1e"   <i># record separator</i>
+US = "\x1f"   <i># field separator</i>
+
+guard = self.lock if serialize else _NoLock()</pre>
+            <p>That single lock is the most important line in the project, and nearly every performance bug traces back to it. It is why an eject that holds the lock for 60 seconds makes the whole client look frozen — not deadlocked, just queued. Sampling the client's main thread during one of those "freezes" showed it 97% idle. The fix was never in the client.</p>
+            <div class="callout warn">
+                <span class="lbl">Consequence</span>
+                <p>Any feature that polls iTunes on a timer is a tax on every other feature. A background sync-watcher I added at an 8-second interval, running for up to four hours after a sync, turned out to be a large part of why ejecting the iPod started failing with "in use by another application." Polling is never free when there is one lock.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Scripts return text, not JSON</h2>
+            </div>
+            <p>AppleScript has no JSON. It also has a minefield of reserved words — <code>lines</code>, <code>kind</code>, <code>missing</code>, <code>removed</code> and <code>st</code> all blow up as variable names in ways the error message does not explain. And string-building a script with a track title in it is an injection waiting to happen when your library contains titles with quotes, backslashes and newlines.</p>
+            <p>So scripts are files, they take input through <code>on run argv</code>, and they return columnar text delimited by ASCII 30 and 31 — two characters that cannot occur in an iTunes tag. The daemon splits on them:</p>
+<pre>columns = out.split("\x1e")
+names, artists, albums, times = [c.split("\x1f") for c in columns[:4]]</pre>
+            <p>Columnar rather than row-wise on purpose: one <code>get</code> of every name, then one of every artist, is dramatically faster in AppleScript than 24,000 individual property reads. Reading the iPod's contents went from minutes to seconds on that change alone.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Reading a 163 MB library without asking iTunes</h2>
+            </div>
+            <p>Asking iTunes for the library over Apple Events is hopeless at this size. The daemon instead parses <code>iTunes Music Library.xml</code> directly — 163 MB, 100,648 entries, 93,829 of them music tracks. That takes about a minute — 65 s on a warm run, 117 s on a cold one.</p>
+            <p>Two consequences fall out of that number. First, the parse happens in a background thread and the old library object stays live and readable until the new one is complete, then is swapped in atomically — an early bug had the library briefly vanish for concurrent readers mid-reload. Second, a minute-plus is far too long to wait after every edit, and iTunes rewrites the XML on its own schedule anyway.</p>
+            <p>So writes are journaled. A change goes to iTunes through AppleScript <em>and</em> is patched into the in-memory library immediately, with a timestamped journal entry. When a fresh parse lands, journal entries newer than the XML's own write date are replayed on top and the rest discarded:</p>
+<pre>self._journal.append((now, pid, dict(fields)))
+<i># …after a reload:</i>
+self._journal = [j for j in self._journal if j[0] &gt; new.xml_date]</pre>
+            <p>The rule throughout is that iTunes owns the data. Nothing writes to the library files on disk; every mutation goes through iTunes and the journal only mirrors what iTunes was already told.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The selection nothing can read</h2>
+            </div>
+            <p>The hardest problem in the project has no clean solution. iTunes' iPod sync selection — which playlists, artists, albums and genres are ticked on the device pane — is stored in the binary <code>.itl</code> file. It is not exposed to AppleScript. And iTunes 12 exposes <strong>zero</strong> accessibility elements, even with <code>AXEnhancedUserInterface</code> forced on, so it cannot be read off the screen either.</p>
+            <p>Three options: guess, drive the UI, or keep your own. Guessing is wrong by construction. Driving the UI was ruled out deliberately — it breaks on any layout change and can click the wrong thing, and the one time that matters is the time it wipes a device.</p>
+            <p>So the app keeps its own selection and projects it onto a single real playlist that iTunes syncs. Four independent lists — playlists, artists, albums, genres — unioned, exactly as iTunes' own Music pane behaves. Rebuilding that playlist is chunked at 50 tracks per <code>osascript</code> run so a failure is bounded and progress is reportable.</p>
+            <div class="callout warn">
+                <span class="lbl">The near miss</span>
+                <p>Before the first real sync, an inventory of what was already on the iPod versus what the plan covered showed the plan would have removed about 70% of the device. The selection had been reconstructed from the wrong assumption about how iTunes unions ticked items. Taking the inventory cost ten minutes; not taking it would have cost a 160 GB rebuild over USB 2.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Sorting exactly like iTunes</h2>
+            </div>
+            <p>"Alphabetical" is doing a lot of work in that sentence. iTunes ignores a leading article, ignores quotes and apostrophes entirely, folds accents, and sorts anything starting with a digit <em>after</em> Z rather than before A. Getting that last part right without a custom comparator is a small trick: map digit-leading strings behind a private-use codepoint, which sorts above every letter.</p>
+<pre><i># daemon/itunes_remote/library.py</i>
+_ARTICLES   = ("the ", "a ", "an ")
+_QUOTES     = "\"'‘’“”«»"
+_DIGITS_LAST = "\uf8ff"   <i># private use area, sorts after Z</i>
+
+def sort_form(text, override=None):
+    value = fold((override or text or "").strip())
+    value = _plain("".join(c for c in value if c not in _QUOTES))
+    for article in _ARTICLES:
+        if value.startswith(article) and len(value) &gt; len(article):
+            value = _plain(value[len(article):]); break
+    if value and value[0].isdigit():
+        return _DIGITS_LAST + value
+    return value</pre>
+            <p><code>_plain</code> does NFKD normalisation and drops combining marks, so <em>Motörhead</em> sorts as <em>Motorhead</em>. Sort overrides matter too: iTunes stores a per-track "sort artist" that wins over the display name, which is how <em>The Beatles</em> files under B and a soundtrack credited to twelve people files under the album artist.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Three numbers, all of them true</h2>
+            </div>
+            <p>The same library reports three different song counts, and the interesting part is that none of them is a bug.</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Count</th><th>What it is</th></tr></thead>
+                <tbody>
+                <tr><td>24,153</td><td>Files actually on the iPod. This is the one to trust.</td></tr>
+                <tr><td>24,184</td><td>iTunes' own heading, which folds byte-identical files into one.</td></tr>
+                <tr><td>24,310</td><td>Library entries the plan covers — duplicates counted separately.</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The gap is re-downloaded purchases that exist twice in the library as separate entries pointing at identical audio, plus two files iTunes refuses to copy at all. Any "fix" that made the numbers agree would have been a lie about one of the three.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Album art, and why the grid was slow</h2>
+            </div>
+            <p>Artwork has two very different costs. A cover already in memory, on disk, or embedded in the file itself comes back in about 30 ms. A cover that only iTunes knows about requires an AppleScript export — which takes the one lock, behind everything else.</p>
+            <p>The grid was asking for both kinds on the same connection pool as the player poll, so a handful of slow exports starved the entire client. The fix has three parts:</p>
+            <ul>
+                <li>A <code>?quick=1</code> request answers only from memory, disk or the file, and returns <strong>202 Accepted</strong> for anything that would need iTunes.</li>
+                <li>A 202 queues the cover on a priority deque that the background warmer drains first, instead of waiting for an idle moment.</li>
+                <li>The client fetches covers on a separate <code>URLSession</code> with 12 connections, so artwork can never block transport commands.</li>
+            </ul>
+            <p>Fourteen visible albums now resolve in 0.77 s total, and Cover Flow fills immediately instead of showing placeholder discs.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Playing on the other Mac</h2>
+            </div>
+            <p>"Play on This Mac" does not use AirPlay, because iTunes 12.9.5 cannot AirPlay to a modern Mac at all — it fails with error −15022. Instead the daemon serves the file over HTTP with range support and the client decodes it locally with AVFoundation.</p>
+            <p>That creates a subtler problem. <code>play &lt;track&gt;</code> gives iTunes a one-item queue, so at the end of a song iTunes simply stops rather than advancing. There is no event for "track finished" — a deliberate stop and a finished track both report as <code>stopped</code>. The only available signal is where the playhead was on the previous poll:</p>
+<pre>guard mode == .remote, new.state == "stopped", new.track == nil,
+      let previous = lastRemote, previous.playing, previous.duration &gt; 0
+else { return false }
+return previous.position &gt;= previous.duration - 5</pre>
+            <p>Because the client steps through its own list in both modes, shuffle and repeat belong to the app rather than to iTunes. They used to be read back from iTunes, which meant they silently did nothing whenever playback was local.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Ejecting</h2>
+            </div>
+            <p>iTunes cannot unmount an iPod while anything holds a file open on the volume, and the daemon's own device polling counted. An eject now sets a quiet window that every reader respects before the script runs:</p>
+<pre>DEVICE_QUIET_SECONDS = 30
+POD_CACHE_SECONDS = 15</pre>
+            <p>The client pauses both of its device timers over the same window and resumes them if the eject fails. A failure also reads back whatever modal dialog iTunes is showing and reports it, rather than returning a bare 502 — a headless machine raises dialogs at nobody, and that alone explained a whole class of mysterious hangs.</p>
+            <p>One holder is not ours and cannot be fixed from here: <code>diskutil</code> reports unmounts "dissented by SystemUIServer", the menu bar agent.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Smaller things that mattered</h2>
+            </div>
+            <ul>
+                <li><strong>Version-keyed client cache.</strong> Reads are cached against the library's version counter and dropped on any write, so a stale list cannot outlive the change that invalidated it.</li>
+                <li><strong>gzip above 16 KB.</strong> JSON responses compress at level 1 only when they clear 16 KB and the client asked for it. Below that the CPU on a 2012 machine costs more than the bytes save.</li>
+                <li><strong>Recently Added.</strong> Cutting to the newest 600 albums has to happen <em>before</em> the browser filters, not after — doing it after listed all 2,904 artists and then picked albums that contained no tracks.</li>
+                <li><strong>A nullable playlist ID.</strong> A freshly created playlist has no persistent ID until iTunes rewrites the XML. Typing that field as non-optional broke playlist creation <em>and</em> every subsequent playlist decode, which is why drag-and-drop onto playlists also looked dead.</li>
+                <li><strong>The look.</strong> macOS Mojave removed subpixel antialiasing, so text in the client is slightly softer than iTunes 10 was on the same hardware. That one is not fixable.</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What it cost to build</h2>
+            </div>
+            <p>The whole thing was written with <a href="claude-code.html">Claude Code</a> across two days: first commit at 10:27 pm on 2 September 2026, most recent at 5:36 pm on 3 September — <strong>about 19 hours of wall clock</strong> over 48 commits, inside session transcripts spanning 20 hours 17 minutes.</p>
+            <p>Four models did the work, across 1,079 API responses and 1,254 tool calls (994 of them shell commands). Token totals below count each response once and include cache reads, which dominate — a long agentic session re-reads a large cached context on every single turn:</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Model</th><th>Responses</th><th>Cache read</th><th>Cache write</th><th>Output</th><th>Total</th></tr></thead>
+                <tbody>
+                <tr><td>Opus 5</td><td>739</td><td>293,042,154</td><td>5,228,661</td><td>807,303</td><td>299,079,596</td></tr>
+                <tr><td>Fable 5.1</td><td>195</td><td>72,548,919</td><td>3,517,817</td><td>546,420</td><td>76,664,523</td></tr>
+                <tr><td>Opus 4.8</td><td>78</td><td>40,205,825</td><td>2,080,565</td><td>100,132</td><td>42,386,678</td></tr>
+                <tr><td>Opus 4.7</td><td>57</td><td>6,621,492</td><td>312,019</td><td>45,538</td><td>6,979,186</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>1,079</strong></td><td><strong>412,418,390</strong></td><td><strong>11,139,062</strong></td><td><strong>1,499,393</strong></td><td><strong>425,109,983</strong></td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>So: <strong>425 million tokens</strong> to produce 13,781 lines that survived. The ratio is the honest part of the story — about 1.5 million tokens of actual output, and 280× that in re-read context. Most of the cost was not writing code. It was reading a 163 MB XML file's worth of consequences, running things on the old machine to see what iTunes really did, and being wrong about counts three times before deriving the rule from the real window.</p>
+        </section>
+
+        <p class="muted"><a href="itunes-remote.html">← Back to iTunes Remote</a> · <a href="claude-code.html">All projects</a></p>
+
+    </div>
+</main>
+
+</body>
+</html>

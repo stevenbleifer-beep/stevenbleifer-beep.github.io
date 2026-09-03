@@ -50,12 +50,22 @@
             <figcaption>Cover Flow, the source list, the green display. Everything here is read from iTunes on the other machine.</figcaption>
         </figure>
 
+        <figure class="shot">
+            <img src="images/itunes-remote/grid.png" alt="The Grid view: album covers laid out in rows on white, with title and artist under each." width="1600" height="1013" loading="lazy">
+            <figcaption>Grid. Nine thousand albums, drawn a screenful at a time — covers are fetched lazily and never as views.</figcaption>
+        </figure>
+
+        <figure class="shot">
+            <img src="images/itunes-remote/mini-player.png" alt="The mini player: a narrow window with transport buttons, volume slider, AirPlay icon and the green display showing This Love by Maroon 5." width="1040" height="144" loading="lazy">
+            <figcaption>The mini player, the same size iTunes 10&#39;s was. Media keys work here too.</figcaption>
+        </figure>
+
         <section class="section">
             <div class="section-header">
                 <h2>Two halves</h2>
             </div>
-            <p>The <strong>daemon</strong> is Python with nothing outside the standard library. It parses the iTunes XML library into memory — 100,648 entries in about 23 seconds — and serves it as JSON over HTTP behind a bearer token. Reads come from that in-memory copy and answer in milliseconds. Writes go through AppleScript to iTunes itself; nothing ever touches the library files on disk.</p>
-            <p>The <strong>client</strong> is a native AppKit app, about 6,000 lines of Swift, every control drawn by hand: the pinstripe chrome, the pill buttons, the recessed green display with its scrubber, the column browser, all four view modes, a mini player. There is no interface builder file and no framework.</p>
+            <p>The <strong>daemon</strong> is Python with nothing outside the standard library. It parses the iTunes XML library into memory — a 163 MB file, 100,648 entries, in about a minute — and serves it as JSON over HTTP behind a bearer token. Reads come from that in-memory copy and answer in milliseconds. Writes go through AppleScript to iTunes itself; nothing ever touches the library files on disk.</p>
+            <p>The <strong>client</strong> is a native AppKit app, about 9,800 lines of Swift, every control drawn by hand: the pinstripe chrome, the pill buttons, the recessed green display with its scrubber, the column browser, all four view modes, a mini player. There is no interface builder file and no framework.</p>
             <div class="callout">
                 <span class="lbl">Why it is worth being careful about reads</span>
                 <p>Every AppleScript call to iTunes takes the same single Apple Events lock. One slow call blocks every other request behind it. Most of this project's performance work was about never needing that lock: keep the library in memory, cache album art on disk, and read embedded artwork straight out of the audio files rather than asking iTunes to export it.</p>
@@ -149,7 +159,21 @@
                 <h2>Built with Claude Code</h2>
             </div>
             <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
-            <p>The source is on <a href="https://github.com/stevenbleifer-beep">GitHub</a> in a private repository.</p>
+            <p>It took <strong>about 19 hours of wall clock across two days</strong> — first commit at 10:27 pm on 2 September 2026, most recent at 5:36 pm on the 3rd — over 48 commits and 1,254 tool calls. Four models did the work:</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Model</th><th>Responses</th><th>Output tokens</th><th>Total tokens</th></tr></thead>
+                <tbody>
+                <tr><td>Opus 5</td><td>739</td><td>807,303</td><td>299,079,596</td></tr>
+                <tr><td>Fable 5.1</td><td>195</td><td>546,420</td><td>76,664,523</td></tr>
+                <tr><td>Opus 4.8</td><td>78</td><td>100,132</td><td>42,386,678</td></tr>
+                <tr><td>Opus 4.7</td><td>57</td><td>45,538</td><td>6,979,186</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>1,079</strong></td><td><strong>1,499,393</strong></td><td><strong>425,109,983</strong></td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>425 million tokens to produce 13,781 lines that survived. Almost all of that is cached context re-read on every turn — the actual writing is the 1.5 million output tokens. The other 280× is reading, running things on the old machine, and being wrong in public until the rule fell out.</p>
+            <p>There's a <a href="itunes-remote-internals.html">technical write-up of how it works</a> — the Apple Events lock, the 163 MB XML library and its write journal, the unreadable sync selection, and iTunes' real sort rules. The source is on <a href="https://github.com/stevenbleifer-beep">GitHub</a> in a private repository.</p>
         </section>
 
         <p class="muted"><a href="claude-code.html">← Back to projects</a></p>
