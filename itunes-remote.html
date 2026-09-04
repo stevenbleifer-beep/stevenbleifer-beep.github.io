@@ -170,6 +170,19 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>A curator that learns from being corrected</h2>
+            </div>
+            <p>A stock model does not know that you skip live albums, or that "90s" to you means the songs and not the remasters. Three things were added so it finds out, none of which sends a byte off the Mac. The first is memory: every song you delete from a curated list, every piece of feedback, every list you save is kept per request, and a new request that resembles an old one — matched by meaning, so "songs from the nineties" reaches a lesson about "90s anthems" — never offers the songs you took out last time and tells the model what you said. The second is taste: play counts and star ratings become a quiet per-artist and per-genre profile that nudges the search toward what you actually play, marks those artists for the model, and keeps one-star songs out entirely.</p>
+            <p>The third is real training. Saving a playlist also files away the turns that led to it — the exact prompt the model saw and the answer you ended up approving — and Controls ▸ Train Curator on My Edits… turns those into a picker of your own. It fine-tunes a base model on the laptop with Apple's MLX, fuses the result, hands it to Ollama, and switches the curator over, with a progress bar, a Stop button, and one plain question first about what will be downloaded. It wants a few hundred saved playlists before it is worth the several hours a run takes, and under that it says so and offers to run anyway. A button puts the stock picker back.</p>
+        </section>
+
+        <figure class="shot">
+            <img src="images/itunes-remote/training.png" alt="The Train the Curator window: an explanation of what training does, a line saying 2 approved turns are on file and 38 more are wanted, an empty log area, and Delete Training Data, Train and Close buttons." width="1120" height="924" loading="lazy">
+            <figcaption>The training window before its first run. It counts what is on file, says which picker the curator uses, and asks before fetching anything.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>Built with Claude Code</h2>
             </div>
             <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
