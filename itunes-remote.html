@@ -156,6 +156,20 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>A curator that only knows your library</h2>
+            </div>
+            <p>The newest section in the sidebar is a small language model running on the laptop itself, through <a href="https://ollama.com">Ollama</a> — nothing leaves the house. You ask it for a playlist in plain words ("a 20 song playlist for a 90s road trip", "something like Bill Evans for a rainy Sunday") and it builds one from the 93,000 songs on the other machine. Then you argue with it: "less jazz standards, add a couple of slow indie rock songs, keep it to 20", and it edits the list rather than starting over.</p>
+            <p>The trick is that the model never sees the library and is never allowed to name a song. It writes a short plan — a mood, a dozen search phrases, some artists it expects to fit — and the app turns that into about 140 real songs, half by meaning through an embedding index of every track and half by matching the artists it named. The model then picks <em>by number</em> from that list. It cannot recommend a song you do not own, because the only songs it can point at are the ones in front of it.</p>
+            <p>The rules it is told and forgets — two per artist, no Christmas songs in July, the count you asked for, the decade you asked for — are enforced by the app afterwards, and the list is topped up from the candidates it passed over so twenty asked for is twenty given. Feedback comes back as an explicit edit (remove these, add these, this order) rather than a fresh list, because asked for a fresh list a 4-billion-parameter model rewrites everything, and asked what to remove it once named fifteen of twenty for "less jazz". Saved playlists go into a Curator folder in iTunes so they never mix with the hand-made ones. A turn takes about half a minute on an M5 MacBook Air, and the bottom of the page says which model is doing the picking.</p>
+        </section>
+
+        <figure class="shot">
+            <img src="images/itunes-remote/curator.png" alt="The Playlist Curator page: a conversation on the left asking for a 90s road trip playlist and then louder songs, and on the right a twenty-song list with a Why column giving the model's reason for each pick." width="1600" height="1013" loading="lazy">
+            <figcaption>Two turns with the curator: a 90s road trip, then "swap the slow ones for something louder". Every song is one it found in the library, and the Why column is the model's own reason for each.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>Built with Claude Code</h2>
             </div>
             <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
