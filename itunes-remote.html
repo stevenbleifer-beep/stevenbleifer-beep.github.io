@@ -183,6 +183,32 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>Seven more things</h2>
+            </div>
+            <p>With the big pieces in place I asked what else the app ought to do, got a list of seven, and said yes to all of them, with one condition: the curator page had to stay exactly as it was. They all landed in one evening.</p>
+            <p><strong>Duplicates.</strong> A row under Library, like the old Show Duplicates: songs with the same title and artist within two seconds of the same length, grouped, the copy worth keeping first (best bit rate, then rated, then most played) and the rest in grey. The status line says how many groups and how much space the extras take. On my library: 6,448 songs with more than one copy, 8,297 extras, 77 GB.</p>
+            <p><strong>Missing artwork.</strong> File ▸ Find Missing Artwork… lists every album with no cover, 858 of them here, and looks each one up in the iTunes Store's catalogue. Find Cover shows the matches and lets you page through them; Find All walks the list and takes a cover only when the artist and album names agree exactly, then writes it to every song of the album through iTunes. It is the one feature that talks to anything but the other Mac, so the window says what is sent: the artist and album names, nothing else.</p>
+            <p><strong>More Like This.</strong> Right-click a song, or a whole album's worth of songs, or a playlist in the sidebar, and the curator starts from those instead of from a sentence. Their embeddings pull the search toward them, their artists join the plan, and the seed songs themselves stay off the list. The page and the conversation are unchanged; you can still say what to change afterwards.</p>
+            <p><strong>Lyrics and Last Played.</strong> Get Info on a single song has an Info | Lyrics switch; lyrics are not in the library file iTunes shares, so the app reads them from iTunes when the sheet opens and writes them back if you edit them. A Last Played column joins Plays and Date Added. <strong>Up Next</strong> survives a relaunch. When the window is out of sight, a <strong>notification</strong> with the cover announces each new song. And two bits of housekeeping: the daemon's token moved from the preferences file into the keychain, and every message that used to say "the MacBook Pro" now uses the paired Mac's own name.</p>
+        </section>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/duplicates.png" alt="The Duplicates view: pairs of Accept songs listed one above the other, the second of each pair in grey, and a status line reading 6448 songs with more than one copy, 8297 extra copies shown grey, 76.91 GB." width="1600" height="922" loading="lazy">
+            <figcaption>Duplicates, grouped, with the copy to keep first and the extras in grey.</figcaption>
+        </figure>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/missing-artwork.png" alt="The Missing Artwork window: a note saying artist and album names are sent to Apple's search service, a table of 858 albums without covers, an empty artwork well, and Find Cover, Use This Cover, Find All, Stop and Close buttons." width="1120" height="813" loading="lazy">
+            <figcaption>The Missing Artwork window, before any lookup. It says what leaves the Mac before anything does.</figcaption>
+        </figure>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/curator-seeded.png" alt="The Playlist Curator page after More Like This on Abbey Road: the conversation shows the seeded request and the curator's note, and the list holds twenty late-sixties songs by the Beatles, David Bowie, the Doors, Neil Young, King Crimson and the Band." width="1600" height="922" loading="lazy">
+            <figcaption>More Like This on Abbey Road: twenty songs in 42 seconds, none of them from the album.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>Built with Claude Code</h2>
             </div>
             <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
