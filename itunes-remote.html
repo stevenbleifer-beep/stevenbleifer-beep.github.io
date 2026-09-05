@@ -228,6 +228,23 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>Two looks</h2>
+            </div>
+            <p>The whole point of this app was the iTunes 10 look, and it stays. But every surface in it is drawn by hand — gradients, gel buttons, the green LCD, the striped lists — and that turned out to make a second look cheap: give every control one more branch, and a theme they all ask at draw time. View ▸ Appearance now offers Classic iTunes 10 or Modern Glass. The modern one uses the system font, flat translucent bars with the desktop blurred behind them, the transport buttons and the display sitting on macOS 26's glass, rounded pill selections in the accent colour, and the system's overlay scrollers. Nothing was replaced with a stock control; the same views draw differently. The choice is read once at launch, so switching relaunches the app, the same trick the library switch uses. It is light-only for now: the app's own labels carry fixed greys that a dark window would swallow.</p>
+        </section>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/modern-list.png" alt="The Modern Glass look: a flat translucent toolbar with the transport buttons and the display on glass capsules, a see-through sidebar with accent-tinted icons and a grey pill on the selected row, three browser panes, and the song list with a plain header and faint striping." width="1600" height="922" loading="lazy">
+            <figcaption>Modern Glass, List view. Same views, different drawing.</figcaption>
+        </figure>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/modern-cover-flow.png" alt="The Modern Glass look in Cover Flow: the black stage with Trap Lord by A$AP Ferg in front, under the glass toolbar." width="1600" height="922" loading="lazy">
+            <figcaption>Cover Flow under the modern toolbar.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>Built with Claude Code</h2>
             </div>
             <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
