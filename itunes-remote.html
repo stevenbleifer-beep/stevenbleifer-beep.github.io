@@ -209,6 +209,15 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>The iPod that would not mount</h2>
+            </div>
+            <p>Some days the iPod would go in and nothing would happen: no disk, no device in iTunes, nothing for the app to sync. The first time it happened, restarting iTunes on the Pro seemed to cure it, and that became the theory — iTunes 12.9.5's device handling wedges after an eject that times out. I asked for a button that finds the iPod and mounts it, and got one: <strong>Find iPod</strong>, in the Controls menu and on the page of a device iTunes has not opened. It asks the Pro to look at the USB bus afresh and at what iTunes has open, and reports one of three states — not plugged in, open in iTunes, or plugged in with iTunes ignoring it — and for the third offers the restart and waits a minute for the iPod to appear.</p>
+            <p>Then it was tested against the real thing, with the iPod actually plugged in and ignored, and the restart did nothing. The driver stack was attached all the way down to the block storage driver with no disk under it, and asking the drivers to look again returned "unsupported". What broke the case open was the iPod's own screen: <em>Connected</em>, then <em>Ejecting</em>, then <em>OK to disconnect</em>. Something on the Pro was ejecting it nine seconds after it arrived. The unified log named it: <code>loginwindow</code>, calling <code>DADiskEject</code> from its mount-approval callback. The Pro's screen was locked, and macOS will not mount a disk plugged in while the screen is locked; it ejects it instead. The iTunes restart had only ever "worked" on a day the screen happened to be unlocked, and a note in my own records calling the lock a red herring was wrong.</p>
+            <p>Two fixes. Find iPod now checks the lock first and says so in words, with no restart on offer. And the Pro carries a one-line setting Apple documents for headless Macs — <code>AutomountDisksWithoutUserLogin</code> in <code>/Library/Preferences/SystemConfiguration/autodiskmount</code> — which turned out to cover the lock screen as well as the login window: with the screen locked, the iPod now mounts, iTunes opens it, and the log shows no eject. The lesson is an old one. The button I asked for was a good button, but the bug was not where the button was pointing, and the thing that found it was reading what the device said on its own screen.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>Built with Claude Code</h2>
             </div>
             <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
