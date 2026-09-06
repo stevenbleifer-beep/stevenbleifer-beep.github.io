@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>GrooveKeeper — Steven Bleifer</title>
+    <meta name="description" content="A native Mac app for recording, restoring and editing vinyl, with a click detector trained on a real record. Started by OpenAI's Codex, finished by Claude Code, and wired into the vinyl pipeline.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="claude-code.html">Projects</a>
+            <a href="vinyl.html" class="active">Vinyl</a>
+            <a href="displays.html">Displays</a>
+            <a href="itunes-remote.html">iTunes</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow">Notes · September 2026</p>
+            <h1>GrooveKeeper: a vinyl app one AI started and another finished.</h1>
+            <p class="lead">I rip records with VinylStudio and a <a href="vinyl.html">pipeline</a> that carries them to the old MacBook Pro. VinylStudio is fine, but it is someone else's program with someone else's ideas about what a click sounds like. So I asked for my own: a native Mac app that records a side, takes the clicks out, lets me cut it up, and hands the album to the pipeline. OpenAI's Codex built the first half. It ran out of usage in the middle of a version. Claude Code picked up the folder and built the rest.</p>
+            <div class="pill-row">
+                <span class="pill">9,400 lines of Swift</span>
+                <span class="pill">Core ML detector trained on a real record</span>
+                <span class="pill">18 test suites</span>
+                <span class="pill">Notarized, in Applications</span>
+            </div>
+        </section>
+
+        <figure class="shot">
+            <img src="images/groovekeeper/main-window.png" alt="GrooveKeeper's main window: album panel on the left, the stereo waveform with a yellow volume envelope drawn over it, the cutting table with its rows of edit buttons underneath, and the track list at the bottom." width="1600" height="922" loading="lazy">
+            <figcaption>A side loaded in GrooveKeeper 0.9, with three points of a volume envelope drawn on it. The yellow curve is live: the waveform is drawn through it, playback follows it, exports apply it. The cutting table underneath holds the everyday edits.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>It started with Codex</h2>
+            </div>
+            <p>On the 4th of September I described the app to ChatGPT and let Codex loose on it. Over a day and a half it produced something real: a recorder that waits for the needle to drop, a timeline with track markers, a click detector, hum and rumble filters, five-band EQ, exports to every format I care about with tags and artwork, Discogs lookup, a batch panel, even DSD tools and CD burning. It went through five numbered versions and kept a <em>FEATURES.md</em> file honest about what was done, what was missing and what had only been tested on synthetic audio. I liked that about it.</p>
+            <p>Then, partway into 0.6, it stopped. Not because it finished: my ChatGPT usage ran out. It left behind an effects rack, a crash-recovery system and a VinylStudio importer that were nearly done, a wide-damage repair test that crashed every time it ran, and a share link to the conversation.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>And ended with Claude</h2>
+            </div>
+            <p>I gave <a href="claude-code.html">Claude Code</a> the folder and the link and asked it to finish. It read Codex's logs first, found the crash (the detector's noise-floor estimate could not cope with a burst of damage wider than a click), fixed the maths, and shipped 0.6 that night. Then it asked what was still missing, I said "build all the missing features and make the AI restoration better", and it did, in three more versions across the next ten hours.</p>
+            <p>The restoration work is the part I would not have known how to ask for. VinylStudio saves its repairs in a sidecar file with an undocumented binary format. Claude decoded it, validated the decoding against VinylStudio's own corrected export, and turned one real 56-minute side into about ten thousand labelled clicks and six thousand "this is a drum, leave it alone" vetoes. It trained a small convolutional network on the first 45 minutes and measured it on the last eleven, which it never saw. The old detector, trained on synthetic tones, found <strong>none</strong> of VinylStudio's repairs there. The new one finds <strong>86%</strong>, and through the whole pipeline of gates and guards the app now repairs 62% of the events VinylStudio repaired, against 27% before. It also touches about 95 short spans a minute that VinylStudio skipped, and it told me plainly that nobody has yet listened to decide whether those are crackle or music.</p>
+            <div class="callout">
+                <span class="lbl">The thing about honest reports</span>
+                <p>Both tools were good at saying what they had not done. Codex's feature list marked physical disc burning and authenticated Discogs as untested. Claude's release notes say which numbers came from held-out audio, which came from a synthetic fixture, and that the one end-to-end send to the other Mac was deliberately not run from the app, because anything dropped in the real staging folder gets imported into my library a minute later. I trust the parts that are claimed because the parts that are not claimed are listed next to them.</p>
+            </div>
+        </section>
+
+        <figure class="shot">
+            <img src="images/groovekeeper/editing-tools.png" alt="The More editing tools sheet: sections for levels, fades, generate at the cursor, repeat, truncate silence, the live volume envelope, tempo and pitch, channels and sample rate." width="1600" height="922" loading="lazy">
+            <figcaption>Audacity's remaining edit commands, one sheet. The everyday ones (cut, silence, move, reverse, invert, fades, the pencil and the envelope) live on the main window.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What it does now</h2>
+            </div>
+            <ul>
+                <li><strong>Records</strong> a side from the Scarlett, waiting for the needle, stopping on a timer or on silence, with live RIAA or a custom curve if the input is flat.</li>
+                <li><strong>Restores</strong> it: the trained click detector with percussion and brass guards, wide-damage review, hum, rumble, hiss, clipping repair, spectral band repair, an editable effects rack, and a review list where every repair can be heard and vetoed.</li>
+                <li><strong>Edits</strong> like Audacity. Every command in Audacity's Edit, Select, View and Transport menus has an equivalent, with the same ideas: zero-crossing snapping, cut preview, a pencil for redrawing samples, a live volume envelope, crossfaded splices. Every edit is one undo step that survives a relaunch.</li>
+                <li><strong>Compares takes.</strong> A second rip of the same side stacks under the first, aligned automatically to the sample. Switch between them while listening, and patch a scratch from the better rip.</li>
+                <li><strong>Delivers.</strong> Exports to WAV, AIFF, FLAC, ALAC, AAC, MP3, Ogg and WMA with tags, CUE sheets, CD burning, Music.app, and, since 0.8, one menu item that renders the album exactly the way <code>vinyl-send</code> expects and drops it into the staging folder for the <a href="vinyl.html">pipeline</a> to carry to the other Mac. A batch recipe can do the same for a shelf of albums.</li>
+            </ul>
+        </section>
+
+        <figure class="shot">
+            <img src="images/groovekeeper/compare-takes.png" alt="The timeline with four lanes: the current side's left and right channels in green above take B's left and right channels in blue, lined up, with the Compare takes sheet open." width="1600" height="922" loading="lazy">
+            <figcaption>Two rips of one side. The blue lanes are the second take, offset by the amount the alignment found; the segmented control switches what you hear without losing your place.</figcaption>
+        </figure>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>By the numbers</h2>
+            </div>
+            <p>Claude's half was one session that started at 10:36 pm on the 5th of September and ended at 8:32 the next morning, with the context summarised and continued three times along the way. I sent <strong>fourteen messages</strong>. It sent 775 responses and made 445 tool calls: compiling, running the eighteen test suites, driving the app's own menus to check the interface, notarizing four builds with Apple and installing them.</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Model</th><th>Responses</th><th>Output tokens</th><th>Total tokens</th></tr></thead>
+                <tbody>
+                <tr><td>Fable 5.1</td><td>775</td><td>2,144,810</td><td>343,753,245</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>As with the <a href="itunes-remote.html">iTunes remote</a>, almost all of that is cached context re-read on every turn. The writing is the 2.1 million output tokens: 9,400 lines of app, 2,200 lines of tests, the training scripts, and the documentation that says what was and was not checked.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What I would tell someone doing the same</h2>
+            </div>
+            <p>Handing a half-built project from one AI to another worked because the first one wrote things down. The logs, the feature audit and the failing test were the handover document; nobody had to explain the code. The second one's first move was to read all of it before changing anything, which is also what I would want from a person.</p>
+            <p>The app is a personal tool tied to my turntable, my library and my two Macs, so it is not published. The source and the notarized build live in my Codex folder, and the version notes are in the app's own README.</p>
+        </section>
+
+        <p class="muted"><a href="claude-code.html">← Back to projects</a> · <a href="vinyl.html">The vinyl pipeline →</a></p>
+
+    </div>
+</main>
+
+</body>
+</html>

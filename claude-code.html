@@ -91,6 +91,14 @@
 
         <section class="section">
             <div class="section-header">
+                <h2>GrooveKeeper, a vinyl app two AIs built</h2>
+            </div>
+            <p>The pipeline still depended on VinylStudio to do the recording and click removal. So I asked for my own app: a native Mac program that records a side, takes the clicks out with a detector trained on one of my own records, edits like Audacity, and hands the finished album straight to the pipeline.</p>
+            <p>OpenAI's Codex built the first five versions and ran out of usage in the middle of the sixth. Claude Code read its logs, fixed the crash it left behind, finished that version and built three more in a night: it decoded VinylStudio's repair files to get real training labels, trained a detector that finds 86% of the clicks the old one missed entirely, matched Audacity's editing commands one by one, and added a second-take comparison for patching a scratch from a better rip. <a href="groovekeeper.html">Read about GrooveKeeper →</a></p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
                 <h2>A menu bar app to watch it all</h2>
             </div>
             <p>Once the vinyl pipeline was running on its own, I had no way of knowing whether it still was. So I built a small Mac app that lives in the menu bar and keeps an eye on the whole thing.</p>
