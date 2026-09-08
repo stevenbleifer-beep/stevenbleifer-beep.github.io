@@ -159,12 +159,53 @@ def sort_form(text, override=None):
                 <h2>Playing on the other Mac</h2>
             </div>
             <p>"Play on This Mac" does not use AirPlay, because iTunes 12.9.5 cannot AirPlay to a modern Mac at all — it fails with error −15022. Instead the daemon serves the file over HTTP with range support and the client decodes it locally with AVFoundation.</p>
-            <p>That creates a subtler problem. <code>play &lt;track&gt;</code> gives iTunes a one-item queue, so at the end of a song iTunes simply stops rather than advancing. There is no event for "track finished" — a deliberate stop and a finished track both report as <code>stopped</code>. The only available signal is where the playhead was on the previous poll:</p>
+            <p>That creates a subtler problem. <code>play &lt;track&gt;</code> is a one-off to iTunes, so at the end of a song iTunes simply stops rather than advancing — provided nothing is standing behind it; see the next section for what can be. There is no event for "track finished" — a deliberate stop and a finished track both report as <code>stopped</code>. The only available signal is where the playhead was on the previous poll:</p>
 <pre>guard mode == .remote, new.state == "stopped", new.track == nil,
       let previous = lastRemote, previous.playing, previous.duration &gt; 0
 else { return false }
 return previous.position &gt;= previous.duration - 5</pre>
             <p>Because the client steps through its own list in both modes, shuffle and repeat belong to the app rather than to iTunes. They used to be read back from iTunes, which meant they silently did nothing whenever playback was local.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What iTunes does when a song ends</h2>
+            </div>
+            <p>This was guessed three times before it was measured, and each guess produced a fix that half worked. The measurements, on iTunes 12.9.5 with the volume at zero and each song seeked to three seconds from its end:</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Command</th><th>At the end of the song</th></tr></thead>
+                <tbody>
+                <tr><td><code>play (track N of playlist P)</code></td><td>stops — it does not go on to track N+1</td></tr>
+                <tr><td><code>play (first track of library playlist 1 whose persistent ID is X)</code></td><td>stops — it does not walk the library</td></tr>
+                <tr><td>either of the above <code>with once</code> / <code>without once</code></td><td>the same</td></tr>
+                <tr><td><code>play P</code> (the playlist itself)</td><td>goes on through P and stops at its end; P is now the <em>source</em></td></tr>
+                <tr><td>any one-off while a source stands</td><td>resumes the source at its next song</td></tr>
+                <tr><td><code>play</code> / <code>playpause</code> with nothing current</td><td>plays the window's selection and takes its container as the source</td></tr>
+                <tr><td><code>play</code> an empty playlist</td><td>"Parameter error"; clears nothing</td></tr>
+                <tr><td>a source song interrupted by a one-off, or stopped</td><td>consumed; the source resumes after it</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The source survives <code>stop</code>, the app closing, and days. It is drained only by playing it out or replacing it. So the app never issues <code>play P</code> in ordinary use; when it sees iTunes move on to a song nobody asked for, or picks up a song it did not start, the next song goes out as a one-song playlist through <code>POST /api/queue/play</code> — that replaces the stale source with one that is used up with the song. A related cost worth knowing: every membership change to any playlist makes iTunes rewrite the 162 MB XML, and the daemon reparses it for about 24 seconds. Eight reparses in seventeen minutes was the price of the two-playlist design this replaced; the fix writes a playlist only when a stale source has actually shown itself.</p>
+            <p>The refusal in <code>player_cmd.applescript</code> follows from the sixth row: <code>play</code> and <code>playpause</code> are ignored when iTunes is stopped with no current track, so iTunes is never asked to pick its own source again.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Radio: a directory, a map, a model and two players</h2>
+            </div>
+            <p>Stations come from the Radio Browser directory (<code>api.radio-browser.info</code>, several mirrors, a <code>User-Agent</code> that names the app, one "click" reported per play so its popularity order means something). The client keeps a <code>Query</code> of name, tag, country code, language and a geo circle, and merges the results of several queries interleaved and de-duplicated so each search gets its best few near the top. Only one station in five carries coordinates; the rest are placed by their stated region and country through <code>CLGeocoder</code>, one lookup at a time with the newest view's places first, cached in <code>radio/places.json</code>, and drawn with a greyer pin.</p>
+            <p>Ask is two calls to the curator's model. The first turns the request into up to five queries as JSON — a genre word, an ISO country code, a place to look near, occasionally a station name — with the Style and Country menus, when set, both stated in the prompt and forced onto every query afterwards. Places are geocoded into an 80 km circle. If nothing comes back, one re-plan asks for something broader. When more than fifteen candidates come back, the second call chooses from a numbered list and gives a few words of why; the picks lead the table and everything found stays on the map.</p>
+            <p>Playing a station in iTunes over there is <code>open location</code>, the only way its dictionary has to play a stream, and it adds a URL track to the library every time. So the daemon remembers which URL track each address got and plays that track again by persistent ID — never by searching URL tracks by address, which takes minutes over 1,800 of them — and the script deletes the previous station's entry once the new one is playing, so the library carries at most one of the app's stations. It also checks that the current track is the stream it asked for, because a stream iTunes cannot open leaves whatever was there before, paused included, and names the entry after the station rather than the last part of the URL. iTunes 12.9.5 cannot read HLS, OGG or FLAC; those, and anything the daemon has reported it would not start, go straight to AVPlayer on the Mac the app runs on. A stream iTunes opens with no network says "playing" and sits at 0:00, so the app looks again nine seconds later and moves it here if the position has not moved. The song a station is carrying comes from iTunes' <code>current stream title</code>, or from ICY and ID3 timed metadata through <code>AVPlayerItemMetadataOutput</code> when the stream plays here; some stations send a page of Dalet XML or an iHeart tagged string as that title, and both are parsed down to artist and song.</p>
+            <p>A station is not one of the app's songs: no end-of-track timer arms for it, and while a stream is what the app asked for, iTunes seen on something else is not a stale source and not a song ending — the radio just lets go. That last rule was found the hard way, when a test instance and the real app drove iTunes at once and the real app's handoff to the next song made the test instance step to the next <em>station</em>.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The volume keys</h2>
+            </div>
+            <p>Play, pause and the track keys reach the app through <code>MPRemoteCommandCenter</code> whenever it is the "now playing" app, which it earns by publishing what is playing through <code>MPNowPlayingInfoCenter</code>. Volume keys never reach an app; the system sets the Mac's own volume with them. So <code>MediaKeyTap</code> is a <code>CGEvent</code> tap on <code>NX_SYSDEFINED</code> events (type 14, subtype 8: the aux-control buttons), swallowing sound up, down and mute — and play, next and previous, so they work even when another app has become the now-playing app — only while iTunes over there is playing, and passing everything through otherwise. <code>data1</code> carries the key in its high word and the key-down flag (<code>0xA</code>) in bits 8–15 of the low word. A tap that swallows needs the Accessibility permission, which the system binds to the app's code signature: an ad-hoc build loses the grant, and the keychain item holding the daemon token with it, which is why <code>build.sh --install</code> is always run with the Developer ID identity.</p>
         </section>
 
         <section class="section">
@@ -223,21 +264,21 @@ POD_CACHE_SECONDS = 15</pre>
             <div class="section-header">
                 <h2>What it cost to build</h2>
             </div>
-            <p>The whole thing was written with <a href="claude-code.html">Claude Code</a> across two days: first commit at 10:27 pm on 2 September 2026, most recent at 5:36 pm on 3 September — <strong>about 19 hours of wall clock</strong> over 48 commits, inside session transcripts spanning 20 hours 17 minutes.</p>
-            <p>Four models did the work, across 1,079 API responses and 1,254 tool calls (994 of them shell commands). Token totals below count each response once and include cache reads, which dominate — a long agentic session re-reads a large cached context on every single turn:</p>
+            <p>The whole thing was written with <a href="claude-code.html">Claude Code</a> across six days: first commit at 10:27 pm on 2 September 2026, most recent at 8:01 pm on 7 September, over 111 commits. The six session transcripts span 156 hours between them, much of it idle time inside long-lived sessions; the first two days alone, when the daemon, the client, the sync and the curator were built, took about 19 hours of wall clock.</p>
+            <p>Four models did the work, across 3,204 API responses and 4,173 tool calls (3,285 of them shell commands). Token totals below count each response once and include cache reads, which dominate — a long agentic session re-reads a large cached context on every single turn:</p>
             <div class="table-wrap">
             <table class="simple-table">
                 <thead><tr><th>Model</th><th>Responses</th><th>Cache read</th><th>Cache write</th><th>Output</th><th>Total</th></tr></thead>
                 <tbody>
-                <tr><td>Opus 5</td><td>739</td><td>293,042,154</td><td>5,228,661</td><td>807,303</td><td>299,079,596</td></tr>
-                <tr><td>Fable 5.1</td><td>195</td><td>72,548,919</td><td>3,517,817</td><td>546,420</td><td>76,664,523</td></tr>
-                <tr><td>Opus 4.8</td><td>78</td><td>40,205,825</td><td>2,080,565</td><td>100,132</td><td>42,386,678</td></tr>
-                <tr><td>Opus 4.7</td><td>57</td><td>6,621,492</td><td>312,019</td><td>45,538</td><td>6,979,186</td></tr>
-                <tr><td><strong>Total</strong></td><td><strong>1,079</strong></td><td><strong>412,418,390</strong></td><td><strong>11,139,062</strong></td><td><strong>1,499,393</strong></td><td><strong>425,109,983</strong></td></tr>
+                <tr><td>Fable 5.1</td><td>1,447</td><td>1,642,621,356</td><td>36,982,251</td><td>11,305,356</td><td>1,691,493,882</td></tr>
+                <tr><td>Opus 5</td><td>1,582</td><td>1,276,191,509</td><td>26,558,425</td><td>4,890,696</td><td>1,307,647,440</td></tr>
+                <tr><td>Opus 4.8</td><td>110</td><td>98,862,727</td><td>5,229,712</td><td>345,227</td><td>104,438,150</td></tr>
+                <tr><td>Opus 4.7</td><td>65</td><td>19,187,543</td><td>1,600,556</td><td>155,764</td><td>20,944,309</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>3,204</strong></td><td><strong>3,036,863,135</strong></td><td><strong>70,370,944</strong></td><td><strong>16,697,043</strong></td><td><strong>3,124,523,781</strong></td></tr>
                 </tbody>
             </table>
             </div>
-            <p>So: <strong>425 million tokens</strong> to produce 13,781 lines that survived. The ratio is the honest part of the story — about 1.5 million tokens of actual output, and 280× that in re-read context. Most of the cost was not writing code. It was reading a 163 MB XML file's worth of consequences, running things on the old machine to see what iTunes really did, and being wrong about counts three times before deriving the rule from the real window.</p>
+            <p>So: <strong>3.1 billion tokens</strong> to produce 26,288 lines that survived — 20,095 of Swift in the client, 6,193 of Python and AppleScript in the daemon. The ratio is the honest part of the story — about 17 million tokens of actual output, and 180× that in re-read context. Most of the cost was not writing code. It was reading a 163 MB XML file's worth of consequences, running things on the old machine to see what iTunes really did, being wrong about counts three times before deriving the rule from the real window, and being wrong about what iTunes does at the end of a song three times before measuring it.</p>
         </section>
 
         <p class="muted"><a href="itunes-remote.html">← Back to iTunes Remote</a> · <a href="claude-code.html">All projects</a></p>

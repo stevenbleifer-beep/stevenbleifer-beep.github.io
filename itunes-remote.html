@@ -308,21 +308,21 @@
                 <h2>Built with Claude Code</h2>
             </div>
             <p>This was written with <a href="claude-code.html">Claude Code</a>, and the shape of the work is what I'd expect from a good collaborator: the hard parts were not writing Swift, they were finding out what iTunes actually does. Counting artists three different wrong ways before deriving the rule from the real window. Taking an inventory before a destructive change and finding out the change would have destroyed 70% of my iPod. Proving screen-clicking worked and then agreeing not to use it.</p>
-            <p>It took <strong>about 19 hours of wall clock across two days</strong> — first commit at 10:27 pm on 2 September 2026, most recent at 5:36 pm on the 3rd — over 48 commits and 1,254 tool calls. Four models did the work:</p>
+            <p>It took <strong>six days</strong> — first commit at 10:27 pm on 2 September 2026, most recent at 8:01 pm on the 7th — over 111 commits and 4,173 tool calls, with the first two days' 19 hours building the daemon, the client, the sync and the curator, and the rest adding the two libraries, the two looks, the queue that had to be measured, the keys and the radio. Four models did the work:</p>
             <div class="table-wrap">
             <table class="simple-table">
                 <thead><tr><th>Model</th><th>Responses</th><th>Output tokens</th><th>Total tokens</th></tr></thead>
                 <tbody>
-                <tr><td>Opus 5</td><td>739</td><td>807,303</td><td>299,079,596</td></tr>
-                <tr><td>Fable 5.1</td><td>195</td><td>546,420</td><td>76,664,523</td></tr>
-                <tr><td>Opus 4.8</td><td>78</td><td>100,132</td><td>42,386,678</td></tr>
-                <tr><td>Opus 4.7</td><td>57</td><td>45,538</td><td>6,979,186</td></tr>
-                <tr><td><strong>Total</strong></td><td><strong>1,079</strong></td><td><strong>1,499,393</strong></td><td><strong>425,109,983</strong></td></tr>
+                <tr><td>Fable 5.1</td><td>1,447</td><td>11,305,356</td><td>1,691,493,882</td></tr>
+                <tr><td>Opus 5</td><td>1,582</td><td>4,890,696</td><td>1,307,647,440</td></tr>
+                <tr><td>Opus 4.8</td><td>110</td><td>345,227</td><td>104,438,150</td></tr>
+                <tr><td>Opus 4.7</td><td>65</td><td>155,764</td><td>20,944,309</td></tr>
+                <tr><td><strong>Total</strong></td><td><strong>3,204</strong></td><td><strong>16,697,043</strong></td><td><strong>3,124,523,781</strong></td></tr>
                 </tbody>
             </table>
             </div>
-            <p>425 million tokens to produce 13,781 lines that survived. Almost all of that is cached context re-read on every turn — the actual writing is the 1.5 million output tokens. The other 280× is reading, running things on the old machine, and being wrong in public until the rule fell out.</p>
-            <p>There's a <a href="itunes-remote-internals.html">technical write-up of how it works</a> — the Apple Events lock, the 163 MB XML library and its write journal, the unreadable sync selection, and iTunes' real sort rules. The source is on <a href="https://github.com/stevenbleifer-beep">GitHub</a> in a private repository.</p>
+            <p>3.1 billion tokens to produce 26,288 lines that survived. Almost all of that is cached context re-read on every turn — the actual writing is the 17 million output tokens. The other 180× is reading, running things on the old machine, and being wrong in public until the rule fell out.</p>
+            <p>There's a <a href="itunes-remote-internals.html">technical write-up of how it works</a> — the Apple Events lock, the 163 MB XML library and its write journal, the unreadable sync selection, and iTunes' real sort rules. The source is on <a href="https://github.com/stevenbleifer-beep/itunes-remote">GitHub</a>.</p>
         </section>
 
         <p class="muted"><a href="claude-code.html">← Back to projects</a></p>
