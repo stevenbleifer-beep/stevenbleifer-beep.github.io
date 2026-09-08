@@ -34,7 +34,7 @@
     <div class="container">
 
         <section class="hero">
-            <p class="eyebrow">Notes · September 2026</p>
+            <p class="eyebrow">Notes · September 2026, updated the 7th</p>
             <h1>A remote control for iTunes, in the shape of iTunes.</h1>
             <p class="lead">My music library lives on a 2012 MacBook Pro that runs iTunes 12.9.5 and nothing else. It has no keyboard I want to use and no screen I want to look at. So I gave it an API and wrote a client for the Mac I actually sit at — drawn to look like iTunes 10, because that is the iTunes I want back.</p>
             <div class="pill-row">
@@ -252,13 +252,56 @@
             <div class="section-header">
                 <h2>The queue iTunes never had</h2>
             </div>
-            <p>Playing an album went wrong in a way that took three passes to pin down: the song you picked played, then a song nobody asked for played for a few seconds, then the right one came back. The app had been built on an assumption that turned out to be false — that asking iTunes to <code>play</code> a single track gives it a one-song queue that ends when the song does. It does not. The track is looked up through <code>library playlist 1</code>, which makes the entire library iTunes' current playlist, and the daemon says so plainly while an album track is playing: <code>"playlist": {"name": "Library"}</code>. When the song ends, iTunes walks on through the library by itself — and its library order is not album order, so what you get is a stranger. The app noticed on its next poll, one second with the window in front and five with it in the background, and put the right song on, which is why the correct song appeared to come back, sometimes restarting a song that had only just begun.</p>
-            <p>The first answer was to race it: the app knows the length of the song and where it is, so it can start the next one a fraction of a second before iTunes gets its chance. That works when the old machine is idle, and I have the logs where it does. It also loses by a hair when the machine is busy, and a hair is a whole second of somebody else's song. Racing was the wrong idea.</p>
-            <p>What iTunes plays next is decided when playback <em>starts</em>, by what it was handed. Hand it a track — <code>play&nbsp;t</code> — and the queue is one song long, and when that runs out it carries on through whatever playlist the track was reached through. Hand it a track inside a playlist and the queue is still one song; I tested that too, and at the end iTunes went off into the library exactly as before. But hand it a <em>playlist</em> — <code>play&nbsp;pl</code> — and it takes the whole thing, moves through it by itself, gaplessly, in the order given, and stops at the end instead of wandering.</p>
-            <p>So the app stopped racing and took the queue. It keeps two playlists of its own, filed in a folder called iTunes Remote and hidden from its own sidebar, and plays the playlist rather than the song: what iTunes does next is now, literally, what the app decided. Two, because iTunes reads a playlist once, when you tell it to play — songs added afterwards are ignored, and editing the playlist it is playing from makes it lose its place and fall back to the library, which is a stray song by another name. So the batch after this one is built in the other playlist while this one plays, and the changeover at the end is a single command instead of a rewrite. The old pre-emptive step survives for the two cases iTunes cannot cover — the last song of a batch, and an order changed under one by a shuffle — and if it is late there, iTunes stops rather than choosing, so the worst case is a moment's silence.</p>
-            <p>That left one hole, the one you fall into every time you close the window: iTunes plays on, and when the app comes back it owns nothing, so it watches iTunes wander off with its hands in its pockets. Now it picks the song up. The display shows it at once — the player is asked for before the library, which takes the best part of a minute to arrive — the row goes bold, and the app takes the queue back over, carrying on through the playlist it was playing from when it closed or, failing that, the album the song is on. A song you put on at the MacBook Pro itself while the app is open is still left alone; taking over is a thing it does at launch, not a thing it does to you.</p>
-            <p>None of this can be checked from a screenshot: two songs apart, both plausible, and you cannot tell who chose. So the app got a <code>--trace-queue</code> flag that prints every decision, and the daemon was polled three times a second across the seams with iTunes' volume turned down to nothing. Inside a batch: <code>217.60/218.55 Drug Of Choice</code> then <code>0.00 Picture Perfect</code>, both in the queue playlist. Between batches: <code>223.05/225.97 All Your Lies</code> then <code>0.00 So Long, Good-Bye</code>, the second one out of the other playlist. Nothing in between, either time.</p>
+            <p>Playing an album went wrong in a way that took four passes to pin down: the song you picked played, then a song nobody asked for played for a few seconds, then the right one came back. The first three passes each rested on a guess about what iTunes does when a song ends. One guessed that <code>play&nbsp;t</code> leaves iTunes walking on through the library, and raced it, starting the next song a fraction of a second early. One guessed that only <code>play&nbsp;pl</code> gives iTunes a queue, and had the app keep two hidden playlists of its own, feeding iTunes batches of songs and switching between them. Each helped a little, which is the worst kind of fix, because it looks like progress.</p>
+            <p>The fourth pass measured instead. With iTunes' volume at zero and every song seeked to three seconds from its end, the rules came out plainly. A track played by reference — from a playlist, from the library, with or without the <code>once</code> flag — is a <em>one-off</em>: iTunes plays it and, with nothing standing behind it, stops. It never walks the library. It never carries on through the playlist. The app's original design, iTunes stops and the app plays the next song, had been right all along.</p>
+            <p>What it had not known about was the <em>source</em>. Hand iTunes a whole playlist to play and it takes that as its standing source, and that source survives Stop, survives the app closing, survives days: every one-off played later is followed by the next song out of it. That was the stranger. It had been loaded on the day the Play button, with nothing playing, sent a bare <code>playpause</code> — which makes iTunes play whatever is selected in its own window and take the library, shuffled, as its source. The button was fixed the same day. The source it left behind was not, and every late handoff since then had surfaced a song from it. The two hidden playlists then loaded fresh sources of their own, and each of their writes made iTunes rewrite its 162 MB library file, which the old machine reparses for 24 seconds: eight reparses in seventeen minutes of testing, against two in the whole of the previous day.</p>
+            <p>So the fix is small. Every play is a one-off again, with the next song asked for a fraction of a second before the end so the gap between songs is as short as a fresh <code>play</code> allows. When the app sees iTunes move on to a song nobody asked for — or picks up a song already playing at launch, which may have a source behind it — the next song goes out as a one-song playlist. That replaces the stale source with one that is used up with the song, and from then on every one-off ends in a stop again. One playlist write per stale source, which after the first is nearly never. Three runs on the real library, with a monitor on the Pro logging the player twice a second: an album in order, a stale source deliberately loaded and consumed, and a song picked up at launch handed off through the one-song playlist. No stranger in any of them.</p>
+            <div class="callout">
+                <span class="lbl">The rule, for anyone else driving iTunes 12 by AppleScript</span>
+                <code>play &lt;track&gt;</code> is a one-off and ends in a stop. <code>play &lt;playlist&gt;</code> loads a source iTunes keeps until it is played out or replaced. <code>play</code> with nothing current plays the window's selection and loads its container as a source. Playing an empty playlist is a parameter error and clears nothing. An interrupted source track is consumed, not resumed.
+            </div>
         </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>The keys on the keyboard</h2>
+            </div>
+            <p>Play, pause and the track keys already reached the app whenever it was the Mac's "now playing" app. Volume keys never reach any app: the system sets this Mac's volume with them, which is silent while the sound is coming out of the machine in the other room. So the app now takes them itself — an event tap on the hardware key events, active only while iTunes over there is playing — and turns them into iTunes' volume, sixteen steps to the range, mute remembering the level. When nothing is playing there, the keys are the Mac's again. It needs the Accessibility permission once, and a note for the future: the permission is bound to the app's Developer ID signature, so an ad-hoc build loses it, and loses its keychain token with it. That one cost an afternoon's "it says I need to set it up".</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Radio</h2>
+            </div>
+            <p>I asked what <a href="https://radio.garden/">Radio Garden</a> is — a globe covered in green dots, each a live station, and rotating it tunes you in — and whether the app could have something like it, with a search driven by the local model, and favourites. The globe's own data is an undocumented API with region blocks, so the app uses the open <a href="https://www.radio-browser.info/">Radio Browser</a> directory instead: about 58,000 stations with their genres, countries, stream addresses and, for one in five, a place on the map. The rest are placed by their stated region and country, looked up once and cached, with a slightly greyer pin and "near" in the caption.</p>
+            <p>The page is a RADIO section in the sidebar with the world on the left and a list on the right. Type a word and Search matches station names and styles; type a request and Ask hands it to the curator's model, which turns it into directory searches — a genre, a country, a city to look near, geocoded — runs them, and when there is a lot to choose from chooses, saying why. "Late-night jazz somewhere in Portugal" became jazz in PT plus jazz near Lisbon and near Porto, answered in five seconds. Style and Country menus fix a genre or a country for every search; Clear and Reset put things back.</p>
+            <p>Double-click a station and iTunes over there tunes to it, as its own URL track, named after the station so the display says something sensible. iTunes 12.9.5 cannot read HLS streams, or OGG or FLAC, so a Plays On column says which stations play in iTunes and which will play on this Mac instead; the app switches by itself when the other Mac refuses one or opens it and nothing arrives, and Stop puts the sound back where it was. While a station plays, the song it is carrying is on the display and in the status bar when the station says — some say it in XML, one Los Angeles station says it in a tagged string, and both get read — with the station's logo in the artwork pane. Favorite marks stations for a Favorites page, Recently Played keeps every station tuned to, and Next and Previous move along whatever list is on the page.</p>
+        </section>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/radio-jazz-usa.png" alt="The Radio page: the Style menu set to jazz and the Country menu to USA, sixty stations in the list with their place, style, stream quality and listener counts, and the map of the United States covered in pins." width="1600" height="823" loading="lazy">
+            <figcaption>Stations, with jazz and USA fixed in the menus: sixty stations, and the map follows.</figcaption>
+        </figure>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/radio-beatles.png" alt="The Radio page after asking for beatles: seven stations named for the Beatles in the UAE, USA, Brazil, Spain and Colombia, each pinned on a map of the Atlantic." width="1600" height="922" loading="lazy">
+            <figcaption>“beatles”, asked rather than searched: the model's note, and every station placed, most of them by their stated country.</figcaption>
+        </figure>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/radio-kiis-logo.png" alt="The Radio page with 102.7 KIIS FM playing on this Mac: the station's K logo in the artwork pane, the Clear and Reset buttons, and a Plays On column saying which stations iTunes can play." width="1600" height="823" loading="lazy">
+            <figcaption>A station playing, its logo in the artwork pane, and the Plays On column.</figcaption>
+        </figure>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/radio-favorites.png" alt="The Favorites page under RADIO, empty, with a heart column, a Favorite button and a note saying to select a station and press Favorite." width="1600" height="823" loading="lazy">
+            <figcaption>Favorites, before any are marked.</figcaption>
+        </figure>
+
+        <figure class="screenshot">
+            <img src="images/itunes-remote/radio-history.png" alt="The Recently Played page: two Portuguese jazz stations with a Played column reading Just now, and their pins on a map of Portugal." width="1600" height="823" loading="lazy">
+            <figcaption>Recently Played, with when.</figcaption>
+        </figure>
 
         <section class="section">
             <div class="section-header">
