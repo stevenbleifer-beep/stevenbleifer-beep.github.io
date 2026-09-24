@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="same-origin">
+<meta name="theme-color" content="#10152c">
+<meta name="description" content="An ISC study room: section outlines, flashcards, and adaptive recall practice for the CPA exam.">
+<title>ISC Study Room • Steven Bleifer</title>
+<link rel="stylesheet" href="study.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to study content</a>
+<div class="ticker"><span>STEVEN BLEIFER / STUDY</span><span>NO ACCOUNT. JUST PRACTICE.</span></div>
+<div class="shell">
+<header><a class="back" href="../">← ALL STUDY GUIDES</a><div class="header-row"><div><p class="eyebrow">CPA EXAM · INFORMATION SYSTEMS & CONTROLS</p><h1>ISC Study Room<span class="cursor" aria-hidden="true">_</span></h1><p class="intro">Make the important stuff stick.</p></div><div class="pixel-badge" aria-hidden="true">[ I S C ]<small>RECALL. REPEAT. RETAIN.</small></div></div></header>
+<div id="storage-status" class="storage" role="status"></div>
+<div id="stats" class="stats" aria-label="Study progress"></div>
+<nav class="tabs" aria-label="Study modes"><button data-view="outline" aria-current="page">01 / Outline</button><button data-view="cards">02 / Flashcards</button><button data-view="learn">03 / Learn</button><button data-view="library">04 / All concepts</button><button data-view="sources">Sources & coverage</button></nav>
+<div class="workspace">
+<aside class="filters" aria-label="Choose study material"><h2>Your study set</h2><fieldset><legend>Sections</legend><div id="section-filters"></div></fieldset>
+<label for="module">Topic</label><select id="module"></select>
+<label for="focus">Focus</label><select id="focus"><option value="first">Start here · 48 essentials</option><option value="memorize">Must memorize</option><option value="all">Everything</option><option value="missed">Missed & still learning</option><option value="due">Due for review</option><option value="starred">My starred cards</option></select>
+<label for="search">Find a concept</label><input id="search" type="search" placeholder="Try RPO, SQL, SOC…" maxlength="200">
+<p id="set-count" class="muted"></p><button class="primary full" id="start">Learn this set →</button><button class="secondary full" id="browse">Browse flashcards</button>
+<div class="filter-note"><strong>How Learn works</strong><p>Recognize the answer, then recall it without choices. Missed or hinted cards come back after other questions.</p><p>Progress stays in this browser. No sync or account.</p></div><button class="quiet" id="export">Export progress</button><label class="import-label" for="import">Import progress<input type="file" id="import" accept="application/json,.json"></label><button class="quiet" id="reset">Reset progress…</button>
+</aside>
+<main id="main" tabindex="-1"></main>
+</div>
+<footer><span>Made for active recall, one concept at a time.</span><span>Study aid · not an exam score predictor</span></footer>
+</div>
+<dialog id="reset-dialog"><h2>Reset your study progress?</h2><p>This removes this browser's ISC history, stars, and active session. Export a backup first if you want to keep it.</p><div class="actions"><button id="cancel-reset">Keep progress</button><button class="danger" id="confirm-reset">Reset ISC progress</button></div></dialog>
+<dialog id="session-dialog"><h2>Start a different Learn session?</h2><p>Your active session has unfinished cards. Your recorded progress will be kept, but its practice queue will be replaced.</p><div class="actions"><button id="resume-existing">Resume existing</button><button class="primary" id="replace-session">Start selected set</button></div></dialog>
+<noscript><p class="noscript">Enable JavaScript to use flashcards and saved Learn practice.</p></noscript>
+</body></html>
