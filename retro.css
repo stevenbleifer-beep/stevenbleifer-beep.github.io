@@ -1,0 +1,162 @@
+/* stevenbleifer.com -- coming-soon page, ca. 1997 (sibling of bleifer.ai) */
+
+body {
+  background: #003838 url("images/retro/stars.gif") repeat;
+  color: #f0f0f0;
+  font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive, sans-serif;
+  font-size: 15px;
+  margin: 0;
+  padding: 0 0 40px 0;
+}
+
+a         { color: #00ffff; }
+a:visited { color: #ff80ff; }
+a:hover   { color: #000; background: #ffff00; }
+
+/* ---- scrolling news bar ------------------------------------------------ */
+.marquee-bar {
+  background: #800080;
+  border-bottom: 3px ridge #ff66ff;
+  color: #ffff00;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  letter-spacing: 1px;
+  padding: 5px 0;
+  margin-bottom: 22px;
+}
+
+/* ---- outer window chrome (Win95 grey bevel) ---------------------------- */
+.frame {
+  background: #c0c0c0;
+  border: 3px outset #e0e0e0;
+  margin: 0 12px;
+  max-width: 660px;
+}
+.titlebar {
+  background: linear-gradient(90deg, #000080, #1084d0);
+  color: #fff;
+  font-family: Tahoma, Verdana, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 4px;
+  text-align: left;
+}
+.winbtns b {
+  display: inline-block;
+  width: 16px;
+  height: 14px;
+  line-height: 13px;
+  margin-left: 2px;
+  background: #c0c0c0;
+  color: #000;
+  border: 2px outset #fff;
+  text-align: center;
+  font-size: 11px;
+}
+.inner {
+  background: #101010;
+  border: 3px inset #808080;
+}
+
+/* ---- headings ---------------------------------------------------------- */
+h1 {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 12px;
+  font-family: Impact, "Arial Black", "Haettenschweiler", sans-serif;
+  font-size: 46px;
+  letter-spacing: 2px;
+  line-height: 1.05;
+  background: linear-gradient(#e0ffff, #00ffff 40%, #ff00ff 60%, #800080);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #00ffff;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, .6);
+}
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 { -webkit-text-fill-color: #00ffff; color: #00ffff; }
+}
+h1 .dot { color: #ffff00; -webkit-text-fill-color: #ffff00; }
+.sm { display: none; }
+
+h2 {
+  color: #ffff00;
+  font-size: 21px;
+  margin: 0 0 10px 0;
+}
+h3 {
+  color: #ff80ff;
+  font-size: 17px;
+  letter-spacing: 2px;
+  margin: 6px 0;
+}
+
+.globe   { vertical-align: middle; }
+.tagline { color: #a0ffa0; font-size: 14px; margin: 12px 0 4px; }
+
+/* ---- animated bits ----------------------------------------------------- */
+.blink { animation: blink 1s steps(1, end) infinite; color: #ff3b3b; }
+@keyframes blink { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .blink { animation: none; }
+}
+
+.hr     { display: block; margin: 18px auto; max-width: 100%; height: auto; }
+.worker { vertical-align: middle; }
+.flip   { transform: scaleX(-1); }
+.banner { vertical-align: middle; margin: 0 6px; max-width: 100%; height: auto; }
+
+/* ---- content box ------------------------------------------------------- */
+.box {
+  background: #000060;
+  border: 3px outset #8080ff;
+  margin: 6px auto;
+  max-width: 470px;
+  text-align: center;
+}
+.box p { margin: 8px 0; line-height: 1.5; }
+
+/* ---- link table -------------------------------------------------------- */
+.links       { margin: 4px auto 0; text-align: left; }
+.links td    { font-size: 14px; }
+.links .desc { color: #b0b0b0; font-size: 13px; }
+
+.mailto { margin: 14px 0; }
+.mailto img { vertical-align: middle; margin-right: 8px; }
+
+/* ---- fake hit counter -------------------------------------------------- */
+.counter { font-size: 13px; color: #c0c0c0; }
+.digits {
+  display: inline-block;
+  background: #000;
+  color: #00ff00;
+  font-family: "Courier New", monospace;
+  font-weight: bold;
+  letter-spacing: 3px;
+  padding: 1px 5px;
+  border: 2px inset #808080;
+}
+
+.badges img { margin: 0 4px; vertical-align: middle; }
+
+.footer {
+  color: #909090;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-top: 18px;
+}
+
+/* ---- small screens (a concession the real 1997 web never made) --------- */
+@media (max-width: 700px) {
+  .frame { margin: 0 8px; }
+  h1 { font-size: 32px; margin: 8px; }
+  .sm { display: inline; }
+  .globe { width: 40px; height: 40px; }
+  .worker { display: none; }
+  .titlebar span:first-child { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+}
