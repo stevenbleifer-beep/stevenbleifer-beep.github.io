@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Local AI — Steven Bleifer</title>
+    <meta name="description" content="Running language models on my own Macs: a coding agent that never leaves the house, nine agents tested against one model, a $5-a-month cloud safety net, and a 70B model on a laptop sped up with speculative decoding.">
+    <meta name="theme-color" content="#f3ead4">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="index.html" class="brand">Steven Bleifer</a>
+        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <nav class="nav" id="site-nav">
+            <a href="index.html">Home</a>
+            <a href="resume.html">Resume</a>
+            <a href="activity.html">Library</a>
+            <a href="claude-code.html" class="active">Projects</a>
+            <a href="vinyl.html">Vinyl</a>
+            <a href="displays.html">Displays</a>
+            <a href="itunes-remote.html">iTunes</a>
+            <a href="contact.html">Contact</a>
+            <a href="study/">Study</a>
+            <a href="pomodoro.html">Pomodoro</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <div class="container">
+
+        <section class="hero">
+            <p class="eyebrow">Notes · September–October 2026</p>
+            <h1>Running AI on my own Macs.</h1>
+            <p class="lead">Everything else on this site was built with Claude in the cloud. I wanted to know how far I could get with models running on hardware I own: free to use, private, and nothing leaving the house. Over about six weeks that turned into a coding agent that runs locally, a benchmark harness that doesn't trust the agent's own summary, a cloud fallback with a hard monthly allowance, and a 70 billion parameter model running on a laptop.</p>
+            <div class="pill-row">
+                <span class="pill">Three Macs</span>
+                <span class="pill">Nine coding agents tested</span>
+                <span class="pill">70B on a laptop</span>
+                <span class="pill">$5 a month cloud cap</span>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Starting on a 24 GB laptop</h2>
+            </div>
+            <p>It started on a fanless MacBook Air M5 with 24 GB of memory, using LM Studio to serve the models and <a href="https://opencode.ai">OpenCode</a> as the agent that reads files, runs commands and edits code. The first job was arithmetic rather than installing anything. On Apple Silicon the graphics side can only use about three quarters of memory by default, so 24 GB really means about 18 GB for the model and everything it needs to remember about the conversation.</p>
+            <p>That rules a lot out. The model I most wanted, Qwen3-Coder 30B, ran at 50 tokens a second with a 32,000 token context, but took 26 seconds to say anything from cold and pushed 11 GB into swap. At 128,000 tokens of context it didn't fit at all.</p>
+            <p>The settings had their own trap. LM Studio has a memory guardrail with modes named low, medium and high, and on disk the names are inverted: <em>low</em> is the strict one. I asked to loosen it from high to medium before checking what that meant, which would have tightened it. Caught it, put it back.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>A Mac mini, and two benchmarks that lied</h2>
+            </div>
+            <p>The stack moved to a Mac mini with an M4 Pro and 48 GB. Same model, 77.5 tokens a second, ready in 2.2 seconds from cold, and the full 128,000 token context now fit with room to spare.</p>
+            <p>The first number I got there was 19.6 tokens a second, not 77.5. Ollama, a different model server I also had installed, was still holding two models on the GPU from earlier. Once they timed out the same test was four times faster. Now every benchmark starts by checking what else is using the GPU.</p>
+            <p>The second surprise was every agent run failing in under 30 seconds with a message about the prompt being longer than the context. LM Studio will load a model on demand if it isn't already loaded, and when it does it quietly picks an 8,192 token context. OpenCode's own instructions to the model are about 8,400 tokens, so nothing fit before the first step. The fix is to load the model at the right size before starting the agent. The setting I'd written in the config didn't matter; what the server actually loaded did.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Does it actually work as an agent?</h2>
+            </div>
+            <p>Speed isn't the question that matters. So I built a small harness that gives the agent a real task: write a module and a failing test, run the tests, read the failure, fix the code, and keep going until the tests pass. Then a separate test run checks the result afterwards, because the agent's own "all tests pass" is not evidence.</p>
+            <p>Nine of nine runs finished without help across three models, and none of them did the thing I was most worried about, which was writing a tool call out as plain text instead of actually calling it. The 30B coder was the best: about a minute per task and seven to nine steps.</p>
+            <p>The interesting failure was the small 9B model. In one run it fixed the function wrong twice, then edited the <em>test</em> so it matched the broken function and the suite went green. That's the failure to watch for with small models. It looks exactly like success.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Nine agents, one model</h2>
+            </div>
+            <p>Once LM Studio was retired for Ollama, I ran the same task through nine different coding agents, all using the same local model with the same ten-minute limit, each one checked by an independent test run afterwards.</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Agent</th><th>Time</th><th>Result</th></tr></thead>
+                <tbody>
+                <tr><td>OpenCode</td><td>20 s</td><td>Passed, tightest loop</td></tr>
+                <tr><td>Aider</td><td>22 s</td><td>Passed, but turned two lines of its own commentary into junk files</td></tr>
+                <tr><td>Goose</td><td>43 s</td><td>Passed after guessing the wrong Python twice</td></tr>
+                <tr><td>Crush</td><td>61 s</td><td>Passed</td></tr>
+                <tr><td>Hermes Agent</td><td>66 s</td><td>Passed</td></tr>
+                <tr><td>Qwen Code</td><td>89 s</td><td>Ended correct, but wrote a wrong test on purpose and then "fixed" the test</td></tr>
+                <tr><td>Codex CLI</td><td>377 s</td><td>Passed, after two settings changes just to start</td></tr>
+                <tr><td>Claude Code</td><td>over 600 s</td><td>Files correct, but the process never finished</td></tr>
+                <tr><td>Cline</td><td>—</td><td>Crashed on launch</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The big names did worst, and the reason is interesting. Codex and Claude Code are built for cloud models and send around 30,000 tokens of instructions with every turn. A frontier model in a data centre reads that in a blink. A local model has to re-read it every time; for Claude Code that was about a hundred seconds a turn. OpenCode stayed the default.</p>
+            <p>I also ran the coder against Qwen3.6 35B, a bigger model that thinks before answering. It found a real off-by-one bug that needed reasoning, but it was two to three times slower, it also "fixed" a test instead of the code once, and it spent steps second-guessing its environment. The coder stays the default, with the bigger one a command away when something needs thought rather than typing.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>A safety net with a spending limit</h2>
+            </div>
+            <p>Local models are free, so iterating is cheap. But some tasks are past them. So the whole thing is started with one command, <code>ai-code</code>, from any project folder, and that command can hand a request to a frontier model in the cloud through OpenRouter when it has to.</p>
+            <p>The part I cared about most was the bill. Everything cloud-bound goes through a small local gateway with a <strong>$5 a calendar month</strong> allowance, a 35 cent ceiling on any one request and a cap on how much can be sent. It reserves the cost before each call so two requests at once can't both squeeze under the limit, and it says plainly when a request is going to the cloud. There's a switch to turn the cloud off entirely for a session.</p>
+            <p>Around that it grew the things I'd want from a real assistant: background jobs with a timeout, scheduled runs, a separate git worktree for risky changes, a headless browser in its own isolated profile that doesn't share my signed-in tabs, and a set of tests for the launcher itself, including what happens to the budget when requests overlap.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>A 70B model on a laptop</h2>
+            </div>
+            <p>Most recently, on a MacBook Pro with an M1 Max and 64 GB, I wanted to run something bigger: Meta's Llama 3.3 at 70 billion parameters. It fits, but at about five tokens a second it reads slower than I do.</p>
+            <p>The trick that helps is called speculative decoding. A tiny model, Llama 3.2 at 1 billion parameters, races ahead and guesses the next few words. The big model then checks all of those guesses in one go, which costs about the same as producing one word itself. When the guesses are right you get several words for the price of one, and when they're wrong the big model's answer wins, so the output is exactly what it would have been without the trick. Some newer models, like Qwen3.6, have the guessing built in.</p>
+            <p>Both run through llama.cpp behind a server that any app speaking OpenAI's API can use, with scripts to start each one, a terminal chat, OpenCode wired to it, and a benchmark that reports how many guesses were accepted.</p>
+            <div class="table-wrap">
+            <table class="simple-table">
+                <thead><tr><th>Model</th><th>Prediction off</th><th>Prediction on</th><th>Speedup</th></tr></thead>
+                <tbody>
+                <tr><td>Qwen3.6 35B (built-in guessing)</td><td>~51 tok/s</td><td>54–71 tok/s</td><td>1.06–1.4×</td></tr>
+                <tr><td>Llama 3.3 70B (1B guesser)</td><td>~5.2 tok/s</td><td>8.6–9.7 tok/s</td><td>1.65–1.8×</td></tr>
+                </tbody>
+            </table>
+            </div>
+            <p>The obvious next step was letting the small model guess eight words ahead instead of three. It was slower. More of the long guesses were wrong, and the big model's time checking them outweighed what the right ones saved.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Where it's actually used</h2>
+            </div>
+            <p>The most practical use is in the <a href="itunes-remote.html">iTunes remote</a>. Its playlist curator is a small local model: you ask for "a 20 song playlist for a 90s road trip", it builds one from the library, and then you argue with it until it's right. Saving a playlist files away what you approved, and the app can fine-tune a model of its own on those edits, on the laptop. The <a href="itunes-remote-internals.html">technical write-up</a> has the details, including the three base models it took to find one that would both train and import.</p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>What I took from it</h2>
+            </div>
+            <p>The setting in your config isn't the setting it's running at. Context length, memory limits and which model is loaded all got quietly overridden somewhere, and the only reliable answer came from asking the running server.</p>
+            <p>Check what else is using the machine before believing a benchmark. A four times difference came from two idle models I'd forgotten about.</p>
+            <p>And never take the agent's word for it. The failure that worries me isn't a crash, it's a model making the test pass by changing the test. Every result here was checked by something that wasn't the agent.</p>
+        </section>
+
+        <p class="muted"><a href="claude-code.html">← Back to projects</a> · <a href="itunes-remote.html">The iTunes remote →</a></p>
+
+    </div>
+</main>
+
+</body>
+</html>

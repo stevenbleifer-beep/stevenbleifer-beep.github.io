@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Built with Claude Code — Steven Bleifer</title>
-    <meta name="description" content="Notes on the things I've built with Claude Code: this site, CPA and AIS study tools, a pomodoro timer, a vinyl ripping pipeline, and a long detour through old hard drives and iPods.">
+    <meta name="description" content="Notes on the things I've built with Claude Code: this site, CPA and AIS study tools, a pomodoro timer, a vinyl ripping pipeline, local AI models on my own Macs, and a long detour through old hard drives and iPods.">
     <meta name="theme-color" content="#f3ead4">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -38,7 +38,7 @@
             <h1>Built with Claude Code.</h1>
             <p class="lead">I'm an accountant, not a programmer. Over the last few months I've been using Claude Code to build the stuff I actually wanted to exist. This site, my study tools, and a bunch of fairly stubborn problems involving records, old hard drives, and iPods older than the App Store.</p>
             <div class="pill-row">
-                <span class="pill">188 commits</span>
+                <span class="pill">150 commits on this site</span>
                 <span class="pill">Since February 2026</span>
                 <span class="pill">No CS background</span>
             </div>
@@ -56,7 +56,7 @@
             <div class="section-header">
                 <h2>This site</h2>
             </div>
-            <p>Everything you're looking at. It started in February 2026 as one page and it's now 178 commits of tinkering. No framework, no build step, nothing to install. Just HTML, one stylesheet, and a bit of JavaScript.</p>
+            <p>Everything you're looking at. It started in February 2026 as one page and it's now 150 commits of tinkering. No framework, no build step, nothing to install. Just HTML, one stylesheet, and a bit of JavaScript.</p>
             <p>A few things it does that you wouldn't guess from looking at it. The <a href="changelog.html">changelog</a> writes itself from git history and filters out the automated commits so only real changes show up. The <a href="activity.html">Library</a> page pulls live from Letterboxd and Goodreads. There's a search box on the home page that indexes every page.</p>
             <p>There's also a guestbook running on a Firebase database with App Check turned on through reCAPTCHA. That sounds tidy written down and it cost me an entire evening, because Firebase had auto created a key that didn't show up in any console I could get to, which meant I couldn't add domains to it and couldn't figure out why every call was failing.</p>
         </section>
@@ -122,6 +122,14 @@
             </div>
             <p>The library lives on a 2012 MacBook Pro that runs iTunes 12.9.5 and nothing else, headless in another room. So it got an HTTP API and a native Mac client drawn to look like iTunes 10 — the column browser, Cover Flow, the green display, the lot.</p>
             <p>The hard part was the iPod. iTunes syncs from a selection of ticked playlists and artists that nothing outside iTunes can read: no AppleScript terms, an accessibility tree with zero elements, and an undocumented binary database. The app keeps its own selection instead and writes it into a playlist the iPod syncs. Before switching anything over I inventoried the device, which is how I found that the playlists I had ticked accounted for only 30% of what was on it — the rest came from individually ticked artists, and the obvious approach would have wiped it. <a href="itunes-remote.html">Read about the iTunes remote →</a> <a href="itunes-remote-internals.html">How it works →</a></p>
+        </section>
+
+        <section class="section">
+            <div class="section-header">
+                <h2>Running AI on my own Macs</h2>
+            </div>
+            <p>Everything else here used Claude in the cloud, so I wanted to see how far models running on my own hardware could get. Across a MacBook Air, a Mac mini and an M1 Max MacBook Pro that became a local coding agent started with one command, a harness that gives it a real write-test-fix task and checks the result independently, and a head-to-head of nine coding agents on the same model. The big-name agents finished last, because they send about 30,000 tokens of instructions every turn and a local model has to re-read all of it.</p>
+            <p>There's a cloud fallback for when the local model is out of its depth, behind a gateway with a $5 a month allowance. And on the MacBook Pro, a 70 billion parameter model sped up almost 1.8× by letting a tiny model guess ahead and the big one check its guesses. <a href="local-ai.html">Read about the local AI setup →</a></p>
         </section>
 
         <section class="section">

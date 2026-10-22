@@ -73,12 +73,6 @@
 
 <script>
 (function() {
-    var CORS_PROXIES = [
-        'https://corsproxy.io/?url=',
-        'https://api.allorigins.win/raw?url=',
-        'https://api.codetabs.com/v1/proxy?quest='
-    ];
-
     function starRating(num) {
         var full = Math.floor(num);
         var half = (num % 1 >= 0.5) ? 1 : 0;
@@ -90,55 +84,31 @@
         return s;
     }
 
-    function parseXML(text) { return new DOMParser().parseFromString(text, 'text/xml'); }
-
-    function fetchWithFallback(url, proxyIndex) {
-        proxyIndex = proxyIndex || 0;
-        if (proxyIndex >= CORS_PROXIES.length) return Promise.reject(new Error('All proxies failed'));
-        var proxyUrl = CORS_PROXIES[proxyIndex] + encodeURIComponent(url);
-        return fetch(proxyUrl).then(function(r) {
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.text();
-        }).then(function(text) {
-            var doc = parseXML(text);
-            if (doc.querySelector('parsererror') || !doc.querySelector('item')) throw new Error('Invalid XML');
-            return text;
-        }).catch(function() { return fetchWithFallback(url, proxyIndex + 1); });
-    }
-
     function escapeHTML(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
 
-    fetchWithFallback('https://letterboxd.com/stevenfred/rss/')
-        .then(function(text) {
-            var doc = parseXML(text);
-            var items = doc.querySelectorAll('item');
+    fetch('letterboxd-feed.json?v=' + Date.now())
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
             var container = document.getElementById('letterboxd-feed');
-            if (!items.length) {
+            if (!data.ok || !data.films || !data.films.length) {
                 container.innerHTML = '<p class="feed-error">No films found yet.</p>';
                 return;
             }
             var html = '<ul class="media-list">';
-            var count = Math.min(items.length, 10);
-            for (var i = 0; i < count; i++) {
-                var item = items[i];
-                var title = item.querySelector('title') ? item.querySelector('title').textContent : 'Unknown';
-                var link = item.querySelector('link') ? item.querySelector('link').textContent : '#';
-                var desc = item.querySelector('description') ? item.querySelector('description').textContent : '';
-                var ratingMatch = desc.match(/Rating: ([\d.]+)/);
-                var rating = ratingMatch ? parseFloat(ratingMatch[1]) : 0;
-                var imgMatch = desc.match(/<img\s+src="([^"]+)"/);
-                var poster = imgMatch ? imgMatch[1] : '';
-                var dateEl = item.querySelector('pubDate');
+            var films = data.films;
+            for (var i = 0; i < films.length; i++) {
+                var f = films[i];
+                var rating = parseFloat(f.rating) || 0;
                 var dateStr = '';
-                if (dateEl) {
-                    var d = new Date(dateEl.textContent);
+                if (f.watched) {
+                    var d = new Date(f.watched + 'T12:00:00');
                     dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 }
                 html += '<li>';
-                if (poster) html += '<div class="cover"><img src="' + poster + '" alt="" referrerpolicy="no-referrer"></div>';
+                if (f.poster) html += '<div class="cover"><img src="' + f.poster + '" alt="" referrerpolicy="no-referrer"></div>';
                 else html += '<div class="cover"></div>';
                 html += '<div class="body">';
-                html += '<a class="title" href="' + link + '" target="_blank" rel="noopener">' + escapeHTML(title) + '</a>';
+                html += '<a class="title" href="' + f.link + '" target="_blank" rel="noopener">' + escapeHTML(f.title) + '</a>';
                 if (rating) html += '<p class="meta"><span class="stars">' + starRating(rating) + '</span></p>';
                 if (dateStr) html += '<p class="meta">' + dateStr + '</p>';
                 html += '</div></li>';
