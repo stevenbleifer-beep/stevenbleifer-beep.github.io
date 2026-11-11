@@ -1,0 +1,516 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0b0d10">
+<title>Wheel Radio</title>
+<style>
+  :root {
+    --bg: #0b0d10; --panel: #151920; --line: #262c36;
+    --text: #f2f4f7; --dim: #8b94a3; --accent: #ffb020;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: radial-gradient(120% 90% at 50% 40%, #171c25 0%, var(--bg) 70%);
+    color: var(--text);
+    font: 16px/1.35 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden; user-select: none; -webkit-user-select: none;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+
+  .app {
+    height: 100dvh; display: grid; grid-template-rows: auto 1fr auto;
+    padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+             max(12px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  }
+  header { display: flex; align-items: center; justify-content: space-between; }
+  header h1 { font-size: 13px; letter-spacing: .28em; text-transform: uppercase; color: var(--dim); margin: 0; font-weight: 600; }
+  .pill {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 999px;
+    padding: 10px 16px; font-size: 14px; font-weight: 600;
+  }
+  .stage { display: grid; place-items: center; min-height: 0; }
+  #wheel {
+    position: relative; container-type: size;
+    width: min(100vw - 24px, 100dvh - 190px); aspect-ratio: 1;
+  }
+  #wheel::before {
+    content: ""; position: absolute; inset: 11%; border-radius: 50%;
+    border: 1px dashed var(--line);
+  }
+  .st {
+    position: absolute; aspect-ratio: 1; transform: translate(-50%, -50%);
+    border-radius: 50%; border: 0.7cqw solid var(--c); background: #10141a;
+    font-weight: 800; letter-spacing: .02em; font-size: calc(var(--w) * 0.3cqw);
+    display: grid; place-items: center; padding: 0;
+    transition: transform .18s, background .18s, box-shadow .18s, opacity .18s;
+  }
+  .st.empty { opacity: .45; border-style: dashed; }
+  .st.sel {
+    background: var(--c); color: #0b0d10; transform: translate(-50%, -50%) scale(1.18);
+    box-shadow: 0 0 6cqw -1cqw var(--c); z-index: 2;
+  }
+  #center {
+    position: absolute; inset: 25%; border-radius: 50%;
+    background: var(--panel); border: 1px solid var(--line);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 5cqw; gap: .8cqw; overflow: hidden;
+  }
+  #center.on { border-color: var(--c, var(--accent)); box-shadow: inset 0 0 8cqw -4cqw var(--c, var(--accent)); }
+  #status { font-size: 2.6cqw; letter-spacing: .25em; text-transform: uppercase; color: var(--dim); }
+  #sname { font-size: 5.4cqw; font-weight: 800; line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; }
+  #title { font-size: 3.6cqw; font-weight: 600; max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #artist { font-size: 3.1cqw; color: var(--dim); max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #bar { width: 60%; height: .8cqw; min-height: 3px; border-radius: 9px; background: var(--line); margin-top: 1.4cqw; overflow: hidden; }
+  #bar i { display: block; height: 100%; width: 0; background: var(--c, var(--accent)); }
+
+  .controls { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 10px; }
+  .controls button {
+    height: 64px; border-radius: 18px; background: var(--panel); border: 1px solid var(--line);
+    font-size: 24px; font-weight: 700;
+  }
+  .controls button:active, .st:active, .pill:active, .btn:active { filter: brightness(1.4); }
+  #power.on { background: var(--accent); color: #0b0d10; border-color: var(--accent); }
+
+  @media (orientation: landscape) and (max-height: 560px) {
+    .app { grid-template-rows: 1fr; grid-template-columns: 1fr 120px; column-gap: 12px; }
+    header { position: absolute; top: max(10px, env(safe-area-inset-top)); left: max(12px, env(safe-area-inset-left)); z-index: 3; }
+    header h1 { display: none; }
+    #wheel { width: min(100dvh - 20px, 100vw - 170px); }
+    .controls { grid-template-columns: 1fr; align-content: center; }
+  }
+
+  dialog {
+    width: min(560px, 100vw - 16px); max-height: calc(100dvh - 24px);
+    background: var(--bg); color: var(--text); border: 1px solid var(--line);
+    border-radius: 20px; padding: 0; user-select: text; -webkit-user-select: text;
+  }
+  dialog::backdrop { background: rgba(0,0,0,.65); }
+  .dhead { position: sticky; top: 0; background: var(--bg); display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; border-bottom: 1px solid var(--line); z-index: 1; }
+  .dhead h2 { margin: 0; font-size: 18px; }
+  .dbody { padding: 14px 16px 18px; display: grid; gap: 12px; }
+  .hint { color: var(--dim); font-size: 14px; margin: 0; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 12px; display: grid; gap: 10px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .row input[type=text] { flex: 1; min-width: 0; background: #0e1116; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-weight: 600; }
+  .row input[type=color] { width: 44px; height: 44px; padding: 0; border: 0; background: none; }
+  .meta { color: var(--dim); font-size: 13px; }
+  .btn { background: #0e1116; border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #0b0d10; }
+  .btn.danger { color: #ff7a7a; }
+  .vh { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+  details summary { color: var(--dim); font-size: 13px; cursor: pointer; }
+  .trk { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 13px; padding: 4px 0; border-top: 1px solid var(--line); }
+  .trk span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .trk button { background: none; border: 0; color: var(--dim); padding: 6px 8px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Wheel Radio</h1>
+    <button class="pill" id="manageBtn">Stations</button>
+  </header>
+
+  <div class="stage">
+    <div id="wheel">
+      <button id="center" aria-label="Power">
+        <div id="status">Off</div>
+        <div id="sname"></div>
+        <div id="title"></div>
+        <div id="artist"></div>
+        <div id="bar"><i></i></div>
+      </button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="prev" aria-label="Previous station">◀</button>
+    <button id="power" aria-label="Power">⏻</button>
+    <button id="next" aria-label="Next station">▶</button>
+  </div>
+</div>
+
+<dialog id="manage">
+  <div class="dhead">
+    <h2>Stations</h2>
+    <button class="btn primary" id="closeManage">Done</button>
+  </div>
+  <div class="dbody">
+    <p class="hint">Each station is a never-ending broadcast of the music you add. Stations keep "playing" when you're not listening, so you always tune in mid-song. Music is stored on this device only.</p>
+    <p class="hint" id="importStatus" hidden></p>
+    <div id="list" style="display:grid;gap:12px"></div>
+    <button class="btn" id="addStation">+ New station</button>
+  </div>
+</dialog>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const PALETTE = ['#ffb020', '#ff5d73', '#4cc9f0', '#7ae582', '#c77dff', '#ff8c42', '#f72585', '#48e5c2', '#e9d758', '#8ea8ff'];
+
+let db = null;
+let stations = [];          // {id, name, color, offset, order:[trackId]}
+let tracks = {};            // stationId -> [{id, stationId, name, duration, blob}]
+let current = null;         // tuned station id
+let curTrack = null;
+let on = false;
+let pendingSeek = 0, curUrl = null, errStreak = 0, fadeTimer = 0;
+
+const audio = new Audio();
+audio.preload = 'auto';
+
+/* ---------- storage ---------- */
+function openDB() {
+  return new Promise((res, rej) => {
+    const r = indexedDB.open('wheel-radio', 1);
+    r.onupgradeneeded = () => {
+      r.result.createObjectStore('stations', { keyPath: 'id' });
+      r.result.createObjectStore('tracks', { keyPath: 'id', autoIncrement: true });
+    };
+    r.onsuccess = () => res(r.result);
+    r.onerror = () => rej(r.error);
+  });
+}
+function idb(store, mode, fn) {
+  if (!db) return Promise.resolve(undefined);
+  return new Promise((res, rej) => {
+    const t = db.transaction(store, mode);
+    const req = fn(t.objectStore(store));
+    t.oncomplete = () => res(req && 'result' in req ? req.result : undefined);
+    t.onerror = t.onabort = () => rej(t.error);
+  });
+}
+const saveStation = s => idb('stations', 'readwrite', o => o.put(s)).catch(console.warn);
+
+async function load() {
+  try { db = await openDB(); } catch (e) { console.warn('No persistent storage', e); }
+  stations = (await idb('stations', 'readonly', o => o.getAll())) || [];
+  stations.sort((a, b) => a.created - b.created);
+  const all = (await idb('tracks', 'readonly', o => o.getAll())) || [];
+  tracks = {};
+  for (const s of stations) {
+    const mine = all.filter(t => t.stationId === s.id);
+    const rank = id => { const i = s.order.indexOf(id); return i < 0 ? 1e9 : i; };
+    tracks[s.id] = mine.sort((a, b) => rank(a.id) - rank(b.id));
+  }
+  try { current = localStorage.getItem('wheel-radio:last'); } catch {}
+  if (!stations.some(s => s.id === current)) current = null;
+  if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+}
+
+/* ---------- helpers ---------- */
+function h(tag, props, ...kids) {
+  const e = document.createElement(tag);
+  Object.assign(e, props || {});
+  for (const k of kids.flat()) if (k != null) e.append(k);
+  return e;
+}
+const station = id => stations.find(s => s.id === id);
+const hasTracks = s => (tracks[s.id] || []).length > 0;
+function initials(name) {
+  const w = name.trim().split(/\s+/).filter(Boolean);
+  if (!w.length) return '?';
+  return (w.length === 1 ? w[0].slice(0, 3) : w.slice(0, 3).map(x => x[0]).join('')).toUpperCase();
+}
+function fmt(sec) {
+  sec = Math.round(sec);
+  const hh = Math.floor(sec / 3600), mm = Math.floor(sec % 3600 / 60);
+  return hh ? `${hh}h ${mm}m` : `${mm}m ${sec % 60}s`;
+}
+function parseName(file) {
+  let n = file.replace(/\.[a-z0-9]{2,5}$/i, '').replace(/_/g, ' ').replace(/^\d{1,3}[\s.\-]+/, '').trim();
+  const i = n.indexOf(' - ');
+  return i > 0 ? { artist: n.slice(0, i).trim(), title: n.slice(i + 3).trim() } : { artist: '', title: n };
+}
+function probe(blob) {
+  return new Promise(res => {
+    const a = new Audio(), u = URL.createObjectURL(blob);
+    const done = d => { URL.revokeObjectURL(u); res(isFinite(d) && d > 0 ? d : 0); };
+    a.preload = 'metadata';
+    a.onloadedmetadata = () => done(a.duration);
+    a.onerror = () => done(0);
+    setTimeout(() => done(0), 8000);
+    a.src = u;
+  });
+}
+
+/* ---------- the broadcast clock ---------- */
+// Every station loops its playlist forever against the wall clock,
+// so where you land depends on what time it is, not on when you last listened.
+function locate(s) {
+  const list = tracks[s.id] || [];
+  const total = list.reduce((a, t) => a + t.duration, 0);
+  if (!total) return null;
+  let t = (Date.now() / 1000 + s.offset) % total;
+  for (let i = 0; i < list.length; i++) {
+    if (t < list[i].duration) return { i, t };
+    t -= list[i].duration;
+  }
+  return { i: 0, t: 0 };
+}
+
+function playAt(s, i, t) {
+  const list = tracks[s.id];
+  curTrack = list[i];
+  if (curUrl) URL.revokeObjectURL(curUrl);
+  curUrl = URL.createObjectURL(curTrack.blob);
+  pendingSeek = t;
+  audio.src = curUrl;
+  audio.play().catch(() => {});
+  renderNow();
+}
+audio.addEventListener('loadedmetadata', () => {
+  if (pendingSeek > 0.5 && pendingSeek < audio.duration - 0.5) audio.currentTime = pendingSeek;
+  pendingSeek = 0;
+});
+audio.addEventListener('playing', () => { errStreak = 0; });
+audio.addEventListener('ended', () => advance());
+audio.addEventListener('error', () => {
+  if (!on || !curTrack) return;
+  if (++errStreak <= (tracks[current] || []).length) advance();
+});
+audio.addEventListener('timeupdate', () => {
+  $('#bar i').style.width = audio.duration ? (audio.currentTime / audio.duration * 100) + '%' : '0';
+});
+function advance() {
+  const s = station(current), list = s && tracks[s.id];
+  if (!on || !list || !list.length) return;
+  playAt(s, (list.indexOf(curTrack) + 1) % list.length, 0);
+}
+
+/* ---------- static between stations ---------- */
+let ac;
+function burst() {
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+    const len = ac.sampleRate * 0.45 | 0, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = Math.random() * 2 - 1;
+    const src = ac.createBufferSource(); src.buffer = buf;
+    const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1800; bp.Q.value = 0.6;
+    const g = ac.createGain(), t = ac.currentTime;
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.22, t + 0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + 0.45);
+    src.connect(bp).connect(g).connect(ac.destination);
+    src.start();
+  } catch {}
+}
+
+/* ---------- tuning ---------- */
+function tune(id) {
+  const s = station(id);
+  if (!s) return;
+  current = id; on = true;
+  try { localStorage.setItem('wheel-radio:last', id); } catch {}
+  burst();
+  clearTimeout(fadeTimer);
+  const pos = locate(s);
+  if (pos) {
+    audio.volume = 0;
+    fadeTimer = setTimeout(() => { audio.volume = 1; }, 320);
+    playAt(s, pos.i, pos.t);
+  } else {
+    audio.pause(); curTrack = null;
+  }
+  wakeLock();
+  render();
+}
+function power(want) {
+  if (want === undefined) want = !on;
+  if (want) {
+    const s = station(current) || stations.find(hasTracks) || stations[0];
+    if (s) tune(s.id); else openManage();
+  } else {
+    on = false; audio.pause(); render();
+  }
+}
+function step(dir) {
+  const n = stations.length;
+  if (!n) return;
+  let i = stations.findIndex(s => s.id === current);
+  for (let k = 0; k < n; k++) {
+    i = (i + dir + n) % n;
+    if (hasTracks(stations[i])) return tune(stations[i].id);
+  }
+}
+
+let lock = null;
+async function wakeLock() {
+  try { if (on && navigator.wakeLock && !lock) { lock = await navigator.wakeLock.request('screen'); lock.onrelease = () => { lock = null; }; } } catch {}
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') wakeLock(); });
+
+// Steering-wheel / lock-screen buttons: skip = change station.
+if ('mediaSession' in navigator) {
+  const set = (a, f) => { try { navigator.mediaSession.setActionHandler(a, f); } catch {} };
+  set('nexttrack', () => step(1));
+  set('previoustrack', () => step(-1));
+  set('play', () => power(true));
+  set('pause', () => power(false));
+  set('stop', () => power(false));
+}
+
+/* ---------- rendering ---------- */
+function render() { renderWheel(); renderNow(); }
+
+function renderWheel() {
+  const wheel = $('#wheel');
+  wheel.querySelectorAll('.st').forEach(e => e.remove());
+  const n = stations.length, R = 39;
+  const size = Math.max(10, Math.min(22, n ? (2 * Math.PI * R / n) * 0.8 : 22));
+  stations.forEach((s, i) => {
+    const a = (-90 + i * 360 / n) * Math.PI / 180;
+    const b = h('button', {
+      className: 'st' + (s.id === current && on ? ' sel' : '') + (hasTracks(s) ? '' : ' empty'),
+      title: s.name, onclick: () => tune(s.id)
+    }, initials(s.name));
+    b.setAttribute('aria-label', s.name);
+    b.style.cssText = `left:${50 + R * Math.cos(a)}%;top:${50 + R * Math.sin(a)}%;width:${size}%;--c:${s.color};--w:${size}`;
+    wheel.append(b);
+  });
+}
+
+function renderNow() {
+  const s = station(current), c = $('#center');
+  c.classList.toggle('on', on);
+  $('#power').classList.toggle('on', on);
+  c.style.setProperty('--c', s ? s.color : '');
+  let status = 'Off', name = '', title = '', artist = '';
+  if (!stations.length) { status = 'No stations'; name = 'Tap to add one'; }
+  else if (!on) { name = s ? s.name : ''; title = 'Tap to turn on'; }
+  else if (!curTrack) { status = 'On air'; name = s.name; title = 'No music yet'; artist = 'Add some in Stations'; }
+  else { status = 'On air'; name = s.name; ({ title, artist } = parseName(curTrack.name)); }
+  $('#status').textContent = status;
+  $('#sname').textContent = name;
+  $('#title').textContent = title;
+  $('#artist').textContent = artist;
+  $('#bar').style.visibility = on && curTrack ? 'visible' : 'hidden';
+  if ('mediaSession' in navigator && window.MediaMetadata) {
+    navigator.mediaSession.metadata = on && curTrack
+      ? new MediaMetadata({ title, artist: artist || s.name, album: s.name }) : null;
+    navigator.mediaSession.playbackState = on ? 'playing' : 'paused';
+  }
+}
+
+/* ---------- station management ---------- */
+async function addStation() {
+  const s = {
+    id: 's' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    name: 'Station ' + (stations.length + 1),
+    color: PALETTE[stations.length % PALETTE.length],
+    offset: Math.floor(Math.random() * 100000),
+    order: [], created: Date.now()
+  };
+  stations.push(s); tracks[s.id] = [];
+  await saveStation(s);
+  renderManage(); render();
+}
+
+async function addFiles(id, files) {
+  const s = station(id), st = $('#importStatus');
+  let bad = 0;
+  st.hidden = false;
+  for (let i = 0; i < files.length; i++) {
+    st.textContent = `Importing ${i + 1} of ${files.length}…`;
+    const f = files[i], duration = await probe(f);
+    if (!duration) { bad++; continue; }
+    const t = { stationId: id, name: f.name, duration, blob: f };
+    try {
+      const key = await idb('tracks', 'readwrite', o => o.add(t));
+      t.id = key !== undefined ? key : 'm' + Math.random();
+    } catch (e) {
+      st.textContent = 'Storage is full — could not save more music.';
+      console.warn(e); break;
+    }
+    tracks[id].push(t); s.order.push(t.id);
+  }
+  await saveStation(s);
+  if (!st.textContent.startsWith('Storage')) {
+    st.textContent = bad ? `${bad} file${bad > 1 ? 's' : ''} couldn't be read as audio and were skipped.` : '';
+    st.hidden = !bad;
+  }
+  renderManage(); render();
+}
+
+async function shuffleStation(s) {
+  const list = tracks[s.id];
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  s.order = list.map(t => t.id);
+  await saveStation(s);
+  renderManage();
+}
+
+async function removeTrack(s, t) {
+  tracks[s.id] = tracks[s.id].filter(x => x !== t);
+  s.order = s.order.filter(x => x !== t.id);
+  await idb('tracks', 'readwrite', o => o.delete(t.id)).catch(console.warn);
+  await saveStation(s);
+  if (t === curTrack) { if (tracks[s.id].length) tune(s.id); else { audio.pause(); curTrack = null; } }
+  renderManage(); render();
+}
+
+async function deleteStation(s) {
+  if (!confirm(`Delete "${s.name}" and its ${tracks[s.id].length} tracks from this device?`)) return;
+  const ids = tracks[s.id].map(t => t.id);
+  await idb('tracks', 'readwrite', o => { ids.forEach(i => o.delete(i)); }).catch(console.warn);
+  await idb('stations', 'readwrite', o => o.delete(s.id)).catch(console.warn);
+  stations = stations.filter(x => x !== s); delete tracks[s.id];
+  if (current === s.id) { current = null; curTrack = null; on = false; audio.pause(); }
+  renderManage(); render();
+}
+
+function renderManage() {
+  $('#list').replaceChildren(...stations.map(s => {
+    const ts = tracks[s.id] || [];
+    const file = h('input', {
+      type: 'file', accept: 'audio/*', multiple: true, className: 'vh',
+      onchange: e => { const f = [...e.target.files]; e.target.value = ''; addFiles(s.id, f); }
+    });
+    return h('section', { className: 'card' },
+      h('div', { className: 'row' },
+        h('input', { type: 'color', value: s.color, oninput: e => { s.color = e.target.value; saveStation(s); render(); } }),
+        h('input', { type: 'text', value: s.name, maxLength: 28, placeholder: 'Station name',
+          oninput: e => { s.name = e.target.value || 'Station'; saveStation(s); render(); } })),
+      h('div', { className: 'meta' }, ts.length ? `${ts.length} tracks · ${fmt(ts.reduce((a, t) => a + t.duration, 0))} loop` : 'No music yet'),
+      h('div', { className: 'row' },
+        h('label', { className: 'btn primary' }, 'Add music', file),
+        ts.length > 1 ? h('button', { className: 'btn', onclick: () => shuffleStation(s) }, 'Shuffle order') : null,
+        h('button', { className: 'btn danger', onclick: () => deleteStation(s) }, 'Delete')),
+      ts.length ? h('details', {}, h('summary', {}, 'Tracks'),
+        ts.map(t => h('div', { className: 'trk' }, h('span', {}, t.name),
+          h('button', { onclick: () => removeTrack(s, t), title: 'Remove' }, '✕')))) : null
+    );
+  }));
+}
+function openManage() { renderManage(); $('#manage').showModal(); }
+
+/* ---------- wiring ---------- */
+$('#manageBtn').onclick = openManage;
+$('#closeManage').onclick = () => $('#manage').close();
+$('#addStation').onclick = addStation;
+$('#center').onclick = () => power();
+$('#power').onclick = () => power();
+$('#prev').onclick = () => step(-1);
+$('#next').onclick = () => step(1);
+addEventListener('keydown', e => {
+  if ($('#manage').open) return;
+  if (e.key === 'ArrowRight') step(1);
+  else if (e.key === 'ArrowLeft') step(-1);
+  else if (e.key === ' ') { e.preventDefault(); power(); }
+});
+
+load().then(render);
+</script>
+</body>
+</html>
