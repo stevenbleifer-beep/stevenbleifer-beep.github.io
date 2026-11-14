@@ -8,13 +8,13 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>AIS Final Flashcards — Bleifer Study</title>
   <meta name="description" content="Key-terms flashcards for AIS Final exam — Ch 16 cybersecurity, CIS Controls, SOC reports, regulations" />
-  <meta name="theme-color" content="#fbf9f4" />
+  <meta name="theme-color" content="#050551" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { background: #fbf9f4; }
+    html, body { background: #050551; }
     body {
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #1c1917;
+      color: #dfe1f6;
       min-height: 100vh;
       -webkit-user-select: none;
       -moz-user-select: none;
@@ -36,20 +36,20 @@
       font-weight: 700;
       font-size: 1.05rem;
       text-decoration: none;
-      color: #1c1917;
+      color: #dfe1f6;
       letter-spacing: -0.01em;
     }
-    .brand .sep { color: #d6d3d1; margin: 0 8px; font-weight: 400; }
-    .brand .mode { color: #78716c; font-weight: 400; font-style: italic; }
+    .brand .sep { color: #4949a5; margin: 0 8px; font-weight: 400; }
+    .brand .mode { color: #a1a2d4; font-weight: 400; font-style: italic; }
     .back {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: #78716c;
+      color: #a1a2d4;
       text-decoration: none;
     }
-    .back:hover { color: #1c1917; }
+    .back:hover { color: #dfe1f6; }
 
     h1 {
       font-family: Georgia, serif;
@@ -61,7 +61,7 @@
     .subtitle {
       font-family: Georgia, serif;
       font-style: italic;
-      color: #78716c;
+      color: #a1a2d4;
       margin-bottom: 32px;
     }
 
@@ -78,17 +78,17 @@
       letter-spacing: 0.1em;
       padding: 8px 14px;
       border-radius: 999px;
-      border: 1px solid #e7e5e4;
-      background: #fff;
-      color: #78716c;
+      border: 1px solid #17176e;
+      background: #000048;
+      color: #a1a2d4;
       cursor: pointer;
       transition: all 0.15s;
     }
-    .chip:hover { border-color: #a8a29e; color: #1c1917; }
+    .chip:hover { border-color: #7a7abf; color: #dfe1f6; }
     .chip.active {
-      background: #1c1917;
-      border-color: #1c1917;
-      color: #fbf9f4;
+      background: #dfe1f6;
+      border-color: #dfe1f6;
+      color: #050551;
     }
 
     .progress {
@@ -100,7 +100,7 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #a8a29e;
+      color: #7a7abf;
     }
 
     .card-stage {
@@ -121,8 +121,8 @@
       inset: 0;
       backface-visibility: hidden;
       -webkit-backface-visibility: hidden;
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 16px;
       padding: 48px 40px;
       display: flex;
@@ -136,7 +136,7 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      color: #a8a29e;
+      color: #7a7abf;
       margin-bottom: 20px;
     }
     .face .term {
@@ -150,7 +150,7 @@
       font-family: Georgia, serif;
       font-size: 1.05rem;
       line-height: 1.55;
-      color: #292524;
+      color: #d7d9f2;
     }
     .ch-tag-row {
       display: flex;
@@ -166,17 +166,17 @@
       letter-spacing: 0.15em;
       padding: 3px 10px;
       border-radius: 999px;
-      background: #f5f5f4;
-      color: #78716c;
+      background: #090957;
+      color: #a1a2d4;
     }
     .lo-tag {
-      background: #1c1917;
-      color: #fbf9f4;
+      background: #dfe1f6;
+      color: #050551;
     }
     .section-tag {
       background: transparent;
-      color: #a8a29e;
-      border: 1px solid #e7e5e4;
+      color: #7a7abf;
+      border: 1px solid #17176e;
     }
     .lo-filters {
       margin-top: -12px;
@@ -194,7 +194,7 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.15em;
-      color: #d6d3d1;
+      color: #4949a5;
     }
 
     .controls {
@@ -208,33 +208,33 @@
       font-size: 0.9rem;
       padding: 12px 24px;
       border-radius: 10px;
-      border: 1px solid #e7e5e4;
-      background: #fff;
-      color: #1c1917;
+      border: 1px solid #17176e;
+      background: #000048;
+      color: #dfe1f6;
       cursor: pointer;
       transition: all 0.15s;
     }
-    button:hover:not(:disabled) { border-color: #1c1917; }
+    button:hover:not(:disabled) { border-color: #dfe1f6; }
     button:disabled { opacity: 0.4; cursor: not-allowed; }
     button.primary {
-      background: #1c1917;
-      color: #fbf9f4;
-      border-color: #1c1917;
+      background: #dfe1f6;
+      color: #050551;
+      border-color: #dfe1f6;
     }
-    button.primary:hover:not(:disabled) { background: #292524; }
+    button.primary:hover:not(:disabled) { background: #d7d9f2; }
 
     .empty {
       padding: 80px 24px;
       text-align: center;
       font-family: Georgia, serif;
       font-style: italic;
-      color: #a8a29e;
+      color: #7a7abf;
     }
 
     .mc-section {
       margin-top: 56px;
       padding-top: 40px;
-      border-top: 1px solid #e7e5e4;
+      border-top: 1px solid #17176e;
     }
     .mc-header {
       display: flex;
@@ -255,21 +255,21 @@
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
-      color: #78716c;
+      color: #a1a2d4;
     }
-    .mc-score .pct { color: #1c1917; font-weight: 700; }
+    .mc-score .pct { color: #dfe1f6; font-weight: 700; }
     .mc-timer {
       display: inline-flex;
       align-items: center;
       gap: 6px;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 11px;
-      color: #78716c;
+      color: #a1a2d4;
       font-variant-numeric: tabular-nums;
     }
-    .mc-timer-value { color: #1c1917; letter-spacing: 0.02em; }
+    .mc-timer-value { color: #dfe1f6; letter-spacing: 0.02em; }
     .mc-timer-sep {
-      color: #a8a29e;
+      color: #7a7abf;
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.15em;
@@ -279,19 +279,19 @@
       width: 20px;
       height: 20px;
       padding: 0;
-      border: 1px solid #d6d3d1;
+      border: 1px solid #4949a5;
       border-radius: 999px;
-      background: #fff;
+      background: #000048;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: #1c1917;
+      color: #dfe1f6;
     }
-    .mc-timer-btn:hover { border-color: #1c1917; }
+    .mc-timer-btn:hover { border-color: #dfe1f6; }
     .mc-card {
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 16px;
       padding: 28px 28px 24px;
     }
@@ -300,7 +300,7 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      color: #a8a29e;
+      color: #7a7abf;
       margin-bottom: 12px;
     }
     .mc-prompt {
@@ -314,7 +314,7 @@
     .mc-prompt-sub {
       font-family: Georgia, serif;
       font-style: italic;
-      color: #78716c;
+      color: #a1a2d4;
       font-size: 0.9rem;
       margin-bottom: 24px;
     }
@@ -328,9 +328,9 @@
       font-family: Georgia, serif;
       font-size: 0.95rem;
       line-height: 1.5;
-      color: #1c1917;
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      color: #dfe1f6;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 10px;
       padding: 14px 18px;
       cursor: pointer;
@@ -340,27 +340,27 @@
       align-items: flex-start;
     }
     .mc-option:hover:not(:disabled) {
-      border-color: #1c1917;
-      background: #fafaf9;
+      border-color: #dfe1f6;
+      background: #05054f;
     }
     .mc-option .letter {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.85rem;
       font-weight: 700;
-      color: #a8a29e;
+      color: #7a7abf;
       flex-shrink: 0;
       padding-top: 1px;
     }
     .mc-option.correct {
-      border-color: #166534;
-      background: #f0fdf4;
+      border-color: #3dff87;
+      background: #064b1b;
     }
-    .mc-option.correct .letter { color: #166534; }
+    .mc-option.correct .letter { color: #3dff87; }
     .mc-option.incorrect {
-      border-color: #991b1b;
-      background: #fef2f2;
+      border-color: #ff3d3d;
+      background: #4b0606;
     }
-    .mc-option.incorrect .letter { color: #991b1b; }
+    .mc-option.incorrect .letter { color: #ff3d3d; }
     .mc-option.faded { opacity: 0.55; }
     .mc-option:disabled { cursor: default; }
 
@@ -375,14 +375,14 @@
     }
     .mc-feedback.show { display: block; }
     .mc-feedback.right {
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-      color: #14532d;
+      background: #064b1b;
+      border: 1px solid #064b1e;
+      color: #3dff8a;
     }
     .mc-feedback.wrong {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      color: #7f1d1d;
+      background: #4b0606;
+      border: 1px solid #4b0606;
+      color: #ff3d3d;
     }
     .mc-feedback .label {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -415,15 +415,15 @@
     .learn-section {
       margin-top: 40px;
       padding-top: 40px;
-      border-top: 1px solid #e7e5e4;
+      border-top: 1px solid #17176e;
     }
     .learn-input {
       width: 100%;
       font-family: Georgia, serif;
       font-size: 1.1rem;
-      color: #1c1917;
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      color: #dfe1f6;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 10px;
       padding: 14px 18px;
       outline: none;
@@ -432,22 +432,22 @@
       -moz-user-select: text;
       user-select: text;
     }
-    .learn-input:focus { border-color: #1c1917; }
-    .learn-input:disabled { background: #fafaf9; cursor: default; }
-    .learn-input.correct { border-color: #166534; background: #f0fdf4; }
-    .learn-input.incorrect { border-color: #991b1b; background: #fef2f2; }
-    .learn-input.close { border-color: #b45309; background: #fffbeb; }
+    .learn-input:focus { border-color: #dfe1f6; }
+    .learn-input:disabled { background: #05054f; cursor: default; }
+    .learn-input.correct { border-color: #3dff87; background: #064b1b; }
+    .learn-input.incorrect { border-color: #ff3d3d; background: #4b0606; }
+    .learn-input.close { border-color: #ff913d; background: #4b3e06; }
     #devtools-shield {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 99999;
-      background: #fbf9f4;
+      background: #050551;
       align-items: center;
       justify-content: center;
       font-family: Georgia, serif;
       font-style: italic;
-      color: #a8a29e;
+      color: #7a7abf;
       font-size: 1.2rem;
       text-align: center;
       padding: 24px;
@@ -455,12 +455,13 @@
   </style>
 <link rel="stylesheet" href="../retro-fx.css">
 <link rel="stylesheet" href="../retro-skin.css">
+<link rel="stylesheet" href="../retro-study.css">
 <link rel="icon" href="../images/retro/globe.gif">
 <script src="../retro.js" defer data-retro="skin"></script>
 </head>
 <body>
 <!-- back to main page -->
-<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#b8552a;color:#f3ead4;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
+<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#ff783d;color:#4b3706;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
 
   <div id="devtools-shield">Please close developer tools to continue studying.</div>
 

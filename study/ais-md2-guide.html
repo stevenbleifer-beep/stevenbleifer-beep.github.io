@@ -8,13 +8,13 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>AIS MD2 Exam Guide — Bleifer Study</title>
   <meta name="description" content="Exam guide for AIS Midterm 2 with Prof. Lanz — topics, priorities, and COBIT breakdown" />
-  <meta name="theme-color" content="#fbf9f4" />
+  <meta name="theme-color" content="#050551" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #fbf9f4;
+      background: #050551;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #1c1917;
+      color: #dfe1f6;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -30,12 +30,12 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: #78716c;
+      color: #a1a2d4;
       text-decoration: none;
       display: inline-block;
       margin-bottom: 32px;
     }
-    .back:hover { color: #1c1917; }
+    .back:hover { color: #dfe1f6; }
     h1 {
       font-family: Georgia, "Times New Roman", serif;
       font-size: 2rem;
@@ -46,15 +46,15 @@
     .tagline {
       font-family: Georgia, serif;
       font-style: italic;
-      color: #78716c;
+      color: #a1a2d4;
       font-size: 0.95rem;
       margin-bottom: 40px;
     }
 
     /* Exam logistics banner */
     .logistics {
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 12px;
       padding: 20px 24px;
       display: flex;
@@ -72,13 +72,13 @@
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: #a8a29e;
+      color: #7a7abf;
     }
     .logistic-value {
       font-family: Georgia, serif;
       font-size: 1rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
     }
 
     /* Section */
@@ -87,15 +87,15 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      color: #a8a29e;
+      color: #7a7abf;
       margin-bottom: 12px;
       margin-top: 40px;
     }
 
     /* Topic card */
     .topic-card {
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 12px;
       padding: 22px 24px;
       margin-bottom: 12px;
@@ -111,7 +111,7 @@
       font-family: Georgia, serif;
       font-size: 1.05rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
       line-height: 1.3;
     }
     .pill {
@@ -124,10 +124,10 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .pill-default { background: #f5f5f4; color: #78716c; }
-    .pill-hot { background: #fef2f2; color: #b91c1c; }
-    .pill-warn { background: #fffbeb; color: #92400e; }
-    .pill-muted { background: #f5f5f4; color: #a8a29e; }
+    .pill-default { background: #090957; color: #a1a2d4; }
+    .pill-hot { background: #4b0606; color: #ff3d3d; }
+    .pill-warn { background: #4b3e06; color: #ff873d; }
+    .pill-muted { background: #090957; color: #7a7abf; }
 
     /* Bullet list inside cards */
     .notes {
@@ -138,7 +138,7 @@
     }
     .notes li {
       font-size: 0.875rem;
-      color: #44403c;
+      color: #c5c6e8;
       line-height: 1.55;
       padding-left: 16px;
       position: relative;
@@ -147,10 +147,10 @@
       content: "–";
       position: absolute;
       left: 0;
-      color: #a8a29e;
+      color: #7a7abf;
     }
     .notes li strong {
-      color: #1c1917;
+      color: #dfe1f6;
       font-weight: 600;
     }
 
@@ -166,7 +166,7 @@
       gap: 14px;
       align-items: flex-start;
       padding: 12px 0;
-      border-bottom: 1px solid #f5f5f4;
+      border-bottom: 1px solid #090957;
     }
     .cobit-level:last-child { border-bottom: none; }
     .cobit-connector {
@@ -181,14 +181,14 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #d6d3d1;
+      background: #4949a5;
       flex-shrink: 0;
     }
-    .cobit-dot.top { background: #1c1917; }
+    .cobit-dot.top { background: #dfe1f6; }
     .cobit-line {
       width: 1px;
       flex: 1;
-      background: #e7e5e4;
+      background: #17176e;
       min-height: 24px;
     }
     .cobit-body { flex: 1; }
@@ -197,18 +197,18 @@
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.16em;
-      color: #a8a29e;
+      color: #7a7abf;
       margin-bottom: 3px;
     }
     .cobit-domain {
       font-size: 0.875rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
       margin-bottom: 3px;
     }
     .cobit-desc {
       font-size: 0.8rem;
-      color: #78716c;
+      color: #a1a2d4;
       line-height: 1.5;
     }
     .cobit-tag {
@@ -216,18 +216,18 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 9px;
       letter-spacing: 0.08em;
-      background: #f5f5f4;
-      color: #78716c;
+      background: #090957;
+      color: #a1a2d4;
       padding: 2px 8px;
       border-radius: 4px;
       margin-top: 5px;
     }
-    .cobit-tag.governance { background: #1c1917; color: #fff; }
+    .cobit-tag.governance { background: #dfe1f6; color: #000048; }
 
     /* Skip box */
     .skip-box {
-      background: #fef2f2;
-      border: 1px solid #fecaca;
+      background: #4b0606;
+      border: 1px solid #4b0606;
       border-radius: 12px;
       padding: 18px 22px;
       margin-bottom: 12px;
@@ -244,19 +244,19 @@
       font-family: Georgia, serif;
       font-size: 0.95rem;
       font-weight: 600;
-      color: #991b1b;
+      color: #ff3d3d;
       margin-bottom: 5px;
     }
     .skip-body {
       font-size: 0.85rem;
-      color: #7f1d1d;
+      color: #ff3d3d;
       line-height: 1.55;
     }
 
     /* Strategy box */
     .strategy-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: #050550;
+      border: 1px solid #06244b;
       border-radius: 12px;
       padding: 18px 22px;
       margin-top: 40px;
@@ -265,29 +265,30 @@
       font-family: Georgia, serif;
       font-size: 0.95rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
       margin-bottom: 10px;
     }
 
     footer {
       margin-top: 64px;
       padding-top: 24px;
-      border-top: 1px solid #e7e5e4;
+      border-top: 1px solid #17176e;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: #a8a29e;
+      color: #7a7abf;
     }
   </style>
 <link rel="stylesheet" href="../retro-fx.css">
 <link rel="stylesheet" href="../retro-skin.css">
+<link rel="stylesheet" href="../retro-study.css">
 <link rel="icon" href="../images/retro/globe.gif">
 <script src="../retro.js" defer data-retro="skin"></script>
 </head>
 <body>
 <!-- back to main page -->
-<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#b8552a;color:#f3ead4;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
+<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#ff783d;color:#4b3706;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
 
   <div class="container">
     <a class="back" href="ais.html">← AIS Review</a>
