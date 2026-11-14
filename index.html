@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Steven Bleifer</title>
     <meta name="description" content="Steven Bleifer — MS Accounting at NYU Stern '26. Incoming Commercial Audit Associate at KPMG.">
-    <meta name="theme-color" content="#f3ead4">
+    <meta name="theme-color" content="#000080">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="retro-fx.css">
+    <link rel="icon" href="images/retro/globe.gif">
+    <script src="retro.js" defer data-retro="full"></script>
 </head>
 <body>
 
 <header class="topbar">
     <div class="topbar-inner">
         <a href="index.html" class="brand">Steven Bleifer</a>
-        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
         <nav class="nav" id="site-nav">
             <a href="index.html" class="active">Home</a>
             <a href="resume.html">Resume</a>
@@ -35,6 +39,11 @@
 
         <section class="hero">
             <p class="eyebrow">Florham Park, NJ</p>
+            <p class="hero-title">
+                <img src="images/retro/cow.gif" width="120" height="100" alt="A spinning cow" class="cow">
+                <span class="welcome rainbow-text">~ Welcome to my Home Page! ~</span>
+                <img src="images/retro/cow.gif" width="120" height="100" alt="A spinning cow" class="cow">
+            </p>
             <h1>Steven Bleifer.</h1>
             <p class="lead">MS in Accounting at NYU Stern. Joining KPMG as a Commercial Audit Associate in Fall 2026.</p>
             <div class="pill-row">
@@ -43,11 +52,11 @@
                 <span class="pill">KPMG, Fall 2026</span>
             </div>
 
-            <div class="search">
-                <input type="text" id="site-search-input" placeholder="Search the site" onkeydown="if(event.key==='Enter')siteSearch()">
-                <button type="button" class="btn" onclick="siteSearch()">Search</button>
-            </div>
-            <div id="site-search-results" style="display: none; margin-top: 16px;"></div>
+            <form class="search" id="site-search" role="search">
+                <input type="text" id="site-search-input" placeholder="Search the site" maxlength="80" autocomplete="off">
+                <button type="submit" class="btn">Search</button>
+            </form>
+            <div id="site-search-results" class="search-results" hidden></div>
         </section>
 
         <section class="section">
@@ -56,6 +65,7 @@
             </div>
             <p>I'm completing my <strong>MS in Accounting</strong> at <strong>NYU Stern</strong>, where I serve as a Graduate Student Ambassador. Before Stern, I graduated <strong>Summa Cum Laude</strong> from the University of Pittsburgh with a B.S. in Business Administration, Accounting.</p>
             <p>This fall I'll join <strong>KPMG</strong> as a Commercial Audit Associate in Morristown. I've previously interned with KPMG and EY, and spent a year as a Teaching Assistant for Introduction to Financial Accounting at Pitt.</p>
+            <hr>
             <p class="muted">Outside of work: guitar, bass, the New York Times crossword, and following the Knicks, Steelers, Yankees, and Devils.</p>
         </section>
 
@@ -86,7 +96,7 @@
                     <p>Recent reads and films.</p>
                 </a>
                 <a href="claude-code.html" class="card">
-                    <h3>Projects <span class="arrow">→</span></h3>
+                    <h3>Projects <span class="arrow">→</span><img src="images/retro/new.gif" width="46" height="18" alt="New!" class="new-gif"></h3>
                     <p>Things I've built with Claude Code.</p>
                 </a>
                 <a href="vinyl.html" class="card">
@@ -119,41 +129,7 @@
     </div>
 </main>
 
-<script>
-(function() {
-    var pages = [
-        { url: 'index.html', title: 'Home', keywords: 'home about steven bleifer nyu stern pitt kpmg accounting audit' },
-        { url: 'resume.html', title: 'Resume', keywords: 'resume education work experience skills awards kpmg ey ernst young nyu stern pitt accounting audit intern scholarship' },
-        { url: 'contact.html', title: 'Contact', keywords: 'contact email message linkedin instagram' },
-        { url: 'activity.html', title: 'Library', keywords: 'library activity movies books letterboxd goodreads film reading watching' },
-        { url: 'study/', title: 'Study', keywords: 'study cpa isc information systems controls soc security learn ais accounting information systems flashcards practice test exam review nyu stern notes guides' },
-        { url: 'pomodoro.html', title: 'Pomodoro', keywords: 'pomodoro timer focus study break tomato productivity clock countdown' },
-        { url: 'radio.html', title: 'Wheel Radio', keywords: 'radio wheel car stations music player carplay bluetooth' },
-        { url: 'claude-code.html', title: 'Projects', keywords: 'projects claude code built software side projects website study tools pomodoro vinyl hard drives ipod jailbreak automation' },
-        { url: 'vinyl-internals.html', title: 'Vinyl internals', keywords: 'vinyl internals technical rsync atomic rename checksum sha256 mp4 parser bash shell quoting race condition code' },
-        { url: 'vinyl.html', title: 'Vinyl', keywords: 'vinyl records turntable ripping rip alac apple lossless itunes music library audio project automation backup ipod classic streaming claude code offline' },
-        { url: 'groovekeeper.html', title: 'GrooveKeeper', keywords: 'groovekeeper vinyl app mac swift swiftui core ml click detector restoration declick audacity editing envelope compare takes codex chatgpt claude code handover notarized vinylstudio replacement' },
-        { url: 'itunes-remote.html', title: 'iTunes Remote', keywords: 'itunes remote ipod classic sync playlist applescript macbook pro headless daemon python appkit swift cover flow album art library xml itunes 10 aqua column browser airplay curator ai local model ollama qwen playlist generator' },
-        { url: 'itunes-remote-internals.html', title: 'iTunes Remote Internals', keywords: 'itunes remote internals technical apple events lock osascript applescript xml journal sort rules artwork cache gzip eject cover flow grid tokens models claude code how it works curator embeddings ollama retrieval local llm' },
-        { url: 'local-ai.html', title: 'Local AI', keywords: 'local ai llm models ollama lm studio llama.cpp opencode qwen llama 70b gemma speculative decoding mtp draft model benchmark agents aider codex claude code goose crush openrouter budget mac mini m1 max macbook air' },
-        { url: 'displays.html', title: 'Displays', keywords: 'displays studio display speakers stereo aggregate device coreaudio latency delay echo brightness true tone night shift menu bar app volume keys mac audio midi setup thunderbolt' }
-    ];
-    window.siteSearch = function() {
-        var q = document.getElementById('site-search-input').value.trim().toLowerCase();
-        var out = document.getElementById('site-search-results');
-        if (!q) { out.style.display = 'none'; return; }
-        var hits = pages.filter(function(p){ return p.title.toLowerCase().indexOf(q)!==-1 || p.keywords.indexOf(q)!==-1; });
-        if (!hits.length) {
-            out.innerHTML = '<p class="muted" style="margin:0;">No results for "' + q + '".</p>';
-        } else {
-            out.innerHTML = hits.map(function(p){
-                return '<p style="margin:6px 0;"><a href="'+p.url+'" style="font-weight:500;">'+p.title+'</a> <span class="faint" style="font-size:13px;">/'+p.url+'</span></p>';
-            }).join('');
-        }
-        out.style.display = 'block';
-    };
-})();
-</script>
+<script src="search.js" defer></script>
 
 </body>
 </html>

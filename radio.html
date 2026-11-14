@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' blob: data:; connect-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -110,6 +112,15 @@
   .trk span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .trk button { background: none; border: 0; color: var(--dim); padding: 6px 8px; }
 </style>
+<style>
+  /* 90s coat of paint: neon on navy, layout untouched */
+  :root { --bg: #000028; --panel: #000060; --line: #8080ff; --text: #f0f0f0; --dim: #00ffff; --accent: #00ff66; }
+  body { background: #000028 url("images/retro/stars.gif") repeat; font-family: "Comic Sans MS", "Chalkboard SE", cursive, sans-serif; }
+  header h1 { font-family: Impact, "Arial Black", sans-serif; font-size: 18px; color: #ffff00; text-shadow: 2px 2px 0 #ff00ff; }
+</style>
+<link rel="stylesheet" href="retro-fx.css">
+<link rel="icon" href="images/retro/globe.gif">
+<script src="retro.js" defer data-retro="minimal"></script>
 </head>
 <body>
 <div class="app">
