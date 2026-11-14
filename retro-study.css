@@ -1,0 +1,90 @@
+/* ============================================================
+   retro-study.css -- the full 90s treatment for the study pages.
+   Their own colors were converted to this navy/neon palette in place;
+   this file adds the chrome and recolors the Tailwind classes the
+   quiz pages use. Load after retro-skin.css.
+   ============================================================ */
+
+html, body {
+  background-color: #000028 !important;
+  background-image: url("images/retro/stars.gif") !important;
+  background-repeat: repeat !important;
+  color: #f0f0f0;
+}
+
+/* square everything off -- nothing was round in 1997 */
+body *:not(svg):not(svg *) { border-radius: 0 !important; }
+
+body h1, body .logo {
+  font-family: Impact, "Arial Black", Haettenschweiler, sans-serif !important;
+  letter-spacing: 1px;
+  color: #00ffff !important;
+  background: linear-gradient(#e0ffff, #00ffff 40%, #ff00ff 62%, #800080);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none !important;
+  filter: drop-shadow(3px 3px 0 rgba(0, 0, 0, 0.8));
+  text-transform: uppercase;
+}
+body h2 { color: #ffff00 !important; text-shadow: 2px 2px 0 #ff00ff; }
+body h3 { color: #ff80ff !important; }
+
+body a { color: #00ffff; }
+body a:hover { color: #000 !important; background: #ffff00; }
+
+/* chunky Windows 95 bevels on the boxes and buttons that already have borders */
+body button { border-style: outset !important; }
+body button:active { border-style: inset !important; }
+body input:not([type=checkbox]):not([type=radio]), body select, body textarea {
+  border-style: inset !important;
+  font-family: "Courier New", Courier, monospace !important;
+}
+
+/* the floating "Home" button, Win95 style */
+.home-button {
+  background: #c0c0c0 !important;
+  color: #000 !important;
+  border: 3px outset #fff !important;
+  box-shadow: 3px 3px 0 #000 !important;
+  font-family: Tahoma, Verdana, sans-serif !important;
+  font-weight: bold !important;
+}
+.home-button:hover { background: #ffff00 !important; }
+
+::selection { background: #ff00ff; color: #ffff00; }
+
+/* Tailwind color classes used by the quiz pages */
+.text-white, .hover\:text-white:hover { color: #000048 !important; }
+.text-stone-200, .hover\:text-stone-200:hover { color: #17176e !important; }
+.text-stone-300, .hover\:text-stone-300:hover { color: #4949a5 !important; }
+.text-stone-400, .hover\:text-stone-400:hover { color: #7a7abf !important; }
+.text-stone-500, .hover\:text-stone-500:hover { color: #a1a2d4 !important; }
+.text-stone-600, .hover\:text-stone-600:hover { color: #b7b9e0 !important; }
+.text-stone-700, .hover\:text-stone-700:hover { color: #c5c6e8 !important; }
+.text-stone-800, .hover\:text-stone-800:hover { color: #d7d9f2 !important; }
+.text-stone-900, .hover\:text-stone-900:hover { color: #dfe1f6 !important; }
+.text-red-600, .hover\:text-red-600:hover { color: #ff3d3d !important; }
+.text-green-600, .hover\:text-green-600:hover { color: #3dff85 !important; }
+.border-white, .hover\:border-white:hover { border-color: #000048 !important; }
+.border-stone-200, .hover\:border-stone-200:hover { border-color: #17176e !important; }
+.border-stone-300, .hover\:border-stone-300:hover { border-color: #4949a5 !important; }
+.border-stone-400, .hover\:border-stone-400:hover { border-color: #7a7abf !important; }
+.border-stone-500, .hover\:border-stone-500:hover { border-color: #a1a2d4 !important; }
+.border-stone-600, .hover\:border-stone-600:hover { border-color: #b7b9e0 !important; }
+.border-stone-700, .hover\:border-stone-700:hover { border-color: #c5c6e8 !important; }
+.border-stone-800, .hover\:border-stone-800:hover { border-color: #d7d9f2 !important; }
+.border-stone-900, .hover\:border-stone-900:hover { border-color: #dfe1f6 !important; }
+.border-red-600, .hover\:border-red-600:hover { border-color: #ff3d3d !important; }
+.border-green-600, .hover\:border-green-600:hover { border-color: #3dff85 !important; }
+.bg-white, .hover\:bg-white:hover { background-color: #000048 !important; }
+.bg-stone-200, .hover\:bg-stone-200:hover { background-color: #17176e !important; }
+.bg-stone-300, .hover\:bg-stone-300:hover { background-color: #4949a5 !important; }
+.bg-stone-400, .hover\:bg-stone-400:hover { background-color: #7a7abf !important; }
+.bg-stone-500, .hover\:bg-stone-500:hover { background-color: #a1a2d4 !important; }
+.bg-stone-600, .hover\:bg-stone-600:hover { background-color: #b7b9e0 !important; }
+.bg-stone-700, .hover\:bg-stone-700:hover { background-color: #c5c6e8 !important; }
+.bg-stone-800, .hover\:bg-stone-800:hover { background-color: #d7d9f2 !important; }
+.bg-stone-900, .hover\:bg-stone-900:hover { background-color: #dfe1f6 !important; }
+.bg-red-600, .hover\:bg-red-600:hover { background-color: #ff3d3d !important; }
+.bg-green-600, .hover\:bg-green-600:hover { background-color: #3dff85 !important; }

@@ -8,13 +8,13 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>AUD Study Dashboard — Bleifer Study</title>
   <meta name="description" content="AUD CPA sprint plan, June 16–29 2026. Daily TBS and MCQ targets with auto-saved progress." />
-  <meta name="theme-color" content="#f8fafc" />
+  <meta name="theme-color" content="#050550" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { background: #f8fafc; }
+    html, body { background: #050550; }
     body {
       font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #1e293b;
+      color: #d6d7f1;
       min-height: 100vh;
     }
     .wrap { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
@@ -24,21 +24,21 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: #94a3b8;
+      color: #7b7cc0;
       text-decoration: none;
       margin-bottom: 16px;
     }
-    .back-link:hover { color: #7c3aed; }
+    .back-link:hover { color: #853dff; }
     .day-card { transition: box-shadow 0.15s ease; }
     .day-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
     .num-input {
-      width: 56px; text-align: center; border: 1px solid #cbd5e1; border-radius: 6px;
+      width: 56px; text-align: center; border: 1px solid #4949a5; border-radius: 6px;
       padding: 4px 2px; font-size: 14px; font-variant-numeric: tabular-nums; font-family: inherit;
     }
-    .num-input:focus { outline: 2px solid #7c3aed; outline-offset: 1px; }
+    .num-input:focus { outline: 2px solid #853dff; outline-offset: 1px; }
     .task-row { cursor: pointer; }
-    .task-row:hover .checkbox { border-color: #7c3aed; }
-    .checkbox:focus-visible { outline: 2px solid #7c3aed; outline-offset: 2px; }
+    .task-row:hover .checkbox { border-color: #853dff; }
+    .checkbox:focus-visible { outline: 2px solid #853dff; outline-offset: 2px; }
     .card-head {
       width: 100%; border: none; background: transparent; padding: 14px 16px;
       display: flex; align-items: center; gap: 12px; cursor: pointer; text-align: left;
@@ -47,12 +47,13 @@
   </style>
 <link rel="stylesheet" href="../retro-fx.css">
 <link rel="stylesheet" href="../retro-skin.css">
+<link rel="stylesheet" href="../retro-study.css">
 <link rel="icon" href="../images/retro/globe.gif">
 <script src="../retro.js" defer data-retro="skin"></script>
 </head>
 <body>
 <!-- back to main page -->
-<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#b8552a;color:#f3ead4;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
+<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#ff783d;color:#4b3706;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
 
   <div class="wrap" id="app">
     <a class="back-link" href="./">&larr; Study</a>
@@ -197,8 +198,8 @@
     ];
 
     var UNIT_COLORS = {
-      A1: "#c2410c", A2: "#b45309", A3: "#0e7490", A4: "#7c3aed", A5: "#15803d",
-      A6: "#0f766e", "A3/A4": "#4f46e5", Mixed: "#a16207", All: "#1e3a5f", Light: "#64748b",
+      A1: "#ff763d", A2: "#ff913d", A3: "#3dd5ff", A4: "#853dff", A5: "#3dff86",
+      A6: "#3dfff0", "A3/A4": "#483dff", Mixed: "#ffb03d", All: "#3d91ff", Light: "#a1a2d4",
     };
 
     var PHASE_LABELS = {
@@ -306,15 +307,15 @@
     // ---- Components ----
     function StatBar(label, done, target, color) {
       var pct = target ? Math.min(100, Math.round((done / target) * 100)) : 0;
-      return h("div", { style: "background:#fff;border:1px solid #e2e8f0;border-radius:10px;padding:12px 14px;" },
+      return h("div", { style: "background:#000048;border:1px solid #06244b;border-radius:10px;padding:12px 14px;" },
         h("div", { style: "display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px;" },
-          h("span", { style: "font-size:12px;font-weight:600;color:#64748b;", text: label }),
+          h("span", { style: "font-size:12px;font-weight:600;color:#a1a2d4;", text: label }),
           h("span", { style: "font-size:14px;font-weight:700;color:" + color + ";font-variant-numeric:tabular-nums;" },
             String(done),
-            h("span", { style: "color:#cbd5e1;font-weight:500;", text: "/" + target })
+            h("span", { style: "color:#4949a5;font-weight:500;", text: "/" + target })
           )
         ),
-        h("div", { style: "height:6px;background:#f1f5f9;border-radius:999px;overflow:hidden;" },
+        h("div", { style: "height:6px;background:#090957;border-radius:999px;overflow:hidden;" },
           h("div", { style: "width:" + pct + "%;height:100%;background:" + color + ";border-radius:999px;transition:width 0.3s ease;" })
         )
       );
@@ -330,7 +331,7 @@
       input.addEventListener("input", function () { setCount(dayId, kind, input.value); });
       input.addEventListener("blur", render);
       return h("div", { style: "display:flex;flex-direction:column;gap:4px;" },
-        h("span", { style: "font-size:11px;color:#64748b;font-weight:600;", text: label }),
+        h("span", { style: "font-size:11px;color:#a1a2d4;font-weight:600;", text: label }),
         input
       );
     }
@@ -339,45 +340,45 @@
       var isOpen = openDay === d.id;
       var isToday = d.iso === today;
       var complete = dayComplete(d);
-      var accent = d.off ? "#94a3b8" : d.optional ? "#94a3b8" : d.exam ? "#dc2626" : (UNIT_COLORS[d.unit] || "#1e3a5f");
+      var accent = d.off ? "#7b7cc0" : d.optional ? "#7b7cc0" : d.exam ? "#ff3d3d" : (UNIT_COLORS[d.unit] || "#3d91ff");
 
       var headChildren = [];
       // Date block
       headChildren.push(h("div", { style: "flex-shrink:0;width:92px;" },
-        h("div", { style: "font-size:13px;font-weight:700;color:" + (isToday ? "#7c3aed" : "#334155") + ";", text: d.date.split(", ")[1] }),
-        h("div", { style: "font-size:11px;color:#94a3b8;", text: d.date.split(", ")[0] })
+        h("div", { style: "font-size:13px;font-weight:700;color:" + (isToday ? "#853dff" : "#c5c7e8") + ";", text: d.date.split(", ")[1] }),
+        h("div", { style: "font-size:11px;color:#7b7cc0;", text: d.date.split(", ")[0] })
       ));
       // Badge block
       var badge = h("div", { style: "flex-shrink:0;" });
       if (d.unit) {
-        badge.appendChild(h("span", { style: "display:inline-block;background:" + accent + ";color:#fff;font-size:12px;font-weight:700;padding:3px 9px;border-radius:6px;min-width:38px;text-align:center;", text: d.unit }));
+        badge.appendChild(h("span", { style: "display:inline-block;background:" + accent + ";color:#000048;font-size:12px;font-weight:700;padding:3px 9px;border-radius:6px;min-width:38px;text-align:center;", text: d.unit }));
       }
       if (d.optional) {
-        badge.appendChild(h("span", { style: "display:inline-block;background:#fff;color:#64748b;border:1px dashed #94a3b8;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;text-align:center;", text: "REST" }));
+        badge.appendChild(h("span", { style: "display:inline-block;background:#000048;color:#a1a2d4;border:1px dashed #7b7cc0;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;text-align:center;", text: "REST" }));
       }
       headChildren.push(badge);
       // Title block
       headChildren.push(h("div", { style: "flex:1;min-width:0;" },
         h("div", { style: "font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;", text: d.title }),
-        h("div", { style: "font-size:11px;color:#94a3b8;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;", text: PHASE_LABELS[d.phase] })
+        h("div", { style: "font-size:11px;color:#7b7cc0;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;", text: PHASE_LABELS[d.phase] })
       ));
       // Targets block
       if (!d.off && !d.exam) {
-        var targetLine = h("div", { style: "font-size:12px;color:#64748b;" });
+        var targetLine = h("div", { style: "font-size:12px;color:#a1a2d4;" });
         if (d.tbsTarget > 0) {
-          targetLine.appendChild(h("span", { style: "margin-right:8px;" }, h("b", { style: "color:#7c3aed;", text: String(d.tbsTarget) }), " TBS"));
+          targetLine.appendChild(h("span", { style: "margin-right:8px;" }, h("b", { style: "color:#853dff;", text: String(d.tbsTarget) }), " TBS"));
         }
         if (d.mcqTarget > 0) {
-          targetLine.appendChild(h("span", {}, h("b", { style: "color:#0e7490;", text: String(d.mcqTarget) }), " MCQ"));
+          targetLine.appendChild(h("span", {}, h("b", { style: "color:#3dd5ff;", text: String(d.mcqTarget) }), " MCQ"));
         }
         var targetBlock = h("div", { style: "flex-shrink:0;text-align:right;font-variant-numeric:tabular-nums;" }, targetLine);
         if (d.hours) {
-          targetBlock.appendChild(h("div", { style: "font-size:11px;color:#94a3b8;font-weight:600;margin-top:2px;", text: "⏱ " + d.hours }));
+          targetBlock.appendChild(h("div", { style: "font-size:11px;color:#7b7cc0;font-weight:600;margin-top:2px;", text: "⏱ " + d.hours }));
         }
         headChildren.push(targetBlock);
       }
       if (complete) {
-        headChildren.push(h("span", { style: "flex-shrink:0;color:#15803d;font-size:18px;font-weight:700;", text: "✓" }));
+        headChildren.push(h("span", { style: "flex-shrink:0;color:#3dff86;font-size:18px;font-weight:700;", text: "✓" }));
       }
 
       var head = h("button", {
@@ -389,24 +390,24 @@
 
       var card = h("div", {
         class: "day-card",
-        style: "border:1px solid " + (isOpen ? accent : "#e2e8f0") + ";border-left:4px solid " + accent +
-          ";border-radius:12px;background:" + (d.off || d.optional ? "#f8fafc" : "#fff") +
+        style: "border:1px solid " + (isOpen ? accent : "#06244b") + ";border-left:4px solid " + accent +
+          ";border-radius:12px;background:" + (d.off || d.optional ? "#050550" : "#000048") +
           ";overflow:hidden;opacity:" + (d.off ? "0.85" : "1") + ";",
       }, head);
 
       // Body — study days
       if (isOpen && !d.off && !d.exam) {
         var body = h("div", { style: "padding:0 16px 16px 16px;" });
-        body.appendChild(h("p", { style: "font-size:13px;color:#475569;margin:0 0 14px;line-height:1.5;border-left:2px solid #e2e8f0;padding-left:10px;", text: d.focus }));
+        body.appendChild(h("p", { style: "font-size:13px;color:#b7b9e0;margin:0 0 14px;line-height:1.5;border-left:2px solid #06244b;padding-left:10px;", text: d.focus }));
 
         if (d.hours) {
           var bandTop = h("div", { style: "display:flex;align-items:center;gap:14px;flex-wrap:wrap;font-size:13px;font-weight:700;margin-bottom:4px;" },
-            h("span", { style: "color:#334155;", text: "⏱ " + d.hours }));
-          if (d.tbsTarget > 0) bandTop.appendChild(h("span", { style: "color:#7c3aed;", text: d.tbsTarget + " TBS" + (d.tbsDeep ? " (" + d.tbsDeep + " deep)" : "") }));
-          if (d.mcqTarget > 0) bandTop.appendChild(h("span", { style: "color:#0e7490;", text: d.mcqTarget + " MCQ" + (d.mcqGoal ? " → " + d.mcqGoal + "%" : "") }));
-          body.appendChild(h("div", { style: "background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;margin-bottom:14px;" },
+            h("span", { style: "color:#c5c7e8;", text: "⏱ " + d.hours }));
+          if (d.tbsTarget > 0) bandTop.appendChild(h("span", { style: "color:#853dff;", text: d.tbsTarget + " TBS" + (d.tbsDeep ? " (" + d.tbsDeep + " deep)" : "") }));
+          if (d.mcqTarget > 0) bandTop.appendChild(h("span", { style: "color:#3dd5ff;", text: d.mcqTarget + " MCQ" + (d.mcqGoal ? " → " + d.mcqGoal + "%" : "") }));
+          body.appendChild(h("div", { style: "background:#050550;border:1px solid #06244b;border-radius:8px;padding:10px 12px;margin-bottom:14px;" },
             bandTop,
-            h("div", { style: "font-size:12px;color:#64748b;line-height:1.45;", text: d.breakdown })
+            h("div", { style: "font-size:12px;color:#a1a2d4;line-height:1.45;", text: d.breakdown })
           ));
         }
 
@@ -422,12 +423,12 @@
           var checked = !!progress[d.id + "_t" + i];
           var box = h("span", {
             class: "checkbox",
-            style: "flex-shrink:0;width:18px;height:18px;border-radius:5px;border:2px solid " + (checked ? accent : "#cbd5e1") +
-              ";background:" + (checked ? accent : "#fff") + ";color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;",
+            style: "flex-shrink:0;width:18px;height:18px;border-radius:5px;border:2px solid " + (checked ? accent : "#4949a5") +
+              ";background:" + (checked ? accent : "#000048") + ";color:#000048;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-top:1px;",
             text: checked ? "✓" : "",
           });
           var label = h("span", {
-            style: "font-size:14px;line-height:1.45;color:" + (checked ? "#94a3b8" : "#334155") + ";text-decoration:" + (checked ? "line-through" : "none") + ";",
+            style: "font-size:14px;line-height:1.45;color:" + (checked ? "#7b7cc0" : "#c5c7e8") + ";text-decoration:" + (checked ? "line-through" : "none") + ";",
             text: t,
           });
           var row = h("div", {
@@ -445,7 +446,7 @@
       // Body — off / exam
       if (isOpen && (d.off || d.exam)) {
         card.appendChild(h("div", { style: "padding:0 16px 16px 16px;" },
-          h("p", { style: "font-size:13px;color:#475569;margin:0;line-height:1.5;",
+          h("p", { style: "font-size:13px;color:#b7b9e0;margin:0;line-height:1.5;",
             text: d.exam
               ? "Eat, show up, flag-and-move on hard MCQ, protect your TBS time. You did the work."
               : "No studying today. Rest is part of the plan — the schedule already accounts for it." })
@@ -463,16 +464,16 @@
 
       // Header
       app.appendChild(h("div", { style: "margin-bottom:8px;" },
-        h("div", { style: "font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#7c3aed;font-weight:700;", text: "AUD · Sprint to the 29th" }),
+        h("div", { style: "font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:#853dff;font-weight:700;", text: "AUD · Sprint to the 29th" }),
         h("h1", { style: "font-size:30px;font-weight:800;margin:4px 0 2px;letter-spacing:-0.02em;", text: "The road to the 29th" }),
-        h("p", { style: "color:#64748b;font-size:15px;margin:0;", text: "Weighted toward TBS in A4 and A3, where your points actually are." })
+        h("p", { style: "color:#a1a2d4;font-size:15px;margin:0;", text: "Weighted toward TBS in A4 and A3, where your points actually are." })
       ));
 
       // Progress bars
       var t = totals();
       app.appendChild(h("div", { style: "display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0 24px;" },
-        StatBar("TBS reps", t.tbsDone, t.tbsTarget, "#7c3aed"),
-        StatBar("MCQ logged", t.mcqDone, t.mcqTarget, "#0e7490")
+        StatBar("TBS reps", t.tbsDone, t.tbsTarget, "#853dff"),
+        StatBar("MCQ logged", t.mcqDone, t.mcqTarget, "#3dd5ff")
       ));
 
       // Day cards
@@ -481,11 +482,11 @@
       app.appendChild(list);
 
       // Footer note
-      app.appendChild(h("div", { style: "margin-top:24px;padding:14px 16px;background:#fef9c3;border:1px solid #fde047;border-radius:10px;font-size:13px;color:#713f12;line-height:1.5;" },
+      app.appendChild(h("div", { style: "margin-top:24px;padding:14px 16px;background:#4b4606;border:1px solid #ae9409;border-radius:10px;font-size:13px;color:#ff993d;line-height:1.5;" },
         h("b", { text: "Two reminders:" }),
         " Update your exam date in Becker to the 29th, or the dashboard pacing and Final Review will fight this plan. And don't skim TBS to hit the count — a re-worked TBS beats five skimmed. If the Jun 24 Mini Exam shows a unit cratering, the days after it are your room to patch before the Jun 26 sim."
       ));
-      app.appendChild(h("div", { style: "margin-top:16px;font-size:12px;color:#94a3b8;text-align:center;", text: "Progress saves automatically to this device. Tap a day to expand." }));
+      app.appendChild(h("div", { style: "margin-top:16px;font-size:12px;color:#7b7cc0;text-align:center;", text: "Progress saves automatically to this device. Tap a day to expand." }));
     }
 
     render();

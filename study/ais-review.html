@@ -8,7 +8,7 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>AIS Review — Bleifer Study</title>
   <meta name="description" content="Accounting Information Systems review quiz covering Chapters 7, 14, and 19 (Savage · Brannock · Foksinska, 1st ed.)" />
-  <meta name="theme-color" content="#fbf9f4" />
+  <meta name="theme-color" content="#050551" />
 
   <!-- Tailwind (Play CDN) -->
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
@@ -20,7 +20,7 @@
 
   <style>
     html, body { margin: 0; padding: 0; }
-    body { background: #fbf9f4; }
+    body { background: #050551; }
     /* Hide un-hydrated content flash */
     #root:empty::before {
       content: "Loading…";
@@ -30,22 +30,23 @@
       min-height: 100vh;
       font-family: Georgia, serif;
       font-style: italic;
-      color: #a8a29e;
+      color: #7a7abf;
       letter-spacing: 0.05em;
     }
   </style>
 <link rel="stylesheet" href="../retro-fx.css">
 <link rel="stylesheet" href="../retro-skin.css">
+<link rel="stylesheet" href="../retro-study.css">
 <link rel="icon" href="../images/retro/globe.gif">
 <script src="../retro.js" defer data-retro="skin"></script>
 </head>
 <body>
 <!-- back to main page -->
-<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#b8552a;color:#f3ead4;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
+<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#ff783d;color:#4b3706;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
 
   <div id="root"></div>
 
-    <div id="devtools-shield" style="display:none;position:fixed;inset:0;z-index:99999;background:#fbf9f4;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;color:#a8a29e;font-size:1.2rem;">
+    <div id="devtools-shield" style="display:none;position:fixed;inset:0;z-index:99999;background:#050551;align-items:center;justify-content:center;font-family:Georgia,serif;font-style:italic;color:#7a7abf;font-size:1.2rem;">
     Please close developer tools to continue studying.
   </div>
 
@@ -2180,9 +2181,9 @@ const BANK = [
 // ===== UI COMPONENT =====
 
 const CHAPTER_META = {
-  7: { title: "Emerging & Disruptive Technologies", accent: "#d97706" },
-  14: { title: "Information Systems and Controls", accent: "#0891b2" },
-  19: { title: "Audit Assurance", accent: "#7c3aed" },
+  7: { title: "Emerging & Disruptive Technologies", accent: "#ffa53d" },
+  14: { title: "Information Systems and Controls", accent: "#3dd9ff" },
+  19: { title: "Audit Assurance", accent: "#853dff" },
 };
 
 const LO_META = {
@@ -2491,9 +2492,9 @@ function AISQuiz() {
 
   return (
     <div className="min-h-screen w-full" style={{
-      background: "linear-gradient(180deg, #fbf9f4 0%, #f4f1ea 100%)",
+      background: "linear-gradient(180deg, #050551 0%, #0c0c5c 100%)",
       fontFamily: "'Inter', -apple-system, sans-serif",
-      color: "#1c1917",
+      color: "#dfe1f6",
     }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;0,800;1,600&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700&display=swap');
@@ -2504,7 +2505,7 @@ function AISQuiz() {
         .fade-in { animation: fadeIn 0.35s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
         .dot-grid {
-          background-image: radial-gradient(circle, #d6d3d1 1px, transparent 1px);
+          background-image: radial-gradient(circle, #4949a5 1px, transparent 1px);
           background-size: 24px 24px;
         }
       `}</style>
@@ -2541,7 +2542,7 @@ function AISQuiz() {
               </div>
               <div>
                 <div className="text-stone-400 uppercase tracking-wider">Streak</div>
-                <div className="text-2xl font-bold" style={{ color: stats.streak >= 3 ? "#d97706" : "#1c1917" }}>
+                <div className="text-2xl font-bold" style={{ color: stats.streak >= 3 ? "#ffa53d" : "#dfe1f6" }}>
                   {stats.streak}{stats.bestStreak > 0 && <span className="text-stone-400 text-sm font-normal"> / {stats.bestStreak}</span>}
                 </div>
               </div>
@@ -2556,12 +2557,12 @@ function AISQuiz() {
                     title={totalRunning ? "Pause total timer" : "Start total timer"}
                     disabled={cycleComplete}
                     style={{
-                      width: 22, height: 22, padding: 0, border: "1px solid #d6d3d1",
-                      borderRadius: 999, background: "#fff",
+                      width: 22, height: 22, padding: 0, border: "1px solid #4949a5",
+                      borderRadius: 999, background: "#000048",
                       cursor: cycleComplete ? "default" : "pointer",
                       opacity: cycleComplete ? 0.5 : 1,
                       display: "inline-flex", alignItems: "center", justifyContent: "center",
-                      color: "#1c1917",
+                      color: "#dfe1f6",
                     }}
                   >
                     {totalRunning && !cycleComplete ? (
@@ -2583,9 +2584,9 @@ function AISQuiz() {
             onClick={() => selectChapter("all")}
             className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
             style={{
-              background: selectedChapter === "all" ? "#1c1917" : "transparent",
-              color: selectedChapter === "all" ? "#fff" : "#78716c",
-              borderColor: selectedChapter === "all" ? "#1c1917" : "#d6d3d1",
+              background: selectedChapter === "all" ? "#dfe1f6" : "transparent",
+              color: selectedChapter === "all" ? "#000048" : "#a1a2d4",
+              borderColor: selectedChapter === "all" ? "#dfe1f6" : "#4949a5",
             }}
           >
             All chapters
@@ -2601,8 +2602,8 @@ function AISQuiz() {
                 className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
                 style={{
                   background: active ? meta.accent : "transparent",
-                  color: active ? "#fff" : "#78716c",
-                  borderColor: active ? meta.accent : "#d6d3d1",
+                  color: active ? "#000048" : "#a1a2d4",
+                  borderColor: active ? meta.accent : "#4949a5",
                 }}
               >
                 Ch {ch} · {meta.title}
@@ -2631,8 +2632,8 @@ function AISQuiz() {
               className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
               style={{
                 background: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "transparent",
-                color: selectedLO === "all" ? "#fff" : "#78716c",
-                borderColor: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+                color: selectedLO === "all" ? "#000048" : "#a1a2d4",
+                borderColor: selectedLO === "all" ? CHAPTER_META[selectedChapter].accent : "#4949a5",
               }}
             >
               All topics
@@ -2647,8 +2648,8 @@ function AISQuiz() {
                   className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
                   style={{
                     background: active ? CHAPTER_META[selectedChapter].accent : "transparent",
-                    color: active ? "#fff" : "#78716c",
-                    borderColor: active ? CHAPTER_META[selectedChapter].accent : "#d6d3d1",
+                    color: active ? "#000048" : "#a1a2d4",
+                    borderColor: active ? CHAPTER_META[selectedChapter].accent : "#4949a5",
                   }}
                   title={LO_META[lo]}
                 >
@@ -2680,9 +2681,9 @@ function AISQuiz() {
                 onClick={() => setTypeFilter(key)}
                 className="option-btn px-3 py-1.5 text-xs font-medium rounded-full border"
                 style={{
-                  background: active ? "#1c1917" : "transparent",
-                  color: active ? "#fff" : "#78716c",
-                  borderColor: active ? "#1c1917" : "#d6d3d1",
+                  background: active ? "#dfe1f6" : "transparent",
+                  color: active ? "#000048" : "#a1a2d4",
+                  borderColor: active ? "#dfe1f6" : "#4949a5",
                 }}
               >
                 {label} <span className="font-mono opacity-70 ml-1">({count})</span>
@@ -2709,12 +2710,12 @@ function AISQuiz() {
                     title={timerRunning ? "Pause timer" : "Start timer"}
                     disabled={cycleComplete}
                     style={{
-                      width: 18, height: 18, padding: 0, border: "1px solid #d6d3d1",
-                      borderRadius: 999, background: "#fff",
+                      width: 18, height: 18, padding: 0, border: "1px solid #4949a5",
+                      borderRadius: 999, background: "#000048",
                       cursor: cycleComplete ? "default" : "pointer",
                       opacity: cycleComplete ? 0.5 : 1,
                       display: "inline-flex", alignItems: "center", justifyContent: "center",
-                      color: "#1c1917",
+                      color: "#dfe1f6",
                     }}
                   >
                     {timerRunning ? (
@@ -2733,7 +2734,7 @@ function AISQuiz() {
               {filteredPool.map(q => {
                 const s = answered[q.idx];
                 const isCurrent = current && current.q && current.q.idx === q.idx;
-                const bg = s === "correct" ? "#16a34a" : s === "wrong" ? "#dc2626" : "#e7e5e4";
+                const bg = s === "correct" ? "#3dff85" : s === "wrong" ? "#ff3d3d" : "#17176e";
                 const label = s === "correct" ? "Correct" : s === "wrong" ? "Wrong" : "Unseen";
                 return (
                   <button
@@ -2745,7 +2746,7 @@ function AISQuiz() {
                     style={{
                       width: 10, height: 10, borderRadius: 2, background: bg,
                       padding: 0, border: 0, cursor: "pointer",
-                      outline: isCurrent ? "2px solid #1c1917" : "none",
+                      outline: isCurrent ? "2px solid #dfe1f6" : "none",
                       outlineOffset: isCurrent ? 1 : 0,
                     }}
                   />
@@ -2756,7 +2757,7 @@ function AISQuiz() {
         </div>
 
         {cycleComplete && (
-          <div className="fade-in mb-6 rounded-2xl p-5 border" style={{ background: "#fff", borderColor: "#d6d3d1" }}>
+          <div className="fade-in mb-6 rounded-2xl p-5 border" style={{ background: "#000048", borderColor: "#4949a5" }}>
             <div className="font-serif-display text-xl font-bold text-stone-900 mb-1">All mastered</div>
             <div className="text-sm text-stone-600 mb-3">
               You've answered all {filteredPool.length} questions in this filter correctly. Start a new cycle to go through them again.
@@ -2764,7 +2765,7 @@ function AISQuiz() {
             <button
               onClick={startNewCycle}
               className="option-btn px-4 py-2 text-sm font-medium rounded-full text-white"
-              style={{ background: "#1c1917" }}
+              style={{ background: "#dfe1f6" }}
             >
               Start new cycle
             </button>
@@ -2781,7 +2782,7 @@ function AISQuiz() {
                 className="font-mono text-[11px] font-bold uppercase tracking-wider px-2.5 py-1 rounded"
                 style={{
                   background: CHAPTER_META[current.q.ch].accent,
-                  color: "#fff",
+                  color: "#000048",
                 }}
               >
                 Ch {current.q.ch} · LO {current.q.lo}
@@ -2792,9 +2793,9 @@ function AISQuiz() {
               <span
                 className="ml-auto font-mono text-[10px] uppercase tracking-[0.18em] px-2 py-0.5 rounded border"
                 style={{
-                  borderColor: current.q.type === "application" ? "#d97706" : "#a8a29e",
-                  color: current.q.type === "application" ? "#b45309" : "#78716c",
-                  background: current.q.type === "application" ? "#fef3c7" : "transparent",
+                  borderColor: current.q.type === "application" ? "#ffa53d" : "#7a7abf",
+                  color: current.q.type === "application" ? "#ff913d" : "#a1a2d4",
+                  background: current.q.type === "application" ? "#4b3e06" : "transparent",
                 }}
               >
                 {current.q.type}
@@ -2814,28 +2815,28 @@ function AISQuiz() {
               {current.shuffledOptions.map((opt, i) => {
                 const isCorrect = i === current.correctShuffledIndex;
                 const isSelected = i === selected;
-                let bg = "#fff";
-                let border = "#e7e5e4";
-                let textColor = "#1c1917";
-                let letterBg = "#f5f5f4";
-                let letterColor = "#78716c";
+                let bg = "#000048";
+                let border = "#17176e";
+                let textColor = "#dfe1f6";
+                let letterBg = "#090957";
+                let letterColor = "#a1a2d4";
 
                 if (revealed) {
                   if (isCorrect) {
-                    bg = "#f0fdf4";
-                    border = "#16a34a";
-                    letterBg = "#16a34a";
-                    letterColor = "#fff";
+                    bg = "#064b1b";
+                    border = "#3dff85";
+                    letterBg = "#3dff85";
+                    letterColor = "#000048";
                   } else if (isSelected) {
-                    bg = "#fef2f2";
-                    border = "#dc2626";
-                    letterBg = "#dc2626";
-                    letterColor = "#fff";
+                    bg = "#4b0606";
+                    border = "#ff3d3d";
+                    letterBg = "#ff3d3d";
+                    letterColor = "#000048";
                   } else {
-                    textColor = "#a8a29e";
+                    textColor = "#7a7abf";
                   }
                 } else if (isSelected) {
-                  border = "#1c1917";
+                  border = "#dfe1f6";
                 }
 
                 return (
@@ -2878,7 +2879,7 @@ function AISQuiz() {
                 <button
                   onClick={loadNext}
                   className="option-btn w-full sm:w-auto px-8 py-3 rounded-lg font-medium text-sm text-white"
-                  style={{ background: "#1c1917" }}
+                  style={{ background: "#dfe1f6" }}
                 >
                   Next question →
                 </button>

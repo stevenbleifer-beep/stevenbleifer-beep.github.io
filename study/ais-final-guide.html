@@ -8,13 +8,13 @@
   <meta http-equiv="X-Content-Type-Options" content="nosniff" />
   <title>AIS Final Exam Guide — Bleifer Study</title>
   <meta name="description" content="Final exam guide for AIS with Prof. Lanz — Chapter 16 cybersecurity and CIS Controls focus" />
-  <meta name="theme-color" content="#fbf9f4" />
+  <meta name="theme-color" content="#050551" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      background: #fbf9f4;
+      background: #050551;
       font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      color: #1c1917;
+      color: #dfe1f6;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -30,12 +30,12 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: #78716c;
+      color: #a1a2d4;
       text-decoration: none;
       display: inline-block;
       margin-bottom: 32px;
     }
-    .back:hover { color: #1c1917; }
+    .back:hover { color: #dfe1f6; }
     h1 {
       font-family: Georgia, "Times New Roman", serif;
       font-size: 2rem;
@@ -46,15 +46,15 @@
     .tagline {
       font-family: Georgia, serif;
       font-style: italic;
-      color: #78716c;
+      color: #a1a2d4;
       font-size: 0.95rem;
       margin-bottom: 40px;
     }
 
     /* Exam logistics banner */
     .logistics {
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 12px;
       padding: 20px 24px;
       display: flex;
@@ -72,13 +72,13 @@
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: #a8a29e;
+      color: #7a7abf;
     }
     .logistic-value {
       font-family: Georgia, serif;
       font-size: 1rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
     }
 
     /* Section */
@@ -87,15 +87,15 @@
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      color: #a8a29e;
+      color: #7a7abf;
       margin-bottom: 12px;
       margin-top: 40px;
     }
 
     /* Topic card */
     .topic-card {
-      background: #fff;
-      border: 1px solid #e7e5e4;
+      background: #000048;
+      border: 1px solid #17176e;
       border-radius: 12px;
       padding: 22px 24px;
       margin-bottom: 12px;
@@ -111,7 +111,7 @@
       font-family: Georgia, serif;
       font-size: 1.05rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
       line-height: 1.3;
     }
     .pill {
@@ -124,11 +124,11 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .pill-default { background: #f5f5f4; color: #78716c; }
-    .pill-hot { background: #fef2f2; color: #b91c1c; }
-    .pill-warn { background: #fffbeb; color: #92400e; }
-    .pill-muted { background: #f5f5f4; color: #a8a29e; }
-    .pill-info { background: #eff6ff; color: #1d4ed8; }
+    .pill-default { background: #090957; color: #a1a2d4; }
+    .pill-hot { background: #4b0606; color: #ff3d3d; }
+    .pill-warn { background: #4b3e06; color: #ff873d; }
+    .pill-muted { background: #090957; color: #7a7abf; }
+    .pill-info { background: #06244b; color: #3d70ff; }
 
     /* Bullet list inside cards */
     .notes {
@@ -139,7 +139,7 @@
     }
     .notes li {
       font-size: 0.875rem;
-      color: #44403c;
+      color: #c5c6e8;
       line-height: 1.55;
       padding-left: 16px;
       position: relative;
@@ -148,10 +148,10 @@
       content: "–";
       position: absolute;
       left: 0;
-      color: #a8a29e;
+      color: #7a7abf;
     }
     .notes li strong {
-      color: #1c1917;
+      color: #dfe1f6;
       font-weight: 600;
     }
 
@@ -161,7 +161,7 @@
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.16em;
-      color: #a8a29e;
+      color: #7a7abf;
       margin-top: 16px;
       margin-bottom: 8px;
     }
@@ -172,24 +172,24 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0;
-      border: 1px solid #e7e5e4;
+      border: 1px solid #17176e;
       border-radius: 8px;
       overflow: hidden;
       margin-top: 4px;
     }
     .compare-col {
       padding: 14px 16px;
-      background: #fafaf9;
+      background: #05054f;
     }
     .compare-col:first-child {
-      border-right: 1px solid #e7e5e4;
+      border-right: 1px solid #17176e;
     }
     .compare-head {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 9px;
       text-transform: uppercase;
       letter-spacing: 0.16em;
-      color: #a8a29e;
+      color: #7a7abf;
       margin-bottom: 6px;
     }
     .compare-title {
@@ -200,14 +200,14 @@
     }
     .compare-body {
       font-size: 0.8rem;
-      color: #57534e;
+      color: #b7b9e0;
       line-height: 1.5;
     }
 
     /* CIS asset class diagram */
     .asset-diagram {
-      background: #fafaf9;
-      border: 1px solid #e7e5e4;
+      background: #05054f;
+      border: 1px solid #17176e;
       border-radius: 8px;
       padding: 18px;
       margin-top: 4px;
@@ -219,32 +219,32 @@
       flex-wrap: wrap;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.78rem;
-      color: #1c1917;
+      color: #dfe1f6;
       justify-content: center;
     }
     .asset-row.top {
       margin-bottom: 8px;
-      color: #78716c;
+      color: #a1a2d4;
       font-style: italic;
       font-family: Georgia, serif;
       font-size: 0.85rem;
     }
     .asset-row.bottom {
       margin-top: 8px;
-      color: #78716c;
+      color: #a1a2d4;
       font-style: italic;
       font-family: Georgia, serif;
       font-size: 0.85rem;
     }
     .asset-pill {
-      background: #fff;
-      border: 1px solid #d6d3d1;
+      background: #000048;
+      border: 1px solid #4949a5;
       padding: 5px 10px;
       border-radius: 4px;
       font-weight: 600;
     }
     .asset-arrow {
-      color: #a8a29e;
+      color: #7a7abf;
       font-weight: bold;
     }
 
@@ -259,14 +259,14 @@
       display: flex;
       gap: 12px;
       padding: 10px 0;
-      border-bottom: 1px solid #f5f5f4;
+      border-bottom: 1px solid #090957;
       align-items: flex-start;
     }
     .ctrl-row:last-child { border-bottom: none; }
     .ctrl-num {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.7rem;
-      color: #a8a29e;
+      color: #7a7abf;
       flex-shrink: 0;
       width: 26px;
       padding-top: 1px;
@@ -275,20 +275,20 @@
     .ctrl-name {
       font-size: 0.85rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
       line-height: 1.3;
     }
     .ctrl-detail {
       font-size: 0.78rem;
-      color: #78716c;
+      color: #a1a2d4;
       margin-top: 2px;
       line-height: 1.45;
     }
 
     /* Skip / Focus box */
     .focus-box {
-      background: #ecfeff;
-      border: 1px solid #a5f3fc;
+      background: #06484b;
+      border: 1px solid #099dae;
       border-radius: 12px;
       padding: 18px 22px;
       margin-bottom: 24px;
@@ -300,25 +300,25 @@
       font-size: 1.1rem;
       flex-shrink: 0;
       margin-top: 1px;
-      color: #0e7490;
+      color: #3dd5ff;
     }
     .focus-title {
       font-family: Georgia, serif;
       font-size: 0.95rem;
       font-weight: 600;
-      color: #155e75;
+      color: #3dd1ff;
       margin-bottom: 5px;
     }
     .focus-body {
       font-size: 0.85rem;
-      color: #155e75;
+      color: #3dd1ff;
       line-height: 1.55;
     }
 
     /* Strategy box */
     .strategy-box {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
+      background: #050550;
+      border: 1px solid #06244b;
       border-radius: 12px;
       padding: 18px 22px;
       margin-top: 40px;
@@ -327,7 +327,7 @@
       font-family: Georgia, serif;
       font-size: 0.95rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
       margin-bottom: 10px;
     }
 
@@ -335,7 +335,7 @@
     .term {
       font-family: Georgia, serif;
       font-style: italic;
-      color: #1c1917;
+      color: #dfe1f6;
     }
 
     /* Quick reference list */
@@ -356,7 +356,7 @@
     .quick-ref .key {
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 0.72rem;
-      color: #1c1917;
+      color: #dfe1f6;
       font-weight: 600;
       flex-shrink: 0;
       min-width: 88px;
@@ -364,7 +364,7 @@
       letter-spacing: 0.04em;
     }
     .quick-ref .val {
-      color: #57534e;
+      color: #b7b9e0;
     }
 
     /* Numbered emphasis row (for Plan/Policy/Process/Procedure etc.) */
@@ -377,8 +377,8 @@
     .seq-item {
       flex: 1;
       min-width: 120px;
-      background: #fafaf9;
-      border: 1px solid #e7e5e4;
+      background: #05054f;
+      border: 1px solid #17176e;
       border-radius: 8px;
       padding: 10px 12px;
     }
@@ -386,46 +386,47 @@
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 9px;
       letter-spacing: 0.16em;
-      color: #a8a29e;
+      color: #7a7abf;
       text-transform: uppercase;
     }
     .seq-name {
       font-family: Georgia, serif;
       font-size: 0.95rem;
       font-weight: 600;
-      color: #1c1917;
+      color: #dfe1f6;
       margin: 2px 0 4px;
     }
     .seq-desc {
       font-size: 0.75rem;
-      color: #78716c;
+      color: #a1a2d4;
       line-height: 1.45;
     }
 
     footer {
       margin-top: 64px;
       padding-top: 24px;
-      border-top: 1px solid #e7e5e4;
+      border-top: 1px solid #17176e;
       font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
       font-size: 10px;
       text-transform: uppercase;
       letter-spacing: 0.18em;
-      color: #a8a29e;
+      color: #7a7abf;
     }
 
     @media (max-width: 540px) {
       .compare { grid-template-columns: 1fr; }
-      .compare-col:first-child { border-right: none; border-bottom: 1px solid #e7e5e4; }
+      .compare-col:first-child { border-right: none; border-bottom: 1px solid #17176e; }
     }
   </style>
 <link rel="stylesheet" href="../retro-fx.css">
 <link rel="stylesheet" href="../retro-skin.css">
+<link rel="stylesheet" href="../retro-study.css">
 <link rel="icon" href="../images/retro/globe.gif">
 <script src="../retro.js" defer data-retro="skin"></script>
 </head>
 <body>
 <!-- back to main page -->
-<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#b8552a;color:#f3ead4;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
+<a href="../index.html" class="home-button" aria-label="Back to main page" style="position:fixed;left:20px;bottom:20px;z-index:9998;display:inline-flex;align-items:center;gap:7px;padding:9px 16px;border-radius:999px;background:#ff783d;color:#4b3706;border:1px solid rgba(42,31,18,.18);font:500 14px/1 'Work Sans',-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;letter-spacing:.01em;text-decoration:none;box-shadow:0 3px 12px rgba(42,31,18,.22);"><span aria-hidden="true">←</span> Home</a>
 
   <div class="container">
     <a class="back" href="ais-final.html">← AIS Final</a>
