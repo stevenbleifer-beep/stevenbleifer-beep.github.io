@@ -2,19 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Library — Steven Bleifer</title>
     <meta name="description" content="What Steven Bleifer is reading and watching, pulled live from Letterboxd and Goodreads.">
-    <meta name="theme-color" content="#f3ead4">
+    <meta name="theme-color" content="#000080">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="retro-fx.css">
+    <link rel="icon" href="images/retro/globe.gif">
+    <script src="retro.js" defer data-retro="full"></script>
 </head>
 <body>
 
 <header class="topbar">
     <div class="topbar-inner">
         <a href="index.html" class="brand">Steven Bleifer</a>
-        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
         <nav class="nav" id="site-nav">
             <a href="index.html">Home</a>
             <a href="resume.html">Resume</a>
@@ -71,87 +75,7 @@
     </div>
 </main>
 
-<script>
-(function() {
-    function starRating(num) {
-        var full = Math.floor(num);
-        var half = (num % 1 >= 0.5) ? 1 : 0;
-        var empty = 5 - full - half;
-        var s = '';
-        for (var i = 0; i < full; i++) s += '★';
-        if (half) s += '½';
-        for (var i = 0; i < empty; i++) s += '☆';
-        return s;
-    }
-
-    function escapeHTML(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-
-    fetch('letterboxd-feed.json?v=' + Date.now())
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            var container = document.getElementById('letterboxd-feed');
-            if (!data.ok || !data.films || !data.films.length) {
-                container.innerHTML = '<p class="feed-error">No films found yet.</p>';
-                return;
-            }
-            var html = '<ul class="media-list">';
-            var films = data.films;
-            for (var i = 0; i < films.length; i++) {
-                var f = films[i];
-                var rating = parseFloat(f.rating) || 0;
-                var dateStr = '';
-                if (f.watched) {
-                    var d = new Date(f.watched + 'T12:00:00');
-                    dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                }
-                html += '<li>';
-                if (f.poster) html += '<div class="cover"><img src="' + f.poster + '" alt="" referrerpolicy="no-referrer"></div>';
-                else html += '<div class="cover"></div>';
-                html += '<div class="body">';
-                html += '<a class="title" href="' + f.link + '" target="_blank" rel="noopener">' + escapeHTML(f.title) + '</a>';
-                if (rating) html += '<p class="meta"><span class="stars">' + starRating(rating) + '</span></p>';
-                if (dateStr) html += '<p class="meta">' + dateStr + '</p>';
-                html += '</div></li>';
-            }
-            html += '</ul>';
-            html += '<p class="mt-24"><a href="https://letterboxd.com/stevenfred/" target="_blank" rel="noopener">View all on Letterboxd →</a></p>';
-            container.innerHTML = html;
-        })
-        .catch(function() {
-            document.getElementById('letterboxd-feed').innerHTML = '<p class="feed-error">Couldn\'t load Letterboxd feed. <a href="https://letterboxd.com/stevenfred/" target="_blank" rel="noopener">Visit profile →</a></p>';
-        });
-
-    fetch('goodreads-feed.json?v=' + Date.now())
-        .then(function(r) { return r.json(); })
-        .then(function(data) {
-            var container = document.getElementById('goodreads-feed');
-            if (!data.ok || !data.books || !data.books.length) {
-                container.innerHTML = '<p class="feed-error">No books found yet.</p>';
-                return;
-            }
-            var html = '<ul class="media-list">';
-            var books = data.books;
-            for (var i = 0; i < books.length; i++) {
-                var b = books[i];
-                var rating = parseInt(b.rating) || 0;
-                html += '<li>';
-                if (b.cover) html += '<div class="cover"><img src="' + b.cover + '" alt=""></div>';
-                else html += '<div class="cover"></div>';
-                html += '<div class="body">';
-                html += '<a class="title" href="' + b.link + '" target="_blank" rel="noopener">' + escapeHTML(b.title) + '</a>';
-                if (b.author) html += '<p class="author">' + escapeHTML(b.author) + '</p>';
-                if (rating) html += '<p class="meta"><span class="stars">' + starRating(rating) + '</span></p>';
-                html += '</div></li>';
-            }
-            html += '</ul>';
-            html += '<p class="mt-24"><a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" rel="noopener">View all on Goodreads →</a></p>';
-            container.innerHTML = html;
-        })
-        .catch(function() {
-            document.getElementById('goodreads-feed').innerHTML = '<p class="feed-error">Couldn\'t load Goodreads feed. <a href="https://www.goodreads.com/user/show/168719369-steven-bleifer" target="_blank" rel="noopener">Visit profile →</a></p>';
-        });
-})();
-</script>
+<script src="activity.js" defer></script>
 
 </body>
 </html>

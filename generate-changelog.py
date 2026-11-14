@@ -23,19 +23,23 @@ page = f'''<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="strict-origin-when-cross-origin">
     <title>Changelog — Steven Bleifer</title>
     <meta name="description" content="Site changelog, generated from git history.">
-    <meta name="theme-color" content="#f3ead4">
+    <meta name="theme-color" content="#000080">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="retro-fx.css">
+    <link rel="icon" href="images/retro/globe.gif">
+    <script src="retro.js" defer data-retro="full"></script>
 </head>
 <body>
 
 <header class="topbar">
     <div class="topbar-inner">
         <a href="index.html" class="brand">Steven Bleifer</a>
-        <button class="nav-toggle" aria-label="Menu" onclick="document.getElementById('site-nav').classList.toggle('open')">☰</button>
+        <button class="nav-toggle" aria-label="Menu">☰</button>
         <nav class="nav" id="site-nav">
             <a href="index.html">Home</a>
             <a href="resume.html">Resume</a>
@@ -43,6 +47,7 @@ page = f'''<!DOCTYPE html>
             <a href="claude-code.html">Projects</a>
             <a href="vinyl.html">Vinyl</a>
             <a href="displays.html">Displays</a>
+            <a href="itunes-remote.html">iTunes</a>
             <a href="contact.html">Contact</a>
             <a href="study/">Study</a>
             <a href="pomodoro.html">Pomodoro</a>

@@ -1,0 +1,43 @@
+/* ============================================================
+   retro-skin.css -- a 90s coat of paint for the standalone pages
+   (study tools, Blockway, Card Dashboard, surprise). These pages keep
+   their own layout and colors so they stay usable; this adds the fonts,
+   chrome and footer. Pair with retro-fx.css and retro.js (data-retro="skin").
+   ============================================================ */
+
+body > *:not(.marquee-bar):not(.retro-skin-footer),
+body > *:not(.marquee-bar):not(.retro-skin-footer) *:not(code):not(pre):not(kbd):not(svg):not(svg *) {
+  font-family: "Comic Sans MS", "Chalkboard SE", "Comic Neue", cursive, sans-serif !important;
+}
+
+body h1 {
+  font-family: Impact, "Arial Black", Haettenschweiler, sans-serif !important;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 #ff00ff, 4px 4px 0 #00ffff;
+}
+
+::selection { background: #ff00ff; color: #ffff00; }
+
+html { scrollbar-color: #c0c0c0 #404040; }
+::-webkit-scrollbar { width: 16px; height: 16px; }
+::-webkit-scrollbar-track { background: #404040; }
+::-webkit-scrollbar-thumb { background: #c0c0c0; border: 2px outset #fff; }
+
+/* the news bar is pinned so it cannot disturb each page's own layout */
+.marquee-bar { position: fixed; top: 0; left: 0; right: 0; z-index: 9990; }
+body { padding-top: 32px !important; }
+
+.retro-skin-footer {
+  flex: none;
+  align-self: stretch;
+  width: 100%;
+  margin-top: 40px;
+  padding: 0 12px 28px;
+  background: #003838 url("images/retro/stars.gif") repeat;
+  border-top: 4px ridge #c0c0c0;
+  text-align: center;
+  user-select: none;
+}
+.retro-skin-footer .retro-extras .fire { margin-top: 0; }
+.retro-skin-footer a { color: #00ffff; }
+.retro-skin-footer .webring a { color: #0000ee; }
